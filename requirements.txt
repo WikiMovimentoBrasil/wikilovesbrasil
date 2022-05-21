@@ -7,4 +7,4 @@ requests_oauthlib
 pandas
 gspread
 oauth2client
-googleapiclient
+google-api-python-client
