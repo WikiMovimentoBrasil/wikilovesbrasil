@@ -1,11 +1,13 @@
 import yaml
 import os
-from flask import Flask, request, session, render_template, redirect, g, jsonify, flash, url_for
+import json
+import requests
+from flask import Flask, render_template, request, redirect, session, url_for, jsonify, g, flash
 from flask_babel import Babel, gettext
-from oauth_wiki import get_username, upload_file, add_p625
+from oauth_wikidata import get_username, upload_file, get_token
 from requests_oauthlib import OAuth1Session
 from wikidata import query_monuments, query_monuments_without_coords, query_monument, get_category_info, get_article,\
-    get_sitelinks
+    get_sitelinks, api_post_request
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
@@ -37,7 +39,7 @@ def login():
 
     client_key = app.config['CONSUMER_KEY']
     client_secret = app.config['CONSUMER_SECRET']
-    base_url = 'https://commons.wikimedia.org/w/index.php'
+    base_url = 'https://www.wikidata.org/w/index.php'
     request_token_url = base_url + '?title=Special%3aOAuth%2finitiate'
 
     oauth = OAuth1Session(client_key,
@@ -48,7 +50,7 @@ def login():
     session['owner_key'] = fetch_response.get('oauth_token')
     session['owner_secret'] = fetch_response.get('oauth_token_secret')
 
-    base_authorization_url = 'https://commons.wikimedia.org/wiki/Special:OAuth/authorize'
+    base_authorization_url = 'https://www.wikidata.org/wiki/Special:OAuth/authorize'
     authorization_url = oauth.authorization_url(base_authorization_url,
                                                 oauth_consumer_key=client_key)
     return redirect(authorization_url)
@@ -56,7 +58,7 @@ def login():
 
 @app.route("/oauth-callback", methods=["GET"])
 def oauth_callback():
-    base_url = 'https://commons.wikimedia.org/w/index.php'
+    base_url = 'https://www.wikidata.org/w/index.php'
     client_key = app.config['CONSUMER_KEY']
     client_secret = app.config['CONSUMER_SECRET']
 
@@ -115,6 +117,7 @@ def pt_to_ptbr(lang):
 ##############################################################
 # PÁGINAS
 ##############################################################
+# Página de erro
 @app.errorhandler(400)
 @app.errorhandler(401)
 @app.errorhandler(403)
@@ -162,6 +165,7 @@ def sobre():
                            lang=lang)
 
 
+# Página inicial
 @app.route('/')
 @app.route('/home')
 @app.route('/inicio')
@@ -299,7 +303,6 @@ def suggest():
         gsheet.append_row([name, state, local, address, url, comments])
         flash(gettext(u'Sua sugestão para adicionar %(val)s à lista de monumentos foi enviada com sucesso!', val=name))
 
-
     uf = request.args["uf"] if "uf" in request.args else ""
 
     return render_template("suggest.html",
@@ -335,15 +338,30 @@ def monumento(qid):
                                lang=lang)
 
 
-@app.route('/postCoordinates', methods=['POST'])
+##############################################################
+# CONSULTAS E REQUISIÇÕES
+##############################################################
+@app.route('/postCoordinates', methods=['GET', 'POST'])
 def post_coordinates():
     if request.method == "POST":
         jsondata = request.get_json()
         item = jsondata['item']
         lat = jsondata['lat']
         lon = jsondata['lon']
+        username = get_username()
+        token = get_token()
 
-        result = add_p625(item, lat, lon)
+        params = {
+            "action": "wbcreateclaim",
+            "format": "json",
+            "entity": "Q4115189",
+            "property": "P625",
+            "snaktype": "value",
+            "value": "{\"latitude\":" + str(-8.172750908914118) + ",\"longitude\":" + str(-71.18041992187501) + ",\"globe\":\"http://www.wikidata.org/entity/Q2\",\"precision\":0.000001}",
+            "token": token,
+        }
+
+        result = api_post_request(params)
 
         return result.json(), 200
 

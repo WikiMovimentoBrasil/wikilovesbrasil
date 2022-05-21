@@ -69,7 +69,7 @@ function postCoordinates() {
         success: function (response) {
             alert(response);
         },
-        error: function () {
+        error: function (response) {
             alert(erro);
         }
     });

@@ -3,7 +3,7 @@ from requests_oauthlib import OAuth1Session
 from urllib.parse import urlencode
 from flask_babel import gettext
 
-project = "https://test.wikidata.org/w/api.php?"
+project = "https://www.wikidata.org/w/api.php?"
 
 
 def raw_request(params):
@@ -18,9 +18,9 @@ def raw_request(params):
     return oauth.get(url, timeout=4)
 
 
-def raw_post_request(files, params):
+def raw_post_request(files, params, url_project=project):
     app = current_app
-    url = project
+    url = url_project
     client_key = app.config['CONSUMER_KEY']
     client_secret = app.config['CONSUMER_SECRET']
     oauth = OAuth1Session(client_key,
@@ -175,27 +175,3 @@ def get_file_ext(filename):
     if file_ext != filename:
         return "." + file_ext
     return ""
-
-
-def add_p625(item, lat, lon):
-    app = current_app
-    params = {
-        "action": "wbcreateclaim",
-        "entity": item,
-        "property": "P625",
-        "snaktype":"value",
-        "value": {
-            "latitude":float(lat),
-            "longitude":float(lon),
-            "globe":"http://www.wikidata.org/entity/Q2",
-            "precision": 0.000001
-        }
-    }
-    url = "https://www.wikidata.org/w/api.php"
-    client_key = app.config['CONSUMER_KEY']
-    client_secret = app.config['CONSUMER_SECRET']
-    oauth = OAuth1Session(client_key,
-                          client_secret=client_secret,
-                          resource_owner_key=session['owner_key'],
-                          resource_owner_secret=session['owner_secret'])
-    return oauth.get(url, params=params, timeout=4)
