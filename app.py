@@ -354,10 +354,10 @@ def post_coordinates():
         params = {
             "action": "wbcreateclaim",
             "format": "json",
-            "entity": "Q4115189",
+            "entity": item,
             "property": "P625",
             "snaktype": "value",
-            "value": "{\"latitude\":" + str(-8.172750908914118) + ",\"longitude\":" + str(-71.18041992187501) + ",\"globe\":\"http://www.wikidata.org/entity/Q2\",\"precision\":0.000001}",
+            "value": "{\"latitude\":" + str(lat) + ",\"longitude\":" + str(lon) + ",\"globe\":\"http://www.wikidata.org/entity/Q2\",\"precision\":0.000001}",
             "token": token,
         }
 
