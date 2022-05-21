@@ -3,7 +3,7 @@ from requests_oauthlib import OAuth1Session
 from urllib.parse import urlencode
 from flask_babel import gettext
 
-project = "https://test.wikidata.org/w/api.php"
+project = "https://test.wikidata.org/w/api.php?"
 
 
 def raw_request(params):

@@ -76,9 +76,9 @@ function postCoordinates() {
 }
 
 $("#latlngConfirm").on('click', function () {
-    let coords = $("#latlng").val();
-    const gsmCoordinatesRegex = new RegExp("(\\d+)(º|°)(\\d+)'(.*)\"(N|S) (\\d+)(º|°)(\\d+)'(.*)\"(W|E|L|O)");
-    const decimalCoordinatesRegex = new RegExp("(.*)(,|, | )(.*)");
+    let coords = $("#latlng").val().replace(/\s+/g,'');
+    const gsmCoordinatesRegex = new RegExp("(\\d+)(º|°)(\\d+)'(.*)\"(N|S)(\\d+)(º|°)(\\d+)'(.*)\"(W|E|L|O)");
+    const decimalCoordinatesRegex = new RegExp("(.*),(.*)");
     let nCoordinate = 0;
     let wCoordinate = 0;
     if (gsmCoordinatesRegex.test(coords)) {
@@ -95,10 +95,14 @@ $("#latlngConfirm").on('click', function () {
     else if(decimalCoordinatesRegex.test(coords)) {
         let match = decimalCoordinatesRegex.exec(coords);
         nCoordinate = match[1];
-        wCoordinate = match[3];
+        wCoordinate = match[2];
     }
     var newLatLng = new L.LatLng(nCoordinate, wCoordinate);
     marker.setLatLng(newLatLng).addTo(map);
+    var object = $('#addCoordinates');
+    object.data('lat', nCoordinate);
+    object.data('lon', wCoordinate);
+    object.prop('disabled', false);
 })
 
 // Buttons
@@ -131,7 +135,7 @@ var localizar = L.easyButton({
                 map.on('click', function (e) {
                     marker.setLatLng(e.latlng);
                     map.off('mousemove');
-                    var object = $('#addCoordinates')
+                    var object = $('#addCoordinates');
                     object.data('lat', e.latlng.lat);
                     object.data('lon', e.latlng.lng);
                     object.prop('disabled', false);
