@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block styles %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename= '/js/br-states.js') }}"></script>
+    <script type="text/javascript">
+        const credits = '{{ _("Contribuidores do OpenStreetMap") }}';
+        const youSelectedMsg = "{{_('Você selecionou:')}}";
+    </script>
+    <script type="text/javascript" src="/static/js/states.js"></script>
+{% endblock %}
+
+{% block title %}{{ _("Brasil") }}{% endblock %}
+
+{% block navbar %}
+    {% with lang=lang, username=username %}
+        {% include 'topnavbar.html' %}
+    {% endwith %}
+{% endblock %}
+
+{% block banner %}{% endblock %}
+{% block content %}
+    <div class="w3-row" style="padding: 10px; text-align: center; font-size:125%">
+        {{ _('Selecione um dos estados brasileiros no mapa') }}
+    </div>
+    <div class="w3-row" style="height:calc(100vh - 97.61px); padding:0">
+        <div id="map"></div>
+    </div>
+    <div class="modal fade" id="selectionModal" tabindex="-1" role="dialog" aria-labelledby="selectedState"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="selectedState">{{ _("Seleção de estado") }}</h5>
+                    <button type="button" class="close custom" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="w3-row" style="padding: 10px; text-align: center; font-size:125%">
+                        <p id="nome"></p>
+                    </div>
+                    <div class="w3-row" style="text-align: center; font-size:125%">
+                        <a id="uf_monuments" class="button">
+                            <button class="custom" type="button"
+                                    style="width:100%; font-size: 100%; margin:5px 0; padding: 10px;">
+                                {{ _('Veja monumentos no mapa') }}
+                            </button>
+                        </a>
+                    </div>
+                    <div class="w3-row" style="text-align: center; font-size:125%">
+                        <a id="uf_monuments_without_coordinates" class="button">
+                            <button class="custom" type="button"
+                                    style="width:100%; font-size: 100%; margin:5px 0; padding: 10px;">
+                                {{ _('Adicione coordenadas a monumentos') }}
+                            </button>
+                        </a>
+                    </div>
+                    <div class="w3-row" style="text-align: center; font-size:125%">
+                        <a id="uf_monuments_suggestion" class="button">
+                            <button class="custom" type="button"
+                                    style="width:100%; font-size: 100%; margin:5px 0; padding: 10px; background-color: #67524a">
+                                {{ _('Sugira monumentos faltantes') }}
+                            </button>
+                        </a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="custom btn btn-secondary" data-dismiss="modal">
+                        {{ _("Cancelar") }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

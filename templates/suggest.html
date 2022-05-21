@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block styles %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script>
+        $( document ).ready(function() {
+            $("#{{ uf }}").attr('selected', 'selected'); }
+        );
+    </script>
+{% endblock %}
+
+{% block title %}{{ _("Sugira monumentos") }}{% endblock %}
+
+{% block navbar %}
+    {% with lang=lang, username=username, mapa_geral=True, mapa=True, geolocate=True, uf=uf, suggest=False %}
+        {% include 'topnavbar.html' %}
+    {% endwith %}
+{% endblock %}
+
+{% block banner %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success">
+                    <a href="#" class="close custom-link" data-dismiss="alert">&times;</a>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+{% endblock %}
+
+{% block content %}
+    <div class="w3-row" style="padding:30px 10px; ">
+        <div class="w3-quarter">&nbsp;</div>
+        <div class="w3-container w3-half">
+            <div class="w3-row" style="padding-bottom: 30px">
+                {{ _('Utilize o formulário abaixo para sugerir monumentos que não estejam nos mapas ou nas
+                listas do Wiki Loves Monuments Brasil.') }}
+            </div>
+            <form method="POST" role="form">
+                <div class="w3-row form-group">
+                    <label for="inputName">{{ _('Qual o nome do monumento? <sup style="color:#990000">*</sup>') }}</label>
+                    <input type="text" class="form-control" name="inputName" id="inputName"
+                           style="width: 100%; font-size: 90%"
+                           placeholder="{{ _('Digite o nome do monumento') }}" required>
+                </div>
+                <div class="w3-row form-group">
+                    <label for="inputState">{{ _('Em qual estado está localizado? <sup style="color:#990000">*</sup>') }}</label>
+                    <select class="form-control" name="inputState" id="inputState" required style="font-size: 90%">
+                        <option value="">{{ _('Selecione um estado') }}</option>
+                        <optgroup label="{{ _('Região Norte') }}">
+                            <option id="ac" value="ac">{{ _('Acre') }}</option>
+                            <option id="ap" value="ap">{{ _('Amapá') }}</option>
+                            <option id="am" value="am">{{ _('Amazonas') }}</option>
+                            <option id="pa" value="pa">{{ _('Pará') }}</option>
+                            <option id="ro" value="ro">{{ _('Rondônia') }}</option>
+                            <option id="rr" value="rr">{{ _('Roraima') }}</option>
+                            <option id="to" value="to">{{ _('Tocantins') }}</option>
+                        </optgroup>
+                        <optgroup label="{{ _('Região Nordeste') }}">
+                            <option id="al" value="al">{{ _('Alagoas') }}</option>
+                            <option id="ba" value="ba">{{ _('Bahia') }}</option>
+                            <option id="ce" value="ce">{{ _('Ceará') }}</option>
+                            <option id="ma" value="ma">{{ _('Maranhão') }}</option>
+                            <option id="pb" value="pb">{{ _('Paraíba') }}</option>
+                            <option id="pe" value="pe">{{ _('Pernambuco') }}</option>
+                            <option id="pi" value="pi">{{ _('Piauí') }}</option>
+                            <option id="rn" value="rn">{{ _('Rio Grande do Norte') }}</option>
+                            <option id="se" value="se">{{ _('Sergipe') }}</option>
+                        </optgroup>
+                        <optgroup label="{{ _('Região Centro-Oeste') }}">
+                            <option id="df" value="df">{{ _('Distrito Federal') }}</option>
+                            <option id="go" value="go">{{ _('Goiás') }}</option>
+                            <option id="mt" value="mt">{{ _('Mato Grosso') }}</option>
+                            <option id="ms" value="ms">{{ _('Mato Grosso do Sul') }}</option>
+                        </optgroup>
+                        <optgroup label="{{ _('Região Sudeste') }}">
+                            <option id="es" value="es">{{ _('Espírito Santo') }}</option>
+                            <option id="mg" value="mg">{{ _('Minas Gerais') }}</option>
+                            <option id="rj" value="rj">{{ _('Rio de Janeiro') }}</option>
+                            <option id="sp" value="sp">{{ _('São Paulo') }}</option>
+                        </optgroup>
+                        <optgroup label="{{ _('Região Sul') }}">
+                            <option id="pr" value="pr">{{ _('Paraná') }}</option>
+                            <option id="rs" value="rs">{{ _('Rio Grande do Sul') }}</option>
+                            <option id="sc" value="sc">{{ _('Santa Catarina') }}</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="w3-row form-group">
+                    <label for="inputLocal">{{ _('Em qual(is) município(s) está localizado? <sup style="color:#990000">*</sup>') }}</label>
+                    <input type="text" class="form-control" name="inputLocal" id="inputLocal"
+                           style="width: 100%; font-size: 90%"
+                           placeholder="{{ _('Digite o nome do município') }}" required>
+                </div>
+                <div class="w3-row form-group">
+                    <label for="inputAddress">{{ _('Você sabe o endereço?') }}</label>
+                    <input type="text" class="form-control" name="inputAddress" id="inputAddress"
+                           placeholder="{{ _('Digite o endereço') }}" style="width: 100%; font-size: 90%">
+                </div>
+                <div class="w3-row form-group">
+                    <label for="inputAddress">{{ _('Você possui um link para referência sobre o monumento? Se sim, cole-o abaixo: <sup style="color:#990000">*</sup>') }}</label>
+                    <input type="url" class="form-control" name="inputURL" id="inputURL"
+                           placeholder="{{ _('Insira a URL de referência') }}" style="width: 100%; font-size: 90%" required>
+                </div>
+                <div class="w3-row form-group">
+                    <label for="inputComments">{{ _('Algum comentário sobre o monumento?') }}</label>
+                    <textarea class="form-control" name="inputComments" id="inputComments" rows="3"
+                              style="width: 100%; font-size: 100%"></textarea>
+                </div>
+                <input type="submit" class="btn custom btn-primary" style="float: right; width: 100%"
+                       value="{{ _('Enviar sugestão') }}">
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <footer style="text-align:left;position: relative;padding: 0px 15px 0px 15px" id="footer">
+        <hr>
+        <p style="font-size:90%; text-align: justify">
+            {% set projeto %}<a tabindex="0" target='_blank' aria-label='{{_("Wiki Movimento Brasil")}}' href='https://meta.wikimedia.org/wiki/Wiki_Movement_Brazil_User_Group/{{ lang }}'>{{_("Grupo de usuários Wiki Movimento Brasil")}}</a>{% endset %}
+            {{_("<i>Wiki Loves Brasil</i> é um aplicativo desenvolvido pelo <i><b>%(projeto)s</b></i>, visando melhorar a experiência dos usuários que participam do concurso fotográfico Wiki Loves Monuments na localização e envio de fotografias para o Wikimedia Commons.", projeto=projeto)}}
+        </p>
+    </footer>
+{% endblock %}

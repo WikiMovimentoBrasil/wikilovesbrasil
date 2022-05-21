@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block navbar %}
+    {% with lang=lang, username=username %}
+        {% include 'topnavbar.html' %}
+    {% endwith %}
+{% endblock %}
+
+{% block title %}{{ _("Página inicial") }}{% endblock %}
+
+{% block banner %}
+    <div class="w3-row">
+        <div class="w3-container w3-quarter"></div>
+        <h1 class="w3-container w3-half" style="text-align: center; padding-top:30px; padding-bottom:30px">
+            {% if lang=="en" %}
+                <img class="banner" src="{{ url_for('static', filename= 'images/logo - en.svg') }}"
+                     alt='{{ _("Logotipo Wiki Museu do Ipiranga") }}' width="25%"/>
+            {% else %}
+                <img class="banner" src="{{ url_for('static', filename= 'images/logo - pt.svg') }}"
+                     alt='{{ _("Logotipo Wiki Museu do Ipiranga") }}' width="25%"/>
+            {% endif %}
+        </h1>
+    </div>
+    <div class="w3-row">
+        <div class="w3-container w3-quarter"></div>
+        <div class="w3-container w3-half">
+            <h2 style="text-align:center; padding-bottom:30px; font-size: 150%">
+                {{ _("Bem-vindo(a/e) ao<br><i>Wiki Loves Monuments Brasil 2022</i>") }}
+            </h2>
+            <h3 style="text-align:center; padding-bottom:30px;">
+                {{ _("Neste aplicativo, você envia suas fotografias do patrimônio histórico brasileiro e participa do maior concurso fotográfico do mundo!") }}
+            </h3>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="w3-container w3-quarter"></div>
+    <div class="w3-container w3-half">
+        <div class="w3-row">
+            <div class="w3-container w3-half">
+                <a class="button" href="{{ url_for('mapa') }}">
+                    <button type="button" style="width:100%;">
+                        {{ _('Mapa') }}
+                    </button>
+                </a>
+            </div>
+            {% if not username %}
+                <div class="w3-container w3-half">
+                    <a class="button" href="{{ url_for('login', next=request.script_root + request.full_path) }}">
+                        <button type="button" style="width:100%;">
+                            {{ _("Autenticar-se") }}
+                        </button>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <footer style="text-align:left;position: relative;padding: 0px 15px 0px 15px" id="footer">
+        <hr>
+        <p style="font-size:90%; text-align: justify">
+            {% set projeto %}<a tabindex="0" target='_blank' aria-label='{{_("Wiki Movimento Brasil")}}' href='https://meta.wikimedia.org/wiki/Wiki_Movement_Brazil_User_Group/{{ lang }}'>{{_("Grupo de usuários Wiki Movimento Brasil")}}</a>{% endset %}
+            {{_("<i>Wiki Loves Brasil</i> é um aplicativo desenvolvido pelo <i><b>%(projeto)s</b></i>, visando melhorar a experiência dos usuários que participam do concurso fotográfico Wiki Loves Monuments na localização e envio de fotografias para o Wikimedia Commons.", projeto=projeto)}}
+        </p>
+    </footer>
+{% endblock %}

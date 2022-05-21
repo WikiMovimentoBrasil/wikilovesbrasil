@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href='https://fonts.googleapis.com/css?family=Josefin+Sans' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}" type='text/css'>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <title>{% block title %}{{ _("Página inicial") }}{% endblock %} | {{ _("Wiki Loves Brasil") }}</title>
+    {% block styles %}{% endblock %}
+</head>
+<body>
+{% block navbar %}{% endblock %}
+<main class="w3-container" id="content" style="min-height:calc(100% - 128px);padding: 0">
+    {% block banner %}
+        <div class="w3-container w3-quarter"></div>
+        <h1 class="w3-container w3-half" style="text-align: center; padding-top:60px; padding-bottom:60px">
+            {% if lang=="en" %}
+                <img class="banner" src="{{ url_for('static', filename= 'images/logo - en.svg') }}"
+                     alt='{{ _("Logotipo Wiki Loves Monuments Brasil") }}' width="100%"/>
+            {% else %}
+                <img class="banner" src="{{ url_for('static', filename= 'images/logo - pt.svg') }}"
+                     alt='{{ _("Logotipo Wiki Loves Monuments Brasil") }}' width="100%"/>
+            {% endif %}
+        </h1>
+    {% endblock %}
+    {% block content %}{% endblock %}
+</main>
+{% block footer %}{% endblock %}
+<script>
+    function menuFunction() {
+        var x = document.getElementById("topnavbar");
+        if (x.className === "topnav") {
+            x.className += " responsive";
+        } else {
+            x.className = "topnav";
+        }
+    }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

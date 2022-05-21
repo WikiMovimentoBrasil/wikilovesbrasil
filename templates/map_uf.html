@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+
+{% block styles %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+    <link rel="stylesheet" href="/static/css/leaflet.awesome-markers.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css"/>
+{% endblock %}
+
+{% block title %}{{ _("WLM Brasil") }}{% endblock %}
+
+{% block navbar %}
+    {% with lang=lang, username=username, mapa_geral=True, mapa=False, geolocate=True, uf=uf, suggest=True %}
+        {% include 'topnavbar.html' %}
+    {% endwith %}
+{% endblock %}
+
+{% block banner %}{% endblock %}
+{% block content %}
+    <div class="w3-row" style="height:100%">
+        <div class="w3-container" style="height:calc(100vh - 48px); padding:0">
+            <div id="map"></div>
+            <div class="modal modal-bottom fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="selectedState" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="filter_title">{{ _("Filtrar") }}</h5>
+                            <button type="button" class="close custom" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body w3-container" style="font-family: 'Josefin Sans', 'FontAwesome', 'Font Awesome 6 Free', sans-serif">
+                            <form>
+                                <div class="w3-container w3-third">
+                                    <div class="form-group">
+                                        <label for="has_image">{{ _("Possui imagem:") }}</label>
+                                        <select id="has_image" class="form-control">
+                                            <option value="all" selected>{{ _("Indiferente") }}</option>
+                                            <option value="yes">{{ _("Sim") }}</option>
+                                            <option value="no">{{ _("Não") }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="w3-container w3-third">
+                                    <div class="form-group">
+                                        <label for="types">{{ _("Tipos de imagem:") }}</label>
+                                        <select id="types" class="form-control">
+                                            <option value="all">{{ _("Todos") }}</option>
+                                            <option value="P18" title="{{ _('Imagem ilustrativa do monumento') }}">&#xf03e; {{ _("Imagem do exterior") }}</option>
+                                            <option value="P1766" title="{{ _('Imagem de placa de trânsito com nome de local') }}">&#xf277; {{ _("Placa com o nome do lugar") }}</option>
+                                            <option value="P1801" title="{{ _('Imagem de placa de inauguração ou inscrição mencionando o monumento') }}">&#xf5a2; {{ _("Placa comemorativa") }}</option>
+                                            <option value="P5775" title="{{ _('Vista do interior de um edifício ou espaço fechado') }}">&#xf52b; {{ _("Imagem do interior") }}</option>
+                                            <option value="P3451" title="{{ _('Monumento ao entardecer ou à noite') }}">&#xf186; {{ _("Vista noturna") }}</option>
+                                            <option value="P4291" title="{{ _('Ampla vista geral que contém o monumento') }}">&#xe209; {{ _("Vista panorâmica") }}</option>
+                                            <option value="P8592" title="{{ _('Fotografia de um monumento tirada do ar, por um drone, por exemplo') }}">&#xf533; {{ _("Vista aérea") }}</option>
+                                            <option value="P9721" title="{{ _('Vista da entrada de um edifício ou espaço fechado, vista do lado de fora') }}">&#xf6d9; {{ _("Imagem da entrada") }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="w3-container w3-third">
+                                    <div class="form-group">
+                                        <label for="grouping">{{ _("Agrupar:") }}</label>
+                                        <select id="grouping" class="form-control">
+                                            <option value="yes" selected>{{ _("Sim") }}</option>
+                                            <option value="no">{{ _("Não") }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="custom btn btn-secondary" data-dismiss="modal">{{ _("Cancelar") }}</button>
+                            <button id="filter" type="button" class="custom btn btn-primary" data-dismiss="modal">{{ _("Filtrar") }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+    <script src="/static/js/leaflet.awesome-markers.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <script src="https://unpkg.com/leaflet.featuregroup.subgroup@1.0.2/dist/leaflet.featuregroup.subgroup.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster.freezable@1.0.0/dist/leaflet.markercluster.freezable.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        const bounds = {{ bounds | safe }};
+        const filterTooltip = "{{ _('Filtre os monumentos') }}";
+
+        // Map layer
+        var osm_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 17,
+            minZoom: 4,
+            attribution: '&copy; <a href="https://openstreetmap.org/copyright">{{ _("Contribuidores do OpenStreetMap") }}</a>'
+        });
+
+        var map = L.map('map', {layers: [osm_map]}).setMaxBounds([[10, -20], [-40, -90]]);
+
+        // Icons
+        var greenIcon = L.AwesomeMarkers.icon({
+            icon: 'fa-solid fa-image',
+            markerColor: 'green',
+            iconColor: 'white',
+            prefix: 'fas'
+        });
+
+        var redIcon = L.AwesomeMarkers.icon({
+            icon: 'fa-camera',
+            markerColor: 'red',
+            iconColor: 'white',
+            prefix: 'fa'
+        });
+
+        // Markers cluster
+        var markers_with_image = L.markerClusterGroup({
+            maxClusterRadius: 100,
+            disableClusteringAtZoom: 15,
+            showCoverageOnHover: false,
+            iconCreateFunction: function (cluster) {
+                var markers = cluster.getAllChildMarkers();
+                if (markers.length < 10) {
+                    return L.divIcon({
+                        html: '<div class="green-cluster green-circle-tiny">' + markers.length + '</div>',
+                        iconSize: L.point(20, 20)
+                    });
+                } else if (markers.length < 25) {
+                    return L.divIcon({
+                        html: '<div class="green-cluster green-circle-small">' + markers.length + '</div>',
+                        iconSize: L.point(25, 25)
+                    });
+                } else if (markers.length < 50) {
+                    return L.divIcon({
+                        html: '<div class="green-cluster green-circle-normal">' + markers.length + '</div>',
+                        iconSize: L.point(30, 30)
+                    });
+                } else if (markers.length < 250) {
+                    return L.divIcon({
+                        html: '<div class="green-cluster green-circle-big">' + markers.length + '</div>',
+                        iconSize: L.point(35, 35)
+                    });
+                } else {
+                    return L.divIcon({
+                        html: '<div class="green-cluster green-circle-large">' + markers.length + '</div>',
+                        iconSize: L.point(40, 40)
+                    });
+                }
+            }
+        });
+
+        var markers_without_image = L.markerClusterGroup({
+            maxClusterRadius: 100,
+            disableClusteringAtZoom: 15,
+            showCoverageOnHover: false,
+            iconCreateFunction: function (cluster) {
+                var markers = cluster.getAllChildMarkers();
+                if (markers.length < 10) {
+                    return L.divIcon({
+                        html: '<div class="red-cluster red-circle-tiny">' + markers.length + '</div>',
+                        iconSize: L.point(20, 20)
+                    });
+                } else if (markers.length < 25) {
+                    return L.divIcon({
+                        html: '<div class="red-cluster red-circle-small">' + markers.length + '</div>',
+                        iconSize: L.point(25, 25)
+                    });
+                } else if (markers.length < 50) {
+                    return L.divIcon({
+                        html: '<div class="red-cluster red-circle-normal">' + markers.length + '</div>',
+                        iconSize: L.point(30, 30)
+                    });
+                } else if (markers.length < 250) {
+                    return L.divIcon({
+                        html: '<div class="red-cluster red-circle-big">' + markers.length + '</div>',
+                        iconSize: L.point(35, 35)
+                    });
+                } else {
+                    return L.divIcon({
+                        html: '<div class="red-cluster red-circle-large">' + markers.length + '</div>',
+                        iconSize: L.point(40, 40)
+                    });
+                }
+            }
+        });
+
+        var toggle_com_imagens = false;
+        var toggle_sem_imagens = false;
+
+        // Adding elements to the map
+        markers_with_image.addTo(map);
+
+        markers_without_image.addTo(map);
+
+        // Making map fit to the state
+        map.fitBounds(bounds);
+
+        // Buttons
+        // Locate
+        var locate = L.control.locate({
+            flyTo: true,
+            returnToPrevBounds: true,
+            icon: 'locate fa-solid fa-location-dot',
+            iconElementTag: 'i',
+            strings: {
+                title: "{{_('Mostre-me onde estou')}}"
+            },
+        }).addTo(map);
+
+        var has_image_filtered = "all",
+            grouping_filtered = "yes",
+            types_filtered = "all";
+
+        // Filter
+        var filter = L.easyButton('fa-solid fa-filter', function (btn, map) {
+            $('#has_image').val(has_image_filtered);
+            $('#grouping').val(grouping_filtered);
+            $('#types').val(types_filtered);
+            $('#filterModal').modal('show');
+        }, filterTooltip).addTo(map);
+
+        // Actions
+        function removeOtherLayers(layer_to_preserve) {
+            $.each([P18, P1766, P1801, P5775, P3451, P4291, P8592, P9721], function (index, layer) {
+                if (layer_to_preserve !== layer) {
+                    map.removeLayer(layer);
+                }
+            });
+            map.addLayer(layer_to_preserve);
+            map.fitBounds(layer_to_preserve.getBounds(), {padding: [20, 20]});
+        }
+
+        $('#filter').on('click', function (event) {
+            event.preventDefault();
+            // HAS IMAGE
+            var has_image = $('#has_image').val();
+            if (has_image === "yes") {
+                map.addLayer(markers_with_image);
+                map.removeLayer(markers_without_image);
+            } else if (has_image === "no") {
+                map.removeLayer(markers_with_image);
+                map.addLayer(markers_without_image);
+            } else {
+                map.addLayer(markers_with_image);
+                map.addLayer(markers_without_image);
+            }
+
+            // GROUPING
+            var grouping = $('#grouping').val();
+            if (grouping === "yes") {
+                markers_with_image.freezeAtZoom(false);
+                markers_without_image.freezeAtZoom(false);
+            } else {
+                markers_with_image.freezeAtZoom("max");
+                markers_without_image.freezeAtZoom("max");
+            }
+
+            // TYPES
+            var types = $('#types').val();
+            if (types === "all") {
+                $.each([P18, P1766, P1801, P5775, P3451, P4291, P8592, P9721], function (index, layer) {
+                    map.addLayer(layer);
+                });
+            } else if (types === "P18") {
+                removeOtherLayers(P18);
+            } else if (types === "P1766") {
+                removeOtherLayers(P1766);
+            } else if (types === "P1801") {
+                removeOtherLayers(P1801);
+            } else if (types === "P5775") {
+                removeOtherLayers(P5775);
+            } else if (types === "P3451") {
+                removeOtherLayers(P3451);
+            } else if (types === "P4291") {
+                removeOtherLayers(P4291);
+            } else if (types === "P8592") {
+                removeOtherLayers(P8592);
+            } else if (types === "P9721") {
+                removeOtherLayers(P9721);
+            }
+
+            has_image_filtered = has_image;
+            grouping_filtered = grouping;
+            types_filtered = types;
+        });
+
+        $('#has_image').on('click', function () {
+            if (this.value === "no") {
+                $('#types').prop("disabled", true);
+            } else {
+                $('#types').prop("disabled", false);
+            }
+        })
+
+        {{markers|safe}}
+
+        const P18 = {{ P18|safe }},
+            P1766 = {{ P1766|safe }},
+            P1801 = {{ P1801|safe }},
+            P5775 = {{ P5775|safe }},
+            P3451 = {{ P3451|safe }},
+            P4291 = {{ P4291|safe }},
+            P8592 = {{ P8592|safe }},
+            P9721 = {{ P9721|safe }};
+    </script>
+    <script src="/static/js/state-monuments.js"></script>
+{% endblock %}
