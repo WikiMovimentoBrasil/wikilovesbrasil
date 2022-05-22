@@ -242,7 +242,7 @@ def query_monument(qid):
                     "num": item["número_de_inventário"]["value"] if "número_de_inventário" in item else "",
                 }
 
-    image = next(filter(lambda img: img, [p18, p3451, p5775, p8592, p9721, p4291, p8517, p5252, p1801, p1766, p9906, p1442, p4640, p3311]), os.path.join("/static/images/No-image.png"))
+    image = next(filter(lambda img: img, [p18, p3451, p5775, p8592, p9721, p4291, p8517, p5252, p1801, p1766, p9906, p1442, p4640, p3311]), os.path.join(url_for("static", filename="images/No-image.png")))
     qid_set = list(set(qid_set))
     label_set = list(set(label_set))
     address_set = list(set(address_set))
@@ -251,8 +251,7 @@ def query_monument(qid):
     estado_set = list(set(estado_set))
     pais_set = list(set(pais_set))
 
-
-    object = {
+    object_ = {
         "qid": qid_set,
         "image": image,
         "label": label_set,
@@ -279,7 +278,7 @@ def query_monument(qid):
         "p9906": p9906,
     }
 
-    return object
+    return object_
 
 
 def get_item(qid):

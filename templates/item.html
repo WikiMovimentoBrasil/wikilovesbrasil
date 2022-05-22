@@ -10,7 +10,7 @@
 
 {% block styles %}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
-    <link rel="stylesheet" href="/static/css/leaflet.awesome-markers.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/leaflet.awesome-markers.css') }}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
@@ -47,7 +47,7 @@
                             <td colspan="3">{{ metadata.local | join("; ") }} &bull; {{ metadata.state[0] }} &bull; {{ metadata.country[0] }}</td>
                         </tr>
                         <tr id="category-wikipedia">
-                            <td class="table-icon"><img src="/static/images/commons.svg" width="16px" alt="Wikimedia Commons"></td>
+                            <td class="table-icon"><img src="{{ url_for('static', filename='images/commons.svg') }}" width="16px" alt="Wikimedia Commons"></td>
                             {% if metadata.commons_cat[0] %}
                                 <td><a target="_blank" href="https://commons.wikimedia.org/wiki/Category:{{ metadata.commons_cat[0] }}">
                                     {{ _("%(number_images)s imagens", number_images=metadata.cat_info["files"]) }}
@@ -73,7 +73,7 @@
                             {% endif %}
                         </tr>
                         <tr id="wikidata-website">
-                            <td class="table-icon"><img src="/static/images/wikidata.svg" width="18px" alt="wikidata"></td>
+                            <td class="table-icon"><img src="{{ url_for('static', filename='images/wikidata.svg') }}" width="18px" alt="wikidata"></td>
                             <td><a target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}">{{ _("Item no Wikidata") }}</a><br><span class="no-info">{{ metadata.qid[0] }}</span></td>
                             <td class="table-icon"><i class="fa-solid fa-link"></i></td>
                             {% if metadata.website and metadata.website[0] %}
@@ -255,7 +255,7 @@
 
 {% block scripts %}
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="/static/js/leaflet.awesome-markers.js"></script>
+    <script src="{{ url_for('static', filename='js/leaflet.awesome-markers.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>

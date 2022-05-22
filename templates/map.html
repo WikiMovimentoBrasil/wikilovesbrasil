@@ -14,7 +14,7 @@
         const credits = '{{ _("Contribuidores do OpenStreetMap") }}';
         const youSelectedMsg = "{{_('Você selecionou:')}}";
     </script>
-    <script type="text/javascript" src="/static/js/states.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/states.js') }}"></script>
 {% endblock %}
 
 {% block title %}{{ _("Brasil") }}{% endblock %}

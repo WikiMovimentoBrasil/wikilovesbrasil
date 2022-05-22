@@ -101,7 +101,7 @@ button:not(.easy-button-button):not(.submit):not(.custom):not(.send_button) {
     border-radius: 5px;
     color: var(--special-text-color);
     font-size: 150%;
-    margin: 5px;
+    margin: 5px 0;
     padding: 20px;
     text-align: center;
 }
