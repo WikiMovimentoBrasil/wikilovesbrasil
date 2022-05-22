@@ -88,7 +88,7 @@ hr {
     height: 100%;
 }
 
-a:hover:not(.button):not(.custom-link):not(.leaflet-bar-part.leaflet-bar-part-single) {
+a:hover:not(.button):not(.custom-link):not(.leaflet-bar-part.leaflet-bar-part-single):not(.leaflet-control-fullscreen-button.leaflet-bar-part) {
     color: var(--special-text-color);
     background-color: var(--main-color);
 }
@@ -408,6 +408,7 @@ form button {
 .no-info { color:#595959; pointer-events: none; }
 .with-info { color: #70ad25 }
 .space-border { padding: 0.75rem }
+.cancel { background-color: var(--main-color) !important; }
 
 #types-of-images i { font-size: 150%; }
 #file-drop-area { width: 100%; border: 3px dashed gainsboro; padding: 2rem; text-align: center; }

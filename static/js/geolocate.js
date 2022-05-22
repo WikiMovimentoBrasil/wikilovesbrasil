@@ -11,9 +11,11 @@ const blueIcon = L.AwesomeMarkers.icon({
     prefix: 'fas'
 });
 
-var map = L.map('map', {layers: [osm_map]}).setMaxBounds(bounds);
+let map = L.map('map', {layers: [osm_map]}).setMaxBounds(bounds);
 
-var marker = L.marker({lat: -90, lon: 0}, {icon: blueIcon, draggable: true});
+let marker = L.marker({lat: -90, lon: 0}, {icon: blueIcon, draggable: true});
+
+let toggleMarker = false;
 
 // Functions
 
@@ -39,6 +41,8 @@ $('#addModal').on('hidden.bs.modal', function () {
     localizar.state('locate');
     localizar.button.style.backgroundColor = "#007bff";
     $('#addCoordinates').prop('disabled', true);
+    $('#latlng').val("").prop("disabled", false);
+    $('#latlngConfirm').prop("disabled", false);
 });
 
 $(document).ready(function(){
@@ -77,33 +81,48 @@ function postCoordinates() {
 }
 
 $("#latlngConfirm").on('click', function () {
-    let coords = $("#latlng").val().replace(/\s+/g,'');
-    const gsmCoordinatesRegex = new RegExp("(\\d+)(º|°)(\\d+)'(.*)\"(N|S)(\\d+)(º|°)(\\d+)'(.*)\"(W|E|L|O)");
-    const decimalCoordinatesRegex = new RegExp("(.*),(.*)");
+    $(this).toggleClass("cancel");
+    $(this).find("i").toggleClass("fa fa-solid fa-xmark");
     let nCoordinate = 0;
     let wCoordinate = 0;
-    if (gsmCoordinatesRegex.test(coords)) {
-        let match = gsmCoordinatesRegex.exec(coords);
-        let directionNS = -1;
-        let directionWE = -1;
+    toggleMarker = !toggleMarker;
 
-        if (match[5] === "N") { directionNS = 1}
-        if (match[10] === "E" || match[10] === "L") { directionWE = 1}
+    if(toggleMarker) {
+        let coords = $("#latlng").val().replace(/\s+/g, '');
+        const gsmCoordinatesRegex = new RegExp("(\\d+)(º|°)(\\d+)'(.*)\"(N|S)(\\d+)(º|°)(\\d+)'(.*)\"(W|E|L|O)");
+        const decimalCoordinatesRegex = new RegExp("(.*),(.*)");
+        if (gsmCoordinatesRegex.test(coords)) {
+            let match = gsmCoordinatesRegex.exec(coords);
+            let directionNS = -1;
+            let directionWE = -1;
 
-        nCoordinate = directionNS * (parseFloat(match[1]) + parseFloat(match[3])/60 + parseFloat(match[4])/3600);
-        wCoordinate = directionWE * (parseFloat(match[6]) + parseFloat(match[8])/60 + parseFloat(match[9])/3600);
+            if (match[5] === "N") {
+                directionNS = 1
+            }
+            if (match[10] === "E" || match[10] === "L") {
+                directionWE = 1
+            }
+
+            nCoordinate = directionNS * (parseFloat(match[1]) + parseFloat(match[3]) / 60 + parseFloat(match[4]) / 3600);
+            wCoordinate = directionWE * (parseFloat(match[6]) + parseFloat(match[8]) / 60 + parseFloat(match[9]) / 3600);
+        } else if (decimalCoordinatesRegex.test(coords)) {
+            let match = decimalCoordinatesRegex.exec(coords);
+            nCoordinate = match[1];
+            wCoordinate = match[2];
+        }
+        var newLatLng = new L.LatLng(nCoordinate, wCoordinate);
+        marker.setLatLng(newLatLng).addTo(map);
+        var object = $('#addCoordinates');
+        object.data('lat', nCoordinate);
+        object.data('lon', wCoordinate);
+        object[0].toggleAttribute('disabled');
+        $(".easy-button-button.leaflet-bar-part.leaflet-interactive").prop("disabled", true);
+    } else {
+        let newLatLng = new L.LatLng(nCoordinate, wCoordinate);
+        marker.setLatLng(newLatLng);
+        map.removeLayer(marker);
+        $(".easy-button-button.leaflet-bar-part.leaflet-interactive").prop("disabled", false);
     }
-    else if(decimalCoordinatesRegex.test(coords)) {
-        let match = decimalCoordinatesRegex.exec(coords);
-        nCoordinate = match[1];
-        wCoordinate = match[2];
-    }
-    var newLatLng = new L.LatLng(nCoordinate, wCoordinate);
-    marker.setLatLng(newLatLng).addTo(map);
-    var object = $('#addCoordinates');
-    object.data('lat', nCoordinate);
-    object.data('lon', wCoordinate);
-    object.prop('disabled', false);
 })
 
 // Buttons
@@ -130,8 +149,11 @@ var localizar = L.easyButton({
                 map.addLayer(marker);
                 btn.state('cancel');
                 btn.button.style.backgroundColor = '#990000';
+                $("#latlng").prop("disabled",true);
+                $("#latlngConfirm").prop("disabled",true);
                 map.on('mousemove', function (e) {
                     marker.setLatLng(e.latlng);
+                    $("#latlng").val(e.latlng.lat+", "+e.latlng.lng);
                 }); // Makes the marker follow the mouse
                 map.on('click', function (e) {
                     marker.setLatLng(e.latlng);
@@ -140,6 +162,9 @@ var localizar = L.easyButton({
                     object.data('lat', e.latlng.lat);
                     object.data('lon', e.latlng.lng);
                     object.prop('disabled', false);
+
+                    $("#latlng").val(e.latlng.lat+", "+e.latlng.lng);
+                    $("#latlngConfirm").val(e.latlng.lat+", "+e.latlng.lng);
                 }); // Fixes the marker
             }
         },
@@ -154,8 +179,19 @@ var localizar = L.easyButton({
                 btn.button.style.backgroundColor = '#007bff';
                 map.off('click'); // Deactivate the click function
                 $('#addCoordinates').prop('disabled', true);
+
+                $("#latlng").prop("disabled",false);
+                $("#latlngConfirm").prop("disabled",false);
             }
         }]
+}).addTo(map);
+
+// This code adds a button for users to full screen the map
+let fullScreen = new L.Control.Fullscreen({
+    title: {
+        'false': fullScreenFalse,
+        'true': fullScreenTrue
+    }
 }).addTo(map);
 
 // Actions
