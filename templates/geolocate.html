@@ -54,11 +54,9 @@
             </thead>
             <tbody id="monuments_table">
             {% for monument in monuments %}
-                <tr>
+                <tr id="{{ monument['item'] }}_row">
                     <td style="padding:0.75em; vertical-align: middle; text-align: center; width:100px">
-                        <img loading="lazy"
-                             alt="{{ monument["label"] }}"
-                             src="https://commons.wikimedia.org/wiki/Special:FilePath/{{ monument["imagem"] }}?width=100px">
+                        <img loading="lazy" alt="{{ monument["label"] }}" src="{{ monument["imagem"] }}" width="100px">
                     </td>
                     <td style="vertical-align: middle">
                         <a target="_blank" href="https://www.wikidata.org/wiki/{{ monument['item'] }}">

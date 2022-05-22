@@ -67,7 +67,8 @@ function postCoordinates() {
         dataType: "json",
 
         success: function (response) {
-            alert(response);
+            $("#"+response.qid+"_row").css("background-color","#B2FF54");
+            alert(response.message);
         },
         error: function (response) {
             alert(erro);

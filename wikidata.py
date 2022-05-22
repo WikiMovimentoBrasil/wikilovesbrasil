@@ -1,6 +1,6 @@
 import requests
 import os.path
-from flask import current_app, session
+from flask import current_app, session, url_for
 from requests_oauthlib import OAuth1Session
 from urllib.parse import unquote
 
@@ -129,7 +129,7 @@ def query_monuments_without_coords(qid):
             label = item["itemLabel"]["value"]
             local_qid = item["local"]["value"].replace("http://www.wikidata.org/entity/", "")
             local_label = item["localLabel"]["value"]
-            imagem = unquote(item["imagem"]["value"]).replace("http://commons.wikimedia.org/wiki/Special:FilePath/", "") if "imagem" in item else "No-image.png"
+            imagem = unquote(item["imagem"]["value"])+"?width=100px" if "imagem" in item else url_for("static", filename="images/No-image.png")
             endereco = item["endereço"]["value"] if "endereço" in item else ""
             items.append({
                 "item": qid,

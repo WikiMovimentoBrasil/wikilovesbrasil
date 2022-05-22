@@ -361,9 +361,11 @@ def post_coordinates():
             "token": token,
         }
 
-        result = api_post_request(params)
+        result = api_post_request(params).json()
 
-        return result.json(), 200
+        message = gettext(r"Coordenadas inseridas com sucesso!") if result["success"] else gettext(r"Algo deu errado, atualize esta página e tente novamente. Caso o erro persista, entre em contato na seção \"Sobre\".")
+        answer = {"qid": item, "message": message}
+        return json.dumps(answer), 200
 
 
 def uf_bounds(uf):
