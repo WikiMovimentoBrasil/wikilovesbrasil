@@ -1,7 +1,11 @@
 from flask import current_app, session
 from requests_oauthlib import OAuth1Session
 from urllib.parse import urlencode
-from flask_babel import gettext
+from wikidata import query_wikidata
+import os
+import json
+from datetime import date
+
 
 project = "https://www.wikidata.org/w/api.php?"
 
@@ -101,7 +105,7 @@ def upload_file(file, filename, form):
     index = 0
     file = {'chunk': (('{}.' + file_ext).format(index), chunk, 'multipart/form-data')}
     index += 1
-    res = raw_post_request(file, params)
+    res = raw_post_request(file, params, "https://commons.wikimedia.org/w/api.php?")
     data = res.json()
 
     for chunk in chunks:
@@ -126,7 +130,8 @@ def upload_file(file, filename, form):
         "filekey": data["upload"]["filekey"],
         "format": "json",
         "token": token,
-        "comment": "Uploaded using Wiki Loves Brasil"
+        "comment": "Uploaded using Wiki Loves Brasil",
+        "text": build_text()
     }
 
     res = raw_post_request("", params)
@@ -135,25 +140,67 @@ def upload_file(file, filename, form):
     return data
 
 
-def build_text(form, username):
-    descr = gettext(u"Imagem contribuída através do aplicativo ''Wiki Museu do Ipiranga - Para que serve?''")
+def build_text(qid, timestamp):
+    result = query_wikidata("SELECT DISTINCT ?item ?itemDescription ?name ?local ?localLabel "
+                            "?local_cat ?estado ?estadoLabel (LANG(?itemDescription) AS ?lang) "
+                            "WHERE { "
+                            "BIND(wd:" + qid + " AS ?item) "
+                            "OPTIONAL { [] schema:about ?item; "
+                            "schema:isPartOf <https://commons.wikimedia.org/>; "
+                            "schema:name ?name. } "
+                            "{ ?item p:P131/ps:P131 ?local. } UNION { ?item p:P131/ps:P131 [wdt:P131 ?local]. } "
+                            "{ ?local wdt:P31 wd:Q3184121 } UNION { ?local wdt:P31 wd:Q515 } "
+                            "?local wdt:P131 ?estado. "
+                            "?estado wdt:P31 wd:Q485258. "
+                            "OPTIONAL { ?local wdt:P373 ?local_cat. } "
+                            "SERVICE wikibase:label { bd:serviceParam wikibase:language 'pt-br,pt,en'. }}")
 
-    if "para_que_serve" in form and form["para_que_serve"]:
-        descr = descr + " Para que serve: \"" + form["para_que_serve"] + "\""
+    lang = ""
+    descr = ""
+    year = str(date.today().year)
+    username = "Eder" #get_username()
 
-    text = ("=={{int:filedesc}}==\n"
-            "{{Information\n"
-            "|description={{"+form["lang"]+"|1="+descr+"}}\n"
-            "|date="+form["date"]+"\n"
-            "|source={{own}}\n"
-            "|author=[[User:"+username+"|"+username+"]]\n"
-            "|other fields = {{Wikiusos/Information field|qid = "+form["qid"]+"}}\n"
-            "}}\n\n"
-            "=={{int:license-header}}==\n"
-            "{{Wikiusos}}\n"
-            "{{"+get_license(form["license"])+"}}\n\n"
-            "[[Category:Uploaded with wikiusos|"+form["qid"]+"]]"
-            )
+    category_local = ""
+    category_monument = ""
+    category_tool = "Uploaded via Wiki Loves Brasil"
+
+    local_ = ""
+    state_ = ""
+
+    if "bindings" in result["results"] and result["results"]["bindings"]:
+        for item in result["results"]["bindings"]:
+            lang = item["lang"]["value"] if "lang" in item else "pt"
+            descr = item["itemDescription"]["value"] if "itemDescription" in item and item["itemDescription"]["value"] else "fotografia de bem tombado em " + item["localLabel"]["value"] + ", " + item["estadoLabel"]["value"] + "."
+            category_monument = item["name"]["value"] if "name" in item else ""
+            category_local = item["local_cat"]["value"] if "local_cat" in item else ""
+            local_ = item["local"]["value"].replace("http://www.wikidata.org/entity/", "") if "local" in item else ""
+            state_ = item["estado"]["value"].replace("http://www.wikidata.org/entity/", "") if "estado" in item else ""
+
+    with open(os.path.join(current_app.static_folder, 'categories' + year + '.json'), encoding="utf-8") as cat_list:
+        contest_cats = json.load(cat_list)
+    if local_ in contest_cats["cidades"]:
+        category_wlm = contest_cats["cidades"][local_]
+    elif state_ in contest_cats["estados"]:
+        category_wlm = contest_cats["estados"][state_]
+    else:
+        category_wlm = "Images from Wiki Loves Monuments " + year + " in Brazil without proper category"
+
+    if category_monument:
+        category_local = ""
+
+    categories = list(filter(None, [category_monument, category_local, category_wlm, category_tool]))
+
+    text = ("=={{int:filedesc}}==\n" +
+            "{{Information\n" +
+            "|description={{" + lang + "|1=" + descr + "}}\n{{MonumentID|" + qid + "}}\n" +
+            "|date=" + str(timestamp) + "\n" +
+            "|source={{own}}\n" +
+            "|author=[[User:" + username + "|" + username + "]]\n" +
+            "}}\n\n" +
+            "=={{int:license-header}}==\n" +
+            "{{self|cc-by-sa-4.0}}\n{{Wiki Loves Monuments " + year + "|br}}\n\n" +
+            "[[" + "]]\n[[Category:".join(categories) + "]]" +
+            "[[Category:Uploaded via WikiLovesBrasil|" + qid + "]]\n")
     return text
 
 

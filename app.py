@@ -4,7 +4,7 @@ import json
 import requests
 from flask import Flask, render_template, request, redirect, session, url_for, jsonify, g, flash
 from flask_babel import Babel, gettext
-from oauth_wikidata import get_username, upload_file, get_token
+from oauth_wikidata import get_username, upload_file, get_token, build_text
 from requests_oauthlib import OAuth1Session
 from wikidata import query_monuments, query_monuments_without_coords, query_monument, get_category_info, get_article,\
     get_sitelinks, api_post_request
@@ -401,42 +401,43 @@ def uf_bounds(uf):
     return bounds[uf.lower()]
 
 
+@app.route('/send_file', methods=["POST"])
 def send_file():
     username = get_username()
     message = None
 
     if request.method == "POST":
-        uploaded_files = request.files.getlist('files')
+        uploaded_file = request.files.getlist('uploaded_file')
         form = request.form
 
-        for file_ in uploaded_files:
-            filename = file_.filename
+        build_text(form["qid"], form["filedate_0"])
+        filename = uploaded_file.filename
 
-            # Enviar imagem
-            if username:
-                data = upload_file(file_, filename, form)
-                if "error" in data and data["error"]["code"] == "fileexists-shared-forbidden":
-                    message = gettext(u"Uma imagem com este exato título já existe. Por favor, reformule o título.")
-                elif "upload" in data and "warnings" in data["upload"] and "duplicate" in data["upload"]["warnings"]:
-                    message = gettext(
-                        u"Esta imagem é uma duplicata exata da imagem https://commons.wikimedia.org/wiki/File:%(file_)s",
-                        file_=data["upload"]["warnings"]["duplicate"][0])
-                elif "upload" in data and "warnings" in data["upload"] and "duplicate-archive" in data["upload"][
-                    "warnings"]:
-                    message = gettext(u"Esta imagem é uma duplicata exata de uma outra imagem que foi deletada da base.")
-                elif "upload" in data and "warnings" in data["upload"] and "was-deleted" in data["upload"]["warnings"]:
-                    message = gettext(
-                        u"Uma outra imagem costumava utilizar este mesmo título. Por favor, reformule o título.")
-                elif "upload" in data and "warnings" in data["upload"] and "exists" in data["upload"]["warnings"]:
-                    message = gettext(u"Uma imagem com este exato título já existe. Por favor, reformule o título.")
-                elif "error" in data:
-                    message = data["error"]["code"]
-                else:
-                    message = gettext(
-                        u"Imagem enviada com sucesso! Verifique suas contribuições clicando em seu nome de usuário(a).")
+        # Enviar imagem
+        if not username:
+            data = upload_file(file_, filename, form)
+            if "error" in data and data["error"]["code"] == "fileexists-shared-forbidden":
+                message = gettext(u"Uma imagem com este exato título já existe. Por favor, reformule o título.")
+            elif "upload" in data and "warnings" in data["upload"] and "duplicate" in data["upload"]["warnings"]:
+                message = gettext(
+                    u"Esta imagem é uma duplicata exata da imagem https://commons.wikimedia.org/wiki/File:%(file_)s",
+                    file_=data["upload"]["warnings"]["duplicate"][0])
+            elif "upload" in data and "warnings" in data["upload"] and "duplicate-archive" in data["upload"][
+                "warnings"]:
+                message = gettext(u"Esta imagem é uma duplicata exata de uma outra imagem que foi deletada da base.")
+            elif "upload" in data and "warnings" in data["upload"] and "was-deleted" in data["upload"]["warnings"]:
+                message = gettext(
+                    u"Uma outra imagem costumava utilizar este mesmo título. Por favor, reformule o título.")
+            elif "upload" in data and "warnings" in data["upload"] and "exists" in data["upload"]["warnings"]:
+                message = gettext(u"Uma imagem com este exato título já existe. Por favor, reformule o título.")
+            elif "error" in data:
+                message = data["error"]["code"]
             else:
                 message = gettext(
-                    u'Ocorreu algum erro! Verifique o formulário e tente novamente. Caso o erro persista, por favor, reporte em https://github.com/WikiMovimentoBrasil/wikiusos/issues')
+                    u"Imagem enviada com sucesso! Verifique suas contribuições clicando em seu nome de usuário(a).")
+        else:
+            message = gettext(
+                u'Ocorreu algum erro! Verifique o formulário e tente novamente. Caso o erro persista, por favor, reporte em https://github.com/WikiMovimentoBrasil/wikiusos/issues')
     return jsonify(message)
 
 

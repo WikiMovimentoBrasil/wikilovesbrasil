@@ -202,6 +202,10 @@ button:not(.easy-button-button):not(.submit):not(.custom):not(.send_button) {
         display: unset !important;
     }
 
+    .file-upload-container {
+        display: unset !important;
+    }
+
     .image-type {
         width: 25% !important;
     }
@@ -401,6 +405,7 @@ form button {
 .section:nth-child(odd) { background-color: var(--background-color) }
 .margin-container { width: 12.5%; line-height: 0.01; }
 .image-container { display: flex; align-items: center; background-color: gainsboro; }
+.file-upload-container {display: flex; align-items: center; margin: 1rem 0; padding: 1rem;}
 #metadata-table-container { padding: 0 1rem; line-height: 150%; background-color: var(--background-color) }
 #metadata-table { width: 100%; margin-bottom: 1rem; }
 .title { border-bottom: 1px solid #777777; text-align: left; }

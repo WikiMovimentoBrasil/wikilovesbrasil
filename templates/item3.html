@@ -193,15 +193,15 @@
                 </p>
                 <div class="w3-container" id="upload_container" style="padding:0">
                     <form id="upload-images" method="post" enctype="multipart/form-data">
-                        <input id="fileElem" name="fileElem" type="file" multiple>
                         <div class="w3-container" id="file-drop-area">
                             <p style="margin:0 0 1rem 0">{{ _("Arraste e solte seus arquivos ou clique para selecioná-los") }}</p>
-                            <input type="file" id="fileElem" name="files" multiple accept="image/*">
-                            <label id="selectFiles" for="fileElem" style="font-size: 100%">
-                                <i class="fa-solid fa-file-import"></i> {{ _("Escolher arquivo(s)") }}
-                            </label>
+                            <input type="file" id="fileElem" name="files" multiple accept="image/*"
+                                   onchange="handleDrop(this.files)">
+                            <label id="selectFiles" for="fileElem" style="font-size: 100%"><i
+                                    class="fa-solid fa-file-import"></i> {{ _("Escolher arquivo(s)") }}</label>
                         </div>
                         <div class="w3-container" id="files_to_upload"></div>
+                        <input type="text" id="qid" name="qid" hidden value="{{ metadata.qid[0] }}">
                     </form>
                 </div>
             </div>
@@ -274,153 +274,153 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
     <script>
-        const credits = '{{ _("Contribuidores do OpenStreetMap") }}';
-        const whereAmIMsg = '{{ _("Mostre-me onde estou") }}';
-
-        const osm_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-            minZoom: 4,
-            attribution: '&copy; <a href="https://openstreetmap.org/copyright">' + credits + '</a>'
-        });
-
-        const blueIcon = L.AwesomeMarkers.icon({
-            icon: 'fa-solid fa-landmark',
-            markerColor: 'darkblue',
-            iconColor: 'white',
-            prefix: 'fas'
-        });
-
-        var map = L.map('map', {layers: [osm_map]});
-
-        var marker = L.marker({
-            lat: {{ metadata.coord[1] }},
-            lon: {{ metadata.coord[0] }}
-        }, {icon: blueIcon}).addTo(map);
-
-        // Buttons
-        // This code adds a button for users locate themselves in the map
-        const locate = L.control.locate({
-            flyTo: true,
-            returnToPrevBounds: true,
-            icon: 'locate fa-solid fa-location-dot',
-            iconElementTag: 'i',
-            strings: {
-                title: whereAmIMsg
-            },
-        }).addTo(map);
-
-        map.setView([{{ metadata.coord[1] }}, {{ metadata.coord[0] }}], 18)
-    </script>
-    <script>
-        let _Files = [];
-
-        const Item = ({image, filename, suggestedfilename, dateTimeOriginal, coordinates, size}) => {
-            return `
-            <div class="file-upload-container" id="file_upload_container_${filename}">
-            <div class="w3-col w3-left w3-mobile" style="width:120px"><img src="${image}" width="120px" alt="${filename}"></div>
-            <div class="w3-rest w3-mobile" style="width:100%">
-                <table class="upload_table" id="upload_table_${filename}" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th colspan="3">${filename} (${size})</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td style="width:20%; max-width:100px; padding:0.75rem 0"><label for="suggestedfilename_${filename}">{{ _('Título: ') }}</label></td>
-                            <td>
-                                <input type="text" name="suggestedfilename_${filename}" id="suggestedfilename_${filename}" style="width:100%; min-height:40px; border:2px solid #000000" value="${suggestedfilename}">
-                                <label for="file_${filename}" hidden>{{ _("Arquivo") }}</label>
-                                <input type="file" name="file_${filename}" id="file_${filename}" hidden>
-                                <label for="filename_${filename}" hidden>{{ _("Nome do arquivo") }}</label>
-                                <input type="text" name="filename_${filename}" id="filename_${filename}" value="${filename}" hidden>
-                                <label for="filedate_${filename}" hidden>{{ _("Data") }}</label>
-                                <input type="text" name="filedate_${filename}" id="filedate_${filename}" value="${dateTimeOriginal}" hidden>
-                                <label for="coordinates_${filename}" hidden>{{ _("Coordenadas Geográficas") }}</label>
-                                <input type="text" name="coordinates_${filename}" id="coordinates_${filename}" value="${coordinates}" hidden>
-                            </td>
-                            <td rowspan="2">
-                                <button type="button" class="custom remove_file" style="background-color:#990000; width:30px; height:30px" title="{{ _('Remover arquivo') }}"><i class="fa-solid fa-xmark"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="width:20%; max-width:100px; padding:0.75rem 0"><label for="image_type_${filename}">{{ _('Típo: ') }}</label></td>
-                            <td>
-                                <select id="image_type_${filename}" style="width:100%; width:100%; min-height:40px; border:2px solid #000000">
-                                <option value="P18" title="{{ _('Imagem ilustrativa do monumento') }}">{{ _('Imagem do exterior') }}</option>
-                                <option value="P1766" title="{{ _('Imagem de placa de trânsito com nome de local') }}">{{ _('Placa com o nome do lugar') }}</option>
-                                <option value="P1801" title="{{ _('Imagem de placa de inauguração ou inscrição mencionando o monumento') }}">{{ _('Placa comemorativa') }}</option>
-                                <option value="P5775" title="{{ _('Vista do interior de um edifício ou espaço fechado') }}">{{ _('Imagem do interior') }}</option>
-                                <option value="P3451" title="{{ _('Monumento ao entardecer ou à noite') }}">{{ _('Vista noturna') }}</option>
-                                <option value="P4291" title="{{ _('Ampla vista geral que contém o monumento') }}">{{ _('Vista panorâmica') }}</option>
-                                <option value="P8592" title="{{ _('Fotografia de um monumento tirada do ar, por um drone, por exemplo') }}">{{ _('Vista aérea') }}</option>
-                                <option value="P9721" title="{{ _('Vista da entrada de um edifício ou espaço fechado, vista do lado de fora') }}">{{ _('Imagem da entrada') }}</option>
-                                </select>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            </div>
-            `
-        }
-
-        let monumentName = "{{ metadata.label[0] }}";
-        const monumentLocal = "{{ metadata.local[0] }}";
-        const max_size = 210 - monumentLocal.length;
-        if (monumentName.length > max_size) { monumentName = monumentName.substring(0, max_size - 5) + "(...)" }
-
-        $("#fileElem").on("change", function (e) {
-            for (var i = 0; i < this.files.length; i++) {
-                _Files.push(this.files[i]);
-                EXIF.getData(this.files[i], function () {
-                    console.log(EXIF.getTag(this, "DateTimeOriginal"));
-                    const filesizeKb = this.size / 1024;
-                    const filesizeMb = filesizeKb / 1024;
-                    let filesize = filesizeKb.toFixed(2).toString() + " Kb"
-                    if (filesizeKb >= 1024) { filesize = filesizeMb.toFixed(2).toString() + " Mb" }
-                    let filename = this.name;
-
-                    let dateFormatted = dateFormatting(EXIF.getTag(this, "DateTimeOriginal"), this.lastModified);
-                    let suggestedfilename = monumentLocal + " - " + monumentName + " - " + timestampFormatting(EXIF.getTag(this, "DateTimeOriginal"), this.lastModified);
-
-                    let coordinates = clearCoordinates(EXIF.getAllTags(this));
-                    readFile(this, function (e) {
-                        let image = e.target.result;
-                        let elem = ([{ image: image, filename: filename, dateTimeOriginal: dateFormatted, coordinates: coordinates, size: filesize, suggestedfilename: suggestedfilename }].map(Item));
-                        $("#files_to_upload").append(elem);
-                    })
-                })
-            }
+        let dropArea = document.getElementById('file-drop-area')
+        ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false)
         })
 
-        function readFile(file, callback) {
+        ;['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false)
+        })
+
+        ;['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false)
+        })
+
+        function preventDefaults(e) {
+            e.preventDefault()
+            e.stopPropagation()
+        }
+
+        function highlight(e) {
+            dropArea.classList.add('highlight')
+        }
+
+        function unhighlight(e) {
+            dropArea.classList.remove('highlight')
+        }
+
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        var _Files = [];
+
+        function handleDrop(e) {
+            if (e.dataTransfer && e.dataTransfer.items) {
+                for (var i = 0; i < e.dataTransfer.items.length; i++) {
+                    if (e.dataTransfer.items[i].kind === 'file') {
+                        var file = e.dataTransfer.items[i].getAsFile();
+                        _Files.push(file)
+                    }
+                }
+            } else if (e.dataTransfer && e.dataTransfer.files) {
+                for (var i = 0; i < e.dataTransfer.files.length; i++) {
+                    _Files.push(e.dataTransfer.files[i])
+                }
+            } else {
+                for (var i = 0; i < e.length; i++) {
+                    _Files.push(e[i])
+                }
+            }
+            showFiles(_Files);
+        }
+
+        function showFiles(files) {
+            let monumentName = "{{ metadata.label[0] }}";
+            const monumentLocal = "{{ metadata.local[0] }}";
+            const max_size = 210 - monumentLocal.length;
+            if (monumentName.length > max_size) {
+                monumentName = monumentName.substring(0, max_size - 5) + "(...)"
+            }
+            var info = ""
+
+            for (var i = 0; i < files.length; i++) {
+                let filename = files[i].name;
+                const filesizeKb = files[i].size / 1024;
+                const filesizeMb = filesizeKb / 1024;
+                let filesize = filesizeKb.toFixed(2).toString() + " Kb"
+                if (filesizeKb >= 1024) {
+                    filesize = filesizeMb.toFixed(2).toString() + " Mb"
+                }
+
+                info += "<div class='w3-row'><form='submit-images'><div class='w3-col w3-left w3-mobile' style='width:130px'>" +
+                    "<div class='w3-row'>{{ _('Imagem') }}</div>" +
+                    "<div class='w3-row'><div id='preview_" + filename + "'></div></div></div>" +
+                    "<div class='w3-col w3-right w3-mobile' style='width:230px'>" +
+                    "<div class='w3-row'>{{ _('Tipo de imagem') }}</div>" +
+                    "<div class='w3-row'>" +
+                    "<select id='image_type_" + filename + "' class='form-control'>" +
+                    "<option value=\"P18\" title=\"{{ _('Imagem ilustrativa do monumento') }}\">{{ _('Imagem do exterior') }}</option>" +
+                    "<option value=\"P1766\" title=\"{{ _('Imagem de placa de trânsito com nome de local') }}\">{{ _('Placa com o nome do lugar') }}</option>" +
+                    "<option value=\"P1801\" title=\"{{ _('Imagem de placa de inauguração ou inscrição mencionando o monumento') }}\">{{ _('Placa comemorativa') }}</option>" +
+                    "<option value=\"P5775\" title=\"{{ _('Vista do interior de um edifício ou espaço fechado') }}\">{{ _('Imagem do interior') }}</option>" +
+                    "<option value=\"P3451\" title=\"{{ _('Monumento ao entardecer ou à noite') }}\">{{ _('Vista noturna') }}</option>" +
+                    "<option value=\"P4291\" title=\"{{ _('Ampla vista geral que contém o monumento') }}\">{{ _('Vista panorâmica') }}</option>" +
+                    "<option value=\"P8592\" title=\"{{ _('Fotografia de um monumento tirada do ar, por um drone, por exemplo') }}\">{{ _('Vista aérea') }}</option>" +
+                    "<option value=\"P9721\" title=\"{{ _('Vista da entrada de um edifício ou espaço fechado, vista do lado de fora') }}\">{{ _('Imagem da entrada') }}</option>" +
+                    "</select></div></div>" +
+                    "<div class='w3-rest w3-mobile'>" +
+                    "<div class='w3-row'>{{ _('Título da imagem no Wikimedia Commons') }}</div>" +
+                    "<div class='w3-row' id='new_fields_" + filename + "'></div></div></form></div>";
+            }
+
+            var innerHtml = "<div class='w3-container' id='to_be_uploaded_files'>" + info + "</div>";
+
+            $("#files_to_upload").html(innerHtml);
+            for (var i=0; i < _Files.length; i++) {
+                readEXIF(_Files[i]);
+            }
+            renderLicense();
+        }
+
+        function renderImages(file, idx) {
             let reader = new FileReader();
-            reader.onload = callback;
+            let img = jQuery.parseHTML("<img src=\"\">");
+
+            reader.onload = function (e) {
+                img[0].src = e.target.result;
+                $("#preview_" + idx).append(img);
+            }
             reader.readAsDataURL(file);
         }
 
-        function dateFormatting(dateOriginal, lastModified) {
-            if (dateOriginal) {
-                let regexDate = new RegExp("(\\d{4}):(\\d{2})\\:(\\d{2}).*");
-                let dateMatch = regexDate.exec(dateOriginal);
-                return dateMatch[1] + "-" + dateMatch[2] + "-" + dateMatch[3];
-            } else {
-                let newDate = new Date(lastModified);
-                return newDate.toLocaleString('en-us', {year: 'numeric', month: '2-digit', day: '2-digit'}).replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2');
-            }
+        function renderLicense() {
+            const license = jQuery.parseHTML("<div class=\"w3-container\" id=\"license\">" +
+                "<div class='w3-threequarter' id=\"license-message\">{{ _('Eu, %(username)s, detentor(a) dos direitos autorais desta(s) imagem(ns), concedo <b>irrevogavelmente</b> a qualquer pessoa o direito de utilizá-la sob a <a target=\'_blank\' href=\'https://creativecommons.org/licenses/by-sa/4.0/deed.pt_BR\'>licença Creative Commons Atribuição-CompartilhaIgual 4.0</a>. Com isso, qualquer pessoa poderá usar, compartilhar ou remixar esta imagem, contanto que me creditem e compartilhem qualquer obra derivada sob esta mesma licença.', username = username) }}</div>" +
+                "<div class=\"w3-quarter\"><button type=\"submit\" form=\"upload-images\" style=\"float: right; font-size: 100%\"><i class=\"fa-solid fa-upload\"></i> {{ _('Enviar imagem(ns)') }}</button></div></div>");
+            $("#license").remove();
+            $("#upload_container").append(license);
         }
 
-        function timestampFormatting(dateOriginal, lastModified) {
-            if (dateOriginal) {
-                let regexDate = new RegExp("(\\d{4}):(\\d{2})\\:(\\d{2}) (\\d{2}):(\\d{2})\\:(\\d{2})");
-                let dateMatch = regexDate.exec(dateOriginal);
-                return dateMatch[1] + dateMatch[2] + dateMatch[3] + dateMatch[4] + dateMatch[5] + dateMatch[6];
-            } else {
-                let newDate = new Date(lastModified);
-                const options = {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'}
-                return newDate.toLocaleString('en-us', options).replace(/(\d+)\/(\d+)\/(\d+), (\d+):(\d+):(\d+)/, '$3$1$2$4$5$6');
+        $("#upload-images").on("submit", function (e) {
+            e.preventDefault();
+            var request = new XMLHttpRequest();
+            for (var i = 0; i < _Files.length; i++) {
+                let formData = new FormData();
+                formData.append("filename", e.target.elements["filename_" + _Files[i].name].value);
+                formData.append("name", e.target.elements["suggestedfilename_" + _Files[i].name].value);
+                formData.append("image_type", e.target.elements["image_type_" + _Files[i].name].value);
+                formData.append("coordinates",clearCoordinates(_Files[i].metadata));
+                formData.append("filedate",dateOriginalFormatting(_Files[i].metadata.DateTimeOriginal));
+                formData.append('uploaded_file', _Files[i]);
+                request.open('POST', '/send_file');
+                request.send(formData);
             }
+        })
+
+        function readEXIF(fileItem) {
+            EXIF.getData(fileItem, function file() {
+                fileItem.metadata = EXIF.getAllTags(this);
+                let filename = fileItem.name;
+                let elementMetadata = $("#new_fields_" + filename);
+
+                const coordinates = clearCoordinates(fileItem.metadata);
+                const dateTimeOriginal = dateOriginalFormatting(fileItem.metadata.DateTimeOriginal);
+                let info = "<input type='text' name='suggestedfilename_" + filename + "' id='suggestedfilename_" + filename + "'>" +
+                    "<input type='text' name='filename_" + filename + "' id='filename_" + filename + "' value='" + filename + "' hidden>" +
+                    "<input type='text' name='filedate_" + filename + "' id='filedate_" + filename + "' value='" + dateTimeOriginal + "' hidden>" +
+                    "<input type='text' name='coordinates_" + filename + "' id='coordinates_" + filename + "' value='" + coordinates + "' hidden>";
+                elementMetadata.append(info);
+            })
         }
 
         function clearCoordinates(metadata) {
@@ -468,5 +468,55 @@
             } else { return ""; }
         }
 
+        function dateFormatting(dateUnix) {
+            return new Date(dateUnix*1000).toLocaleString('en-us', {year: 'numeric', month: '2-digit', day: '2-digit'}).replace(/(\d+)\/(\d+)\/(\d+)/, '$3$1$2');
+        }
+
+        function dateOriginalFormatting(dateOriginal) {
+            if (dateOriginal) {
+                let regexDate = new RegExp("(\\d{4}):(\\d{2})\\:(\\d{2}).*");
+                let dateMatch = regexDate.exec(dateOriginal);
+                return dateMatch[1] + "-" + dateMatch[2] + "-" + dateMatch[3];
+            } else { return ""; }
+        }
+
+    </script>
+    <script>
+        const credits = '{{ _("Contribuidores do OpenStreetMap") }}';
+        const whereAmIMsg = '{{ _("Mostre-me onde estou") }}';
+
+        const osm_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            minZoom: 4,
+            attribution: '&copy; <a href="https://openstreetmap.org/copyright">' + credits + '</a>'
+        });
+
+        const blueIcon = L.AwesomeMarkers.icon({
+            icon: 'fa-solid fa-landmark',
+            markerColor: 'darkblue',
+            iconColor: 'white',
+            prefix: 'fas'
+        });
+
+        var map = L.map('map', {layers: [osm_map]});
+
+        var marker = L.marker({
+            lat: {{ metadata.coord[1] }},
+            lon: {{ metadata.coord[0] }}
+        }, {icon: blueIcon}).addTo(map);
+
+        // Buttons
+        // This code adds a button for users locate themselves in the map
+        const locate = L.control.locate({
+            flyTo: true,
+            returnToPrevBounds: true,
+            icon: 'locate fa-solid fa-location-dot',
+            iconElementTag: 'i',
+            strings: {
+                title: whereAmIMsg
+            },
+        }).addTo(map);
+
+        map.setView([{{ metadata.coord[1] }}, {{ metadata.coord[0] }}], 18)
     </script>
 {% endblock %}

@@ -1,5 +1,5 @@
 import requests
-import os.path
+import os
 from flask import current_app, session, url_for
 from requests_oauthlib import OAuth1Session
 from urllib.parse import unquote
