@@ -411,7 +411,7 @@ form button {
 .title { border-bottom: 1px solid #777777; text-align: left; }
 .table-icon { width:20px; padding: 5px; }
 .no-info { color:#595959; pointer-events: none; }
-.with-info { color: #70ad25 }
+.with-info { color: #0067a3 }
 .space-border { padding: 0.75rem }
 .cancel { background-color: var(--main-color) !important; }
 .remove_icon {

@@ -7,3 +7,4 @@ requests_oauthlib
 gspread
 oauth2client
 google-api-python-client
+jinja2==3.0.3
