@@ -81,21 +81,19 @@ def read_chunks(file_object, chunk_size=5000):
         yield data
 
 
-def upload_file(file, filename, form):
+def upload_file(uploaded_file, form):
     token = get_token()
 
-    chunks = read_chunks(file)
+    chunks = read_chunks(uploaded_file)
     chunk = next(chunks)
 
-    files_dict = {}
-    for i in range(int(form.__len__()/2)):
-        files_dict[form["filename_"+str(i)]] = form["suggestedfilename_" + str(i)]
+    filename = form["filename"]
 
     file_ext = get_file_ext(filename)
     params = {
         "action": "upload",
         "stash": 1,
-        "filename": files_dict[filename]+file_ext,
+        "filename": form["name"]+file_ext,
         "offset": 0,
         "format": "json",
         "token": token,
@@ -112,7 +110,7 @@ def upload_file(file, filename, form):
         params = {
             "action": "upload",
             "stash": 1,
-            "filename": files_dict[filename]+file_ext,
+            "filename": form["name"]+file_ext,
             "filekey": data["upload"]["filekey"],
             "offset": data["upload"]["offset"],
             "format": "json",
@@ -121,26 +119,47 @@ def upload_file(file, filename, form):
         }
         file = {'chunk': (('{}.' + file_ext).format(index), chunk, 'multipart/form-data')}
         index += 1
-        res = raw_post_request(file, params)
+        res = raw_post_request(file, params, "https://commons.wikimedia.org/w/api.php?")
         data = res.json()
 
     params = {
         "action": "upload",
-        "filename": files_dict[filename] + file_ext,
+        "filename": form["name"] + file_ext,
         "filekey": data["upload"]["filekey"],
         "format": "json",
         "token": token,
         "comment": "Uploaded using Wiki Loves Brasil",
-        "text": build_text()
+        "text": build_text(form)
     }
 
-    res = raw_post_request("", params)
+    res = raw_post_request(params, {}, "https://commons.wikimedia.org/w/api.php?")
     data = res.json()
 
     return data
+    # text = build_text(form)
+    # token = get_token()
+    #
+    # params = {
+    #     "action": "upload",
+    #     "filename": form["name"] + get_file_ext(form["filename"]),
+    #     "format": "json",
+    #     "token": token,
+    #     "text": text,
+    #     "comment": "Uploaded with wikiusos"
+    # }
+    #
+    # media_file = {'file': (form["filename"], uploaded_file.read(), 'multipart/form-data')}
+    #
+    # req = raw_post_request(media_file, params, "https://commons.wikimedia.org/w/api.php?")
+    # data = req.json()
+    #
+    # return data
 
 
-def build_text(qid, timestamp):
+def build_text(form):
+    qid = form["qid"]
+    timestamp = form["filedate"]
+
     result = query_wikidata("SELECT DISTINCT ?item ?itemDescription ?name ?local ?localLabel "
                             "?local_cat ?estado ?estadoLabel (LANG(?itemDescription) AS ?lang) "
                             "WHERE { "
@@ -158,11 +177,11 @@ def build_text(qid, timestamp):
     lang = ""
     descr = ""
     year = str(date.today().year)
-    username = "Eder" #get_username()
+    username = get_username()
 
     category_local = ""
     category_monument = ""
-    category_tool = "Uploaded via Wiki Loves Brasil"
+    category_tool = "Uploaded via WikiLovesBrasil|" + qid
 
     local_ = ""
     state_ = ""
@@ -188,19 +207,24 @@ def build_text(qid, timestamp):
     if category_monument:
         category_local = ""
 
-    categories = list(filter(None, [category_monument, category_local, category_wlm, category_tool]))
+    category_image_type = "Images from Wiki Loves Monuments" + year + "in Brazil declared to fit " + form["image_type"] + " Wikidata property"
+    categories = list(filter(None, [category_monument, category_local, category_wlm, category_tool, category_image_type]))
+
+    coordinates = "{{Location|" + form["coordinates"] + "}}\n" if form["coordinates"] else ""
 
     text = ("=={{int:filedesc}}==\n" +
             "{{Information\n" +
             "|description={{" + lang + "|1=" + descr + "}}\n{{MonumentID|" + qid + "}}\n" +
-            "|date=" + str(timestamp) + "\n" +
+            "|date=" + timestamp + "\n" +
             "|source={{own}}\n" +
             "|author=[[User:" + username + "|" + username + "]]\n" +
-            "}}\n\n" +
+            "}}\n" +
+            coordinates +
+            "{{test upload}}\n\n" +
             "=={{int:license-header}}==\n" +
             "{{self|cc-by-sa-4.0}}\n{{Wiki Loves Monuments " + year + "|br}}\n\n" +
-            "[[" + "]]\n[[Category:".join(categories) + "]]" +
-            "[[Category:Uploaded via WikiLovesBrasil|" + qid + "]]\n")
+            "[[Category:" + "]]\n[[Category:".join(categories) + "]]\n"
+            )
     return text
 
 

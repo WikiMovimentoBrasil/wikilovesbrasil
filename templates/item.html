@@ -193,7 +193,8 @@
                 </p>
                 <div class="w3-container" id="upload_container" style="padding:0">
                     <form id="upload-images" method="post" enctype="multipart/form-data">
-                        <input id="fileElem" name="fileElem" type="file" multiple>
+                        <input id="fileElem" name="fileElem" type="file" multiple onclick="this.value = null;">
+                        <input id="monument_id" name="qid" type="text" value="{{ metadata.qid[0] }}" hidden>
                         <div class="w3-container" id="file-drop-area">
                             <p style="margin:0 0 1rem 0">{{ _("Arraste e solte seus arquivos ou clique para selecioná-los") }}</p>
                             <input type="file" id="fileElem" name="files" multiple accept="image/*">
@@ -313,25 +314,25 @@
     </script>
     <script>
         let _Files = [];
+        let _Files_names = [];
 
-        const Item = ({image, filename, suggestedfilename, dateTimeOriginal, coordinates, size}) => {
+        const Item = ({filename, suggestedFilename, dateTimeOriginal, coordinates, size}) => {
+            {#<div class="w3-col w3-left w3-mobile" style="width:120px"><img src="${image}" width="120px" alt="${filename}"></div>#}
             return `
             <div class="file-upload-container" id="file_upload_container_${filename}">
-            <div class="w3-col w3-left w3-mobile" style="width:120px"><img src="${image}" width="120px" alt="${filename}"></div>
+            <div class="w3-col w3-left w3-mobile" style="width:120px" id="image_container_${filename}"></div>
             <div class="w3-rest w3-mobile" style="width:100%">
                 <table class="upload_table" id="upload_table_${filename}" style="width:100%">
                     <thead>
                         <tr>
-                            <th colspan="3">${filename} (${size})</td>
+                            <th colspan="3" style="line-height:3rem">${filename} (${size}) <button type="button" class="custom remove_icon" id="remove_${filename}" onclick="removeFile(this.id);"><i class="fa-solid fa-xmark"></i> {{ _("Remover") }}</button></td>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="width:20%; max-width:100px; padding:0.75rem 0"><label for="suggestedfilename_${filename}">{{ _('Título: ') }}</label></td>
+                            <td style="width:15%; max-width:100px; padding:0.75rem 0"><label for="suggestedFilename_${filename}">{{ _('Título: ') }}</label></td>
                             <td>
-                                <input type="text" name="suggestedfilename_${filename}" id="suggestedfilename_${filename}" style="width:100%; min-height:40px; border:2px solid #000000" value="${suggestedfilename}">
-                                <label for="file_${filename}" hidden>{{ _("Arquivo") }}</label>
-                                <input type="file" name="file_${filename}" id="file_${filename}" hidden>
+                                <input type="text" name="suggestedFilename_${filename}" id="suggestedFilename_${filename}" style="width:100%; min-height:40px; border:2px solid #000000" value="${suggestedFilename}">
                                 <label for="filename_${filename}" hidden>{{ _("Nome do arquivo") }}</label>
                                 <input type="text" name="filename_${filename}" id="filename_${filename}" value="${filename}" hidden>
                                 <label for="filedate_${filename}" hidden>{{ _("Data") }}</label>
@@ -339,15 +340,13 @@
                                 <label for="coordinates_${filename}" hidden>{{ _("Coordenadas Geográficas") }}</label>
                                 <input type="text" name="coordinates_${filename}" id="coordinates_${filename}" value="${coordinates}" hidden>
                             </td>
-                            <td rowspan="2">
-                                <button type="button" class="custom remove_file" style="background-color:#990000; width:30px; height:30px" title="{{ _('Remover arquivo') }}"><i class="fa-solid fa-xmark"></i></button>
-                            </td>
                         </tr>
                         <tr>
-                            <td style="width:20%; max-width:100px; padding:0.75rem 0"><label for="image_type_${filename}">{{ _('Típo: ') }}</label></td>
+                            <td style="width:15%; max-width:100px; padding:0.75rem 0"><label for="image_type_${filename}">{{ _('Típo: ') }}</label></td>
                             <td>
                                 <select id="image_type_${filename}" style="width:100%; width:100%; min-height:40px; border:2px solid #000000">
-                                <option value="P18" title="{{ _('Imagem ilustrativa do monumento') }}">{{ _('Imagem do exterior') }}</option>
+                                <option value="P18" title="{{ _('Não tenho certeza') }}">{{ _('Selecione o tipo de imagem (opcional)') }}</option>
+                                <option value="P18" title="{{ _('Imagem ilustrativa do monumento') }}">{{ _('Imagem') }}</option>
                                 <option value="P1766" title="{{ _('Imagem de placa de trânsito com nome de local') }}">{{ _('Placa com o nome do lugar') }}</option>
                                 <option value="P1801" title="{{ _('Imagem de placa de inauguração ou inscrição mencionando o monumento') }}">{{ _('Placa comemorativa') }}</option>
                                 <option value="P5775" title="{{ _('Vista do interior de um edifício ou espaço fechado') }}">{{ _('Imagem do interior') }}</option>
@@ -370,34 +369,63 @@
         const max_size = 210 - monumentLocal.length;
         if (monumentName.length > max_size) { monumentName = monumentName.substring(0, max_size - 5) + "(...)" }
 
-        $("#fileElem").on("change", function (e) {
+        const MAX_WIDTH = 120;
+        const MIME_TYPE = "image/jpeg";
+        const QUALITY = 0.7;
+
+        const input = document.getElementById("fileElem");
+        input.onchange = function () {
             for (var i = 0; i < this.files.length; i++) {
-                _Files.push(this.files[i]);
-                EXIF.getData(this.files[i], function () {
-                    console.log(EXIF.getTag(this, "DateTimeOriginal"));
-                    const filesizeKb = this.size / 1024;
-                    const filesizeMb = filesizeKb / 1024;
-                    let filesize = filesizeKb.toFixed(2).toString() + " Kb"
-                    if (filesizeKb >= 1024) { filesize = filesizeMb.toFixed(2).toString() + " Mb" }
-                    let filename = this.name;
+                if (jQuery.inArray(this.files[i].name,_Files_names) === -1) {
+                    _Files_names.push(this.files[i].name);
+                    _Files.push(this.files[i]);
+                    EXIF.getData(this.files[i], function () {
+                        let filesize = readableBytes(this.size);
+                        let filename = this.name;
+                        let dateFormatted = dateFormatting(EXIF.getTag(this, "DateTimeOriginal"), this.lastModified);
+                        let suggestedFilename = monumentName + " - " + monumentLocal + " - " + timestampFormatting(EXIF.getTag(this, "DateTimeOriginal"), this.lastModified);
+                        let coordinates = clearCoordinates(EXIF.getAllTags(this));
 
-                    let dateFormatted = dateFormatting(EXIF.getTag(this, "DateTimeOriginal"), this.lastModified);
-                    let suggestedfilename = monumentLocal + " - " + monumentName + " - " + timestampFormatting(EXIF.getTag(this, "DateTimeOriginal"), this.lastModified);
+                        // Part of the code adapted from https://labs.madisoft.it/javascript-image-compression-and-resizing
+                        const file = this;
+                        const blobURL = URL.createObjectURL(file);
+                        const image = new Image();
+                        image.src = blobURL;
+                        image.onload = function () {
+                            URL.revokeObjectURL(this.src);
+                            const [newWidth, newHeight] = calculateSize(image, MAX_WIDTH);
+                            const canvas = document.createElement("canvas");
+                            canvas.width = newWidth;
+                            canvas.height = newHeight;
+                            const ctx = canvas.getContext("2d");
+                            ctx.drawImage(image, 0, 0, newWidth, newHeight);
+                            canvas.toBlob(
+                                (blob) => {},
+                                MIME_TYPE,
+                                QUALITY
+                            );
 
-                    let coordinates = clearCoordinates(EXIF.getAllTags(this));
-                    readFile(this, function (e) {
-                        let image = e.target.result;
-                        let elem = ([{ image: image, filename: filename, dateTimeOriginal: dateFormatted, coordinates: coordinates, size: filesize, suggestedfilename: suggestedfilename }].map(Item));
-                        $("#files_to_upload").append(elem);
+                            let elem = ([{ filename: filename, dateTimeOriginal: dateFormatted, coordinates: coordinates, size: filesize, suggestedFilename: suggestedFilename }].map(Item));
+                            $("#files_to_upload").append(elem);
+                            document.getElementById("image_container_"+filename).append(canvas);
+                        };
                     })
-                })
+                    renderLicense();
+                }
             }
-        })
+        };
 
-        function readFile(file, callback) {
-            let reader = new FileReader();
-            reader.onload = callback;
-            reader.readAsDataURL(file);
+        function calculateSize(img, maxWidth) {
+            let width = maxWidth;
+            let height = Math.round((img.height * maxWidth) / img.width);
+
+            return [width, height];
+        }
+
+        function readableBytes(bytes) {
+            const i = Math.floor(Math.log(bytes) / Math.log(1024));
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+            return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
         }
 
         function dateFormatting(dateOriginal, lastModified) {
@@ -467,6 +495,49 @@
                 return latitude + "|" + longitude;
             } else { return ""; }
         }
+
+        function removeFile(button_id){
+            let file_id = button_id.replace("remove_","");
+            console.log(file_id);
+
+            $(".file-upload-container").each(function(){
+                if (this.id ==="file_upload_container_"+file_id) {
+                    this.remove()
+                    _Files_names.splice($.inArray(file_id,_Files_names), 1);
+                    _Files = _Files.filter(function(e) { return e.name !== file_id; })
+                }
+            })
+
+            if (_Files.length === 0 || _Files_names.length === 0) {
+                $("#license").remove();
+            }
+        }
+
+        function renderLicense() {
+            const license = jQuery.parseHTML("<div class=\"w3-container\" id=\"license\">" +
+                "<div class='w3-threequarter' id=\"license-message\">{{ _('Eu, %(username)s, detentor(a) dos direitos autorais desta(s) imagem(ns), concedo <b>irrevogavelmente</b> a qualquer pessoa o direito de utilizá-la sob a <a target=\'_blank\' href=\'https://creativecommons.org/licenses/by-sa/4.0/deed.pt_BR\'>licença Creative Commons Atribuição-CompartilhaIgual 4.0</a>. Com isso, qualquer pessoa poderá usar, compartilhar ou remixar esta imagem, contanto que me creditem e compartilhem qualquer obra derivada sob esta mesma licença.', username = username) }}</div>" +
+                "<div class=\"w3-quarter\"><button type=\"submit\" form=\"upload-images\" style=\"float: right; font-size: 100%\"><i class=\"fa-solid fa-upload\"></i> {{ _('Enviar imagem(ns)') }}</button></div></div>");
+            $("#license").remove();
+            $("#upload_container").append(license);
+        }
+
+        $("#upload-images").on("submit", function (e) {
+            e.preventDefault();
+            var request = new XMLHttpRequest();
+            for (var i = 0; i < _Files.length; i++) {
+                let formData = new FormData();
+                const file_id = _Files[i].name;
+                formData.append("qid", e.target.elements["qid"].value);
+                formData.append("filename", e.target.elements["filename_" + file_id].value);
+                formData.append("name", e.target.elements["suggestedFilename_" + file_id].value);
+                formData.append("image_type", e.target.elements["image_type_" + file_id].value);
+                formData.append("coordinates", e.target.elements["coordinates_" + file_id].value);
+                formData.append("filedate", e.target.elements["filedate_" + file_id].value);
+                formData.append('uploaded_file', _Files[i]);
+                request.open('POST', '/send_file');
+                request.send(formData);
+            }
+        })
 
     </script>
 {% endblock %}

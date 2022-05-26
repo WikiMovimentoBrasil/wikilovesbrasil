@@ -414,6 +414,16 @@ form button {
 .with-info { color: #70ad25 }
 .space-border { padding: 0.75rem }
 .cancel { background-color: var(--main-color) !important; }
+.remove_icon {
+    float: unset;
+    padding:6px 12px;
+    width: 110px;
+    background-color:var(--main-color);
+    color:var(--special-text-color);
+    margin-right:4px;
+    border-radius: 50px;
+    border: 2px solid var(--main-color);
+}
 
 #types-of-images i { font-size: 150%; }
 #file-drop-area { width: 100%; border: 3px dashed gainsboro; padding: 2rem; text-align: center; }
