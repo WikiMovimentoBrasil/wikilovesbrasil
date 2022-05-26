@@ -39,7 +39,7 @@ def login():
 
     client_key = app.config['CONSUMER_KEY']
     client_secret = app.config['CONSUMER_SECRET']
-    base_url = 'https://commons.wikimedia.org/w/index.php'
+    base_url = 'https://meta.wikimedia.org/w/index.php'
     request_token_url = base_url + '?title=Special%3aOAuth%2finitiate'
 
     oauth = OAuth1Session(client_key,
@@ -50,7 +50,7 @@ def login():
     session['owner_key'] = fetch_response.get('oauth_token')
     session['owner_secret'] = fetch_response.get('oauth_token_secret')
 
-    base_authorization_url = 'https://commons.wikimedia.org/wiki/Special:OAuth/authorize'
+    base_authorization_url = 'https://meta.wikimedia.org/wiki/Special:OAuth/authorize'
     authorization_url = oauth.authorization_url(base_authorization_url,
                                                 oauth_consumer_key=client_key)
     return redirect(authorization_url)
@@ -58,7 +58,7 @@ def login():
 
 @app.route("/oauth-callback", methods=["GET"])
 def oauth_callback():
-    base_url = 'https://commons.wikimedia.org/w/index.php'
+    base_url = 'https://meta.wikimedia.org/w/index.php'
     client_key = app.config['CONSUMER_KEY']
     client_secret = app.config['CONSUMER_SECRET']
 
@@ -406,13 +406,15 @@ def send_file():
     username = get_username()
     message = None
 
+    status_code = "ERROR"
     if request.method == "POST":
         uploaded_file = request.files.getlist('uploaded_file')[0]
         form = request.form
 
         # Enviar imagem
         if username:
-            data = upload_file(uploaded_file, form)
+            text = build_text(form)
+            data = upload_file(uploaded_file, form, text)
             if "error" in data and data["error"]["code"] == "fileexists-shared-forbidden":
                 message = gettext(u"Uma imagem com este exato título já existe. Por favor, reformule o título.")
             elif "upload" in data and "warnings" in data["upload"] and "duplicate" in data["upload"]["warnings"]:
@@ -432,10 +434,10 @@ def send_file():
             else:
                 message = gettext(
                     u"Imagem enviada com sucesso! Verifique suas contribuições clicando em seu nome de usuário(a).")
+                status_code = "SUCCESS"
         else:
-            message = gettext(
-                u'Ocorreu algum erro! Verifique o formulário e tente novamente. Caso o erro persista, por favor, reporte em https://github.com/WikiMovimentoBrasil/wikiusos/issues')
-    return jsonify(message)
+            message = gettext(u'Ocorreu algum erro! Verifique o formulário e tente novamente. Caso o erro persista, por favor, reporte em https://github.com/WikiMovimentoBrasil/wikilovesbrasil/issues')
+        return jsonify({"message": message, "status": status_code, "filename": form["filename"]})
 
 
 ##############################################################

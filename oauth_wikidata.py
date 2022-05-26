@@ -10,9 +10,9 @@ from datetime import date
 project = "https://www.wikidata.org/w/api.php?"
 
 
-def raw_request(params):
+def raw_request(params, url_project=project):
     app = current_app
-    url = project + urlencode(params)
+    url = url_project + urlencode(params)
     client_key = app.config['CONSUMER_KEY']
     client_secret = app.config['CONSUMER_SECRET']
     oauth = OAuth1Session(client_key,
@@ -37,23 +37,23 @@ def raw_post_request(files, params, url_project=project):
         return oauth.post(url, data=params, timeout=4)
 
 
-def api_request(params):
-    return raw_request(params).json()
+def api_request(params, url_project=project):
+    return raw_request(params, url_project).json()
 
 
-def userinfo_call():
+def userinfo_call(url_project=project):
     params = {'action': 'query', 'meta': 'userinfo', 'format': 'json'}
-    return api_request(params)
+    return api_request(params, url_project)
 
 
-def get_username():
+def get_username(url_project=project):
     if 'owner_key' not in session:
         return  # not authorized
 
     if 'username' in session:
         return session['username']
 
-    reply = userinfo_call()
+    reply = userinfo_call(url_project)
     if 'query' not in reply:
         return
     session['username'] = reply['query']['userinfo']['name']
@@ -61,14 +61,14 @@ def get_username():
     return session['username']
 
 
-def get_token():
+def get_token(url_project=project):
     params = {
         'action': 'query',
         'meta': 'tokens',
         'format': 'json',
         'formatversion': 2,
     }
-    reply = api_request(params)
+    reply = api_request(params, url_project)
     token = reply['query']['tokens']['csrftoken']
     return token
 
@@ -81,79 +81,83 @@ def read_chunks(file_object, chunk_size=5000):
         yield data
 
 
-def upload_file(uploaded_file, form):
-    token = get_token()
-
-    chunks = read_chunks(uploaded_file)
-    chunk = next(chunks)
-
-    filename = form["filename"]
-
-    file_ext = get_file_ext(filename)
-    params = {
-        "action": "upload",
-        "stash": 1,
-        "filename": form["name"]+file_ext,
-        "offset": 0,
-        "format": "json",
-        "token": token,
-        "ignorewarnings": 1
-    }
-
-    index = 0
-    file = {'chunk': (('{}.' + file_ext).format(index), chunk, 'multipart/form-data')}
-    index += 1
-    res = raw_post_request(file, params, "https://commons.wikimedia.org/w/api.php?")
-    data = res.json()
-
-    for chunk in chunks:
-        params = {
-            "action": "upload",
-            "stash": 1,
-            "filename": form["name"]+file_ext,
-            "filekey": data["upload"]["filekey"],
-            "offset": data["upload"]["offset"],
-            "format": "json",
-            "token": token,
-            "ignorewarnings": 1
-        }
-        file = {'chunk': (('{}.' + file_ext).format(index), chunk, 'multipart/form-data')}
-        index += 1
-        res = raw_post_request(file, params, "https://commons.wikimedia.org/w/api.php?")
-        data = res.json()
-
-    params = {
-        "action": "upload",
-        "filename": form["name"] + file_ext,
-        "filekey": data["upload"]["filekey"],
-        "format": "json",
-        "token": token,
-        "comment": "Uploaded using Wiki Loves Brasil",
-        "text": build_text(form)
-    }
-
-    res = raw_post_request(params, {}, "https://commons.wikimedia.org/w/api.php?")
-    data = res.json()
-
-    return data
-    # text = build_text(form)
-    # token = get_token()
+def upload_file(uploaded_file, form, text):
+    # token = get_token("https://commons.wikimedia.org/w/api.php?")
+    #
+    # size = uploaded_file.tell()
+    # uploaded_file.seek(0, 0)
+    #
+    # chunks = read_chunks(uploaded_file)
+    # chunk = next(chunks)
+    #
+    # filename = form["filename"]
+    #
+    # file_ext = get_file_ext(filename)
+    # params = {
+    #     "action": "upload",
+    #     "stash": 1,
+    #     "filename": form["name"]+file_ext,
+    #     "offset": 0,
+    #     "filesize": size,
+    #     "format": "json",
+    #     "token": token,
+    #     "ignorewarnings": 1
+    # }
+    #
+    # index = 0
+    # file = {'chunk': (('{}' + file_ext).format(index), chunk, 'multipart/form-data')}
+    # index += 1
+    # res = raw_post_request(file, params, "https://commons.wikimedia.org/w/api.php")
+    # data = res.json()
+    #
+    # for chunk in chunks:
+    #     params = {
+    #         "action": "upload",
+    #         "stash": 1,
+    #         "filename": form["name"]+file_ext,
+    #         "filekey": data["upload"]["filekey"],
+    #         "offset": data["upload"]["offset"],
+    #         "filesize": size,
+    #         "format": "json",
+    #         "token": token,
+    #         "ignorewarnings": 1
+    #     }
+    #     file = {'chunk': (('{}' + file_ext).format(index), chunk, 'multipart/form-data')}
+    #     index += 1
+    #     res = raw_post_request(file, params, "https://commons.wikimedia.org/w/api.php?")
+    #     data = res.json()
     #
     # params = {
     #     "action": "upload",
-    #     "filename": form["name"] + get_file_ext(form["filename"]),
+    #     "filename": form["name"] + file_ext,
+    #     "filekey": data["upload"]["filekey"],
     #     "format": "json",
     #     "token": token,
-    #     "text": text,
-    #     "comment": "Uploaded with wikiusos"
+    #     "comment": "Uploaded using Wiki Loves Brasil",
+    #     "text": text
     # }
     #
-    # media_file = {'file': (form["filename"], uploaded_file.read(), 'multipart/form-data')}
-    #
-    # req = raw_post_request(media_file, params, "https://commons.wikimedia.org/w/api.php?")
-    # data = req.json()
+    # res = raw_post_request(None, params, "https://commons.wikimedia.org/w/api.php?")
+    # data = res.json()
     #
     # return data
+    token = get_token("https://commons.wikimedia.org/w/api.php?")
+
+    params = {
+        "action": "upload",
+        "filename": form["name"] + get_file_ext(form["filename"]),
+        "format": "json",
+        "token": token,
+        "text": text,
+        "comment": "Uploaded with Wiki Loves Brasil"
+    }
+
+    media_file = {'file': (form["filename"], uploaded_file.read(), 'multipart/form-data')}
+
+    req = raw_post_request(media_file, params, "https://commons.wikimedia.org/w/api.php?")
+    data = req.json()
+
+    return data
 
 
 def build_text(form):
@@ -207,7 +211,7 @@ def build_text(form):
     if category_monument:
         category_local = ""
 
-    category_image_type = "Images from Wiki Loves Monuments" + year + "in Brazil declared to fit " + form["image_type"] + " Wikidata property"
+    category_image_type = "Images from Wiki Loves Monuments " + year + " in Brazil declared to fit " + form["image_type"] + " Wikidata property"
     categories = list(filter(None, [category_monument, category_local, category_wlm, category_tool, category_image_type]))
 
     coordinates = "{{Location|" + form["coordinates"] + "}}\n" if form["coordinates"] else ""

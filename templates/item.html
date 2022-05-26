@@ -523,6 +523,7 @@
 
         $("#upload-images").on("submit", function (e) {
             e.preventDefault();
+            const error = "{{ _('Ocorreu algum erro! Verifique que fez login e revise o formulário. Caso o erro persista, por favor, reporte em https://github.com/WikiMovimentoBrasil/wikilovesbrasil/issues')}}";
             var request = new XMLHttpRequest();
             for (var i = 0; i < _Files.length; i++) {
                 let formData = new FormData();
@@ -534,7 +535,23 @@
                 formData.append("coordinates", e.target.elements["coordinates_" + file_id].value);
                 formData.append("filedate", e.target.elements["filedate_" + file_id].value);
                 formData.append('uploaded_file', _Files[i]);
+                $.ajax({
+                    type: "POST",
+                    url: "/send_file",
+                    data: formData,
+                    success: function (response) {
+                        console.log(response.filename + ": " + response.message);
+                    },
+                    error: function () {
+                        console.log(error);
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                })
+
                 request.open('POST', '/send_file');
+
                 request.send(formData);
             }
         })
