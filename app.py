@@ -206,7 +206,7 @@ def mapa_uf(uf):
     p8592 = []
     p9721 = []
 
-    monuments = query_monuments(states_qids[uf.lower()])
+    monuments = query_monuments(states_qids[uf.lower()], lang)
     qids_with_image = []
     qids_without_image = []
     comandos = "var "
@@ -269,7 +269,7 @@ def geolocate(uf):
                    "rj": "Q41428", "rn": "Q43255", "ro": "Q43235", "rr": "Q42508", "rs": "Q40030", "sc": "Q41115",
                    "se": "Q43783", "sp": "Q175", "to": "Q43695"}
 
-    monuments, locais = query_monuments_without_coords(states_qids[uf.lower()])
+    monuments, locais = query_monuments_without_coords(states_qids[uf.lower()], lang)
 
     return render_template("geolocate.html",
                            bounds=uf_bounds(uf),
@@ -320,7 +320,7 @@ def monumento(qid):
     if request.method == "POST":
         return send_file()
     else:
-        metadata = query_monument(qid)
+        metadata = query_monument(qid, lang)
         if "commons_cat" in metadata:
             metadata["cat_info"] = get_category_info(metadata["commons_cat"][0])
 

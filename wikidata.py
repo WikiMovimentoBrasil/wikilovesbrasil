@@ -16,7 +16,7 @@ def query_wikidata(query):
     return data
 
 
-def query_monuments(qid):
+def query_monuments(qid, lang):
     result = query_wikidata("SELECT DISTINCT ?item ?itemLabel ?local ?localLabel ?coord "
                             "?P18 ?P3311 ?P4291 ?P4640 ?P8517 ?P1442 ?P1766"
                             "?P1801 ?P3451 ?P5252 ?P5775 ?P8592 ?P9721 ?P9906 "
@@ -45,7 +45,7 @@ def query_monuments(qid):
                             "OPTIONAL {?item wdt:P9721 ?P9721} "
                             "OPTIONAL {?item wdt:P9906 ?P9906} "
                             "SERVICE wikibase:label { bd:serviceParam wikibase:language "
-                            "'pt-br,pt,en,es,fr,de,ja,[AUTO_LANGUAGE]'.} "
+                            "'"+lang+",pt-br,pt,en,es,fr,de,ja,[AUTO_LANGUAGE]'.} "
                             "MINUS { ?item wdt:P31/wdt:P279* wd:Q22698. } "
                             "MINUS { ?item wdt:P31/wdt:P279* wd:Q473972. } "
                             "MINUS { ?item wdt:P31/wdt:P279* wd:Q271669. } "
@@ -96,7 +96,7 @@ def query_monuments(qid):
     return items
 
 
-def query_monuments_without_coords(qid):
+def query_monuments_without_coords(qid, lang):
     result = query_wikidata("SELECT DISTINCT ?item ?itemLabel ?local ?localLabel ?imagem ?endereço "
                             "WITH { "
                             "SELECT DISTINCT ?item ?local WHERE { "
@@ -120,7 +120,7 @@ def query_monuments_without_coords(qid):
                             "MINUS { ?item wdt:P31/wdt:P279* wd:Q271669. } "
                             "MINUS { ?item wdt:P625 ?coord. } "
                             "SERVICE wikibase:label { bd:serviceParam wikibase:language "
-                            "'pt-br,pt,en,es,fr,de,ja,[AUTO_LANGUAGE]'. } }")
+                            "'"+lang+",pt-br,pt,en,es,fr,de,ja,[AUTO_LANGUAGE]'. } }")
     items = []
     locais = []
     if "bindings" in result["results"] and result["results"]["bindings"]:
@@ -143,7 +143,7 @@ def query_monuments_without_coords(qid):
     return items, list(set(locais))
 
 
-def query_monument(qid):
+def query_monument(qid, lang):
     result = query_wikidata("SELECT DISTINCT ?item ?itemLabel ?coord ?endereço ?localLabel ?estadoLabel ?paísLabel "
                             "?commons_cat ?tombamento_id ?tombamentoLabel ?número_de_inventário ?P18 ?P3311 ?P4291 "
                             "?P4640 ?P8517 ?P1442 ?P1766 ?P1801 ?P3451 ?P5252 ?P5775 ?P8592 ?P9721 ?P9906 "
@@ -184,7 +184,7 @@ def query_monument(qid):
                             "?P8517 ?P1442 ?P1766 ?P1801 ?P3451 ?P5252 ?P5775 ?P8592 ?P9721 ?P9906 } AS %item "
                             "WHERE { "
                             "INCLUDE %item. "
-                            "SERVICE wikibase:label { bd:serviceParam wikibase:language 'pt-br,pt,en,[AUTO_LANGUAGE]'. }}")
+                            "SERVICE wikibase:label { bd:serviceParam wikibase:language '"+lang+",pt-br,pt,en,[AUTO_LANGUAGE]'. }}")
 
     qid_set = []    #
     coord_set = []    #
@@ -281,12 +281,12 @@ def query_monument(qid):
     return object_
 
 
-def get_item(qid):
+def get_item(qid, lang):
     url = "https://www.wikidata.org/w/api.php"
     params = {
         "action": "wbgetentities",
         "ids": qid,
-        "languages": "pt-br",
+        "languages": lang,
         "languagefallback": "pt",
         "format": "json"
     }
