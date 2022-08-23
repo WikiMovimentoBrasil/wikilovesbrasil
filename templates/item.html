@@ -275,14 +275,26 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
     <script>
-        const credits = '{{ _("Contribuidores do OpenStreetMap") }}';
+        const credits_osm = '&copy; <a href="https://openstreetmap.org/copyright">{{ _("Contribuidores do OpenStreetMap") }}</a>';
+        const credits_wikimedia = '<a href="https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use">{{ _("Mapas da Wikimedia") }}</a> | ' + credits_osm;
         const whereAmIMsg = '{{ _("Mostre-me onde estou") }}';
 
+        var map = L.map('map');
+
         const osm_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 18,
+            maxZoom: 7,
             minZoom: 4,
-            attribution: '&copy; <a href="https://openstreetmap.org/copyright">' + credits + '</a>'
+            attribution: credits_osm
+        }).addTo(map);
+
+        const wm_map = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
+            maxZoom: 7,
+            minZoom: 4,
+            attribution: credits_wikimedia
         });
+
+        // Layers
+        L.control.layers({"OpenStreetMap": osm_map, "Wikimedia": wm_map}, null,{position: 'bottomright'}).addTo(map);
 
         const blueIcon = L.AwesomeMarkers.icon({
             icon: 'fa-solid fa-landmark',
@@ -290,8 +302,6 @@
             iconColor: 'white',
             prefix: 'fas'
         });
-
-        var map = L.map('map', {layers: [osm_map]});
 
         var marker = L.marker({
             lat: {{ metadata.coord[1] }},

@@ -176,15 +176,23 @@
         const filterTooltip = "{{ _('Filtre os monumentos') }}";
         const selectTooltip = "{{ _('Selecione os monumentos') }}";
         const unselectTooltip = "{{ _('Limpar seleção') }}";
+        const credits_osm = '&copy; <a href="https://openstreetmap.org/copyright">{{ _("Contribuidores do OpenStreetMap") }}</a>';
+        const credits_wikimedia = '<a href="https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use">{{ _("Mapas da Wikimedia") }}</a> | ' + credits_osm;
 
         // Map layer
+        var map = L.map('map', {zoomControl:false}).setMaxBounds([[10, -20], [-40, -90]]);
+
         var osm_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 17,
             minZoom: 4,
             attribution: '&copy; <a href="https://openstreetmap.org/copyright">{{ _("Contribuidores do OpenStreetMap") }}</a>'
-        });
+        }).addTo(map);
 
-        var map = L.map('map', {layers: [osm_map], zoomControl:false}).setMaxBounds([[10, -20], [-40, -90]]);
+        const wm_map = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
+            maxZoom: 7,
+            minZoom: 4,
+            attribution: credits_wikimedia
+        });
 
         // Icons
         var greenIcon = L.AwesomeMarkers.icon({
@@ -317,6 +325,9 @@
                 title: "{{_('Mostre-me onde estou')}}"
             },
         }).addTo(map);
+
+        // Layers
+        L.control.layers({"OpenStreetMap": osm_map, "Wikimedia": wm_map}, null,{position: 'bottomright'}).addTo(map);
 
         // Logo at bottom left
         L.Control.Watermark = L.Control.extend({

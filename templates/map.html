@@ -18,7 +18,8 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename= '/js/br-states.js') }}"></script>
     <script type="text/javascript">
-        const credits = '{{ _("Contribuidores do OpenStreetMap") }}';
+        const credits_osm = '&copy; <a href="https://openstreetmap.org/copyright">{{ _("Contribuidores do OpenStreetMap") }}</a>';
+        const credits_wikimedia = '<a href="https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use">{{ _("Mapas da Wikimedia") }}</a> | ' + credits_osm;
         const youSelectedMsg = "{{_('Você selecionou:')}}";
         const selectionDefaultMessage = "{{_('Selecione uma região no mapa')}}";
         const logoImage = "{{ url_for('static', filename='/images/logo - pt.svg') }}";

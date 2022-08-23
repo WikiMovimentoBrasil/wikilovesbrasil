@@ -9,13 +9,19 @@ const colorTriples = [
 
 const regions = ["N", "NE", "CO", "SE", "S"]
 
+var map = L.map('map', {zoomControl:false}).setMaxBounds([[6.3, -75.1], [-34.8, -27.8]]).setView([-19.5, -54.4], 4);
+
 const osm_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 7,
     minZoom: 4,
-    attribution: '&copy; <a href="https://openstreetmap.org/copyright">' + credits + '</a>'
-});
+    attribution: credits_osm
+}).addTo(map);
 
-var map = L.map('map', {layers: [osm_map], zoomControl:false}).setMaxBounds([[6.3, -75.1], [-34.8, -27.8]]).setView([-19.5, -54.4], 4);
+const wm_map = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
+    maxZoom: 7,
+    minZoom: 4,
+    attribution: credits_wikimedia
+});
 
 // Zoom
 L.control.zoom({
@@ -33,6 +39,9 @@ var locate = L.control.locate({
         title: whereAmIMsg
     },
 }).addTo(map);
+
+// Layers
+L.control.layers({"OpenStreetMap": osm_map, "Wikimedia": wm_map}, null,{position: 'bottomright'}).addTo(map);
 
 // Logo at bottom left
 L.Control.Watermark = L.Control.extend({
