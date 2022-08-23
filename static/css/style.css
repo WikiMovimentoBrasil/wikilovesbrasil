@@ -50,8 +50,26 @@ p {
     line-height: unset !important;
 }
 
-.leaflet-control-locate.leaflet-bar.leaflet-control.active.following .locate {
+.leaflet-control-locate.leaflet-bar.leaflet-control.active.following .locate, .unselect-active{
     color: #2A93EE;
+}
+
+.leaflet-top.leaflet-left {
+    width: 100%;
+    /*display: flex;*/
+    /*flex-wrap: wrap;*/
+}
+
+.easyPrintHolder .a4PCssClass, .easyPrintHolder .a4LCssClass {
+  background-image: url(data:image/svg+xml;utf8;base64,PD9...go=);
+}
+/*.both-active, .yes-active, .no-active, .grouped-active, .ungrouped-active, .filter-active {*/
+/*    width: min-content !important;*/
+/*    white-space: nowrap;*/
+/*}*/
+
+.button-state {
+    display: inline !important;
 }
 
 hr {
@@ -65,16 +83,19 @@ hr {
 
 .info {
     padding: 6px 8px;
-    font: 14px/16px Arial, Helvetica, sans-serif;
+    font: 14px/16px Josefin Sans, Helvetica, sans-serif;
     background: white;
     background: rgba(255, 255, 255, 0.8);
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
 }
 
-.info h3 {
-    margin: 0 0 5px;
-    color: #777;
+.info h4 {
+    font-size: 150%;
+}
+
+.info h5 {
+    font-size: 125%;
 }
 
 #map {
@@ -92,8 +113,6 @@ a:hover:not(.button):not(.custom-link):not(.leaflet-bar-part.leaflet-bar-part-si
     color: var(--special-text-color);
     background-color: var(--main-color);
 }
-
-
 
 button:not(.easy-button-button):not(.submit):not(.custom):not(.send_button) {
     background-color: var(--main-color);
@@ -437,3 +456,64 @@ form button {
     margin: 5px;
     padding: 20px;
     text-align: center;}
+
+/* Switcher */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 53px;
+  height: 30px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 23px;
+  width: 23px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(23px);
+  -ms-transform: translateX(23px);
+  transform: translateX(23px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 30px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}

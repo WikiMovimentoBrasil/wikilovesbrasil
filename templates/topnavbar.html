@@ -1,6 +1,6 @@
 <nav class="topnav" id="topnavbar">
-    <a tabindex="0" id="inicio" href="{{url_for('inicio')}}" class="active custom-link">{{_("Página inicial")}}</a>
-    <a tabindex="0" id="sobre" href="{{url_for('sobre')}}">{{_("Sobre")}}</a>
+    <a tabindex="0" id="inicio" href="{{url_for('mapa')}}" class="active custom-link">{{_("Página inicial")}}</a>
+    <a tabindex="0" id="about" href="{{url_for('about')}}">{{_("Sobre")}}</a>
     {% if mapa_geral %}
         <a tabindex="0" id="mapa_geral" href="{{url_for('mapa')}}">{{_("Mapa geral")}}</a>
     {% endif %}

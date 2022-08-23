@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block styles %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-side-modals.css') }}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
@@ -16,18 +15,86 @@
 
 {% block title %}{{ _("WLM Brasil") }}{% endblock %}
 
-{% block navbar %}
-    {% with lang=lang, username=username, mapa_geral=True, mapa=False, geolocate=True, uf=uf, suggest=True %}
-        {% include 'topnavbar.html' %}
-    {% endwith %}
-{% endblock %}
+{#{% block navbar %}#}
+{#    {% with lang=lang, username=username, mapa_geral=True, mapa=False, geolocate=True, uf=uf, suggest=True %}#}
+{#        {% include 'topnavbar.html' %}#}
+{#    {% endwith %}#}
+{#{% endblock %}#}
 
 {% block banner %}{% endblock %}
 {% block content %}
     <div class="w3-row" style="height:100%">
-        <div class="w3-container" style="height:calc(100vh - 48px); padding:0">
+        <div class="w3-container" style="height:100vh; padding:0">
             <div id="map"></div>
-            <div class="modal modal-bottom fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="selectedState" aria-hidden="true">
+            <div class="modal modal-left fade" id="presentationModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document" >
+                <div class="modal-content"style="background-color: rgba(255,255,255,0.85);">
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="selectedState">{{ _("Seja bem-vindo(a/e)!") }}</h2>
+                        <button type="button" class="close custom" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{ _("Olá, gostaríamos de te dar as boas-vindas!") }}</p>
+                        <p>{{ _("O <b>Wiki Loves Brasil</b> é um aplicativo de envio de imagens para a etapa nacional do maior concurso fotográfico do mundo, o <b><i>Wiki Loves Monuments</i></b>!") }}</p>
+                        <p>{{ _("Envie suas fotografias do patrimônio histórico brasileiro durante o mês de setembro para participar e concorrer a prêmios.") }}</p>
+                        <hr>
+                        <p>{{ _("Comece selecionando uma subdivisão no mapa para ver os monumentos da região.") }}</p>
+                        <hr>
+                        <a target="_blank" href="{{ _('https://pt.wikipedia.org/wiki/Wikipédia:Wiki_Loves_Monuments/Brasil') }}">
+                            <button class="custom" style="color:black; padding:10px; width:100%; background-color: #cdcdcd; margin-bottom: 1rem">
+                                <img src="{{ url_for('static', filename='/images/logowikipedia.png') }}" width="25px">
+                                {{ _("Visite a página do concurso na Wiki") }}
+                            </button>
+                        </a>
+                        <a target="_blank" href="{{ url_for('about') }}">
+                            <button class="custom" style="padding:10px; width:100%; background-color: #990000; margin-bottom: 1rem">
+                                <i class="fas fa-info-circle"></i>
+                                {{ _("Saiba mais sobre este aplicativo") }}
+                            </button>
+                        </a>
+                    </div>
+    {#                <div class="modal-footer">#}
+    {#                </div>#}
+                </div>
+            </div>
+        </div>
+            <div class="modal modal-left fade" id="aboutModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document" >
+                <div class="modal-content"style="background-color: rgba(255,255,255,0.85);">
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="about">{{ _("Seja bem-vindo(a/e)!") }}</h2>
+                        <button type="button" class="close custom" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{ _("Olá, gostaríamos de te dar as boas-vindas!") }}</p>
+                        <p>{{ _("O <b>Wiki Loves Brasil</b> é um aplicativo de envio de imagens para a etapa nacional do maior concurso fotográfico do mundo, o <b><i>Wiki Loves Monuments</i></b>!") }}</p>
+                        <p>{{ _("Envie suas fotografias do patrimônio histórico brasileiro durante o mês de setembro para participar e concorrer a prêmios.") }}</p>
+                        <hr>
+                        <p>{{ _("Comece selecionando uma subdivisão no mapa para ver os monumentos da região.") }}</p>
+                        <hr>
+                        <a target="_blank" href="{{ _('https://pt.wikipedia.org/wiki/Wikipédia:Wiki_Loves_Monuments/Brasil') }}">
+                            <button class="custom" style="color:black; padding:10px; width:100%; background-color: #cdcdcd; margin-bottom: 1rem">
+                                <img src="{{ url_for('static', filename='/images/logowikipedia.png') }}" width="25px">
+                                {{ _("Visite a página do concurso na Wiki") }}
+                            </button>
+                        </a>
+                        <a target="_blank" href="{{ url_for('about') }}">
+                            <button class="custom" style="padding:10px; width:100%; background-color: #990000; margin-bottom: 1rem">
+                                <i class="fas fa-info-circle"></i>
+                                {{ _("Saiba mais sobre este aplicativo") }}
+                            </button>
+                        </a>
+                    </div>
+    {#                <div class="modal-footer">#}
+    {#                </div>#}
+                </div>
+            </div>
+            </div>
+            <div class="modal modal-left fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="selectedState" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -38,6 +105,13 @@
                         </div>
                         <div class="modal-body w3-container" style="font-family: 'Josefin Sans', 'FontAwesome', 'Font Awesome 6 Free', sans-serif">
                             <form>
+                                <div class="w3-row">
+                                    Texto
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
                                 <div class="w3-container w3-third">
                                     <div class="form-group">
                                         <label for="has_image">{{ _("Possui imagem:") }}</label>
@@ -96,9 +170,12 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-easyprint@2.1.9/dist/bundle.min.js" charset="utf-8"></script>
     <script type="text/javascript">
         const bounds = {{ bounds | safe }};
         const filterTooltip = "{{ _('Filtre os monumentos') }}";
+        const selectTooltip = "{{ _('Selecione os monumentos') }}";
+        const unselectTooltip = "{{ _('Limpar seleção') }}";
 
         // Map layer
         var osm_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -107,7 +184,7 @@
             attribution: '&copy; <a href="https://openstreetmap.org/copyright">{{ _("Contribuidores do OpenStreetMap") }}</a>'
         });
 
-        var map = L.map('map', {layers: [osm_map]}).setMaxBounds([[10, -20], [-40, -90]]);
+        var map = L.map('map', {layers: [osm_map], zoomControl:false}).setMaxBounds([[10, -20], [-40, -90]]);
 
         // Icons
         var greenIcon = L.AwesomeMarkers.icon({
@@ -117,9 +194,23 @@
             prefix: 'fas'
         });
 
+        var greenblueIcon = L.AwesomeMarkers.icon({
+            icon: 'fa-solid fa-image',
+            markerColor: 'darkblue',
+            iconColor: 'white',
+            prefix: 'fas'
+        });
+
         var redIcon = L.AwesomeMarkers.icon({
             icon: 'fa-camera',
             markerColor: 'red',
+            iconColor: 'white',
+            prefix: 'fa'
+        });
+
+        var redblueIcon = L.AwesomeMarkers.icon({
+            icon: 'fa-camera',
+            markerColor: 'darkblue',
             iconColor: 'white',
             prefix: 'fa'
         });
@@ -197,19 +288,28 @@
 
         var toggle_com_imagens = false;
         var toggle_sem_imagens = false;
+        var toggle_select = false;
 
         // Adding elements to the map
         markers_with_image.addTo(map);
 
         markers_without_image.addTo(map);
 
+        var markers_selected = L.featureGroup.subGroup();
+
         // Making map fit to the state
         map.fitBounds(bounds);
 
         // Buttons
+        // Zoom
+        L.control.zoom({
+            position: 'bottomright'
+        }).addTo(map);
+
         // Locate
         var locate = L.control.locate({
             flyTo: true,
+            position: 'bottomright',
             returnToPrevBounds: true,
             icon: 'locate fa-solid fa-location-dot',
             iconElementTag: 'i',
@@ -218,17 +318,243 @@
             },
         }).addTo(map);
 
-        var has_image_filtered = "all",
-            grouping_filtered = "yes",
-            types_filtered = "all";
+        // Logo at bottom left
+        L.Control.Watermark = L.Control.extend({
+            onAdd: function(map) {
+                var img = L.DomUtil.create('img');
+                img.src = "{{ url_for('static', filename='/images/logo - pt.svg') }}";
+                img.style.width = '108px';
+                img.style.marginBottom = '26px';
+                return img;
+            }
+        });
+        L.control.watermark = function(opts) { return new L.Control.Watermark(opts); }
+        L.control.watermark({ position: 'bottomleft' }).addTo(map);
 
-        // Filter
-        var filter = L.easyButton('fa-solid fa-filter', function (btn, map) {
-            $('#has_image').val(has_image_filtered);
-            $('#grouping').val(grouping_filtered);
-            $('#types').val(types_filtered);
-            $('#filterModal').modal('show');
-        }, filterTooltip).addTo(map);
+        // Menu
+        const menuButton = L.easyButton({
+            states:[{
+                icon: "<i class='fa-solid fa-bars'></i> ",
+                stateName: 'menu',
+                onClick: function(){ $('#presentationModal').modal('show'); }}]}).addTo(map);
+
+
+        // Home
+        const homeButton = L.easyButton(
+            "<i class='fa-solid fa-house'></i>",
+            function(){ window.open("{{ url_for('mapa') }}", '_self');},
+            '{{ _("Voltar para o mapa principal") }}'
+        ).addTo(map);
+
+        // GROUP/UNGROUP
+        var groupButton = L.easyButton({
+            states:[
+                {
+                    icon: "<i class='fa-solid fa-object-ungroup'></i> " + "{{ _('Desagrupar') }}",
+                    stateName: 'grouped',
+                    width: '100%',
+                    title: '{{ _("Desagrupar monumentos") }}',
+                    onClick: function(btn, map){
+                        btn.state('ungrouped');
+                        markers_with_image.freezeAtZoom("max");
+                        markers_without_image.freezeAtZoom("max");
+                    }
+                },
+                {
+                    icon: "<i class='fa-solid fa-object-group'></i> " + "{{ _('Agrupar') }}",
+                    stateName: 'ungrouped',
+                    width: '100%',
+                    title: '{{ _("Agrupar monumentos") }}',
+                    onClick: function(btn){
+                        btn.state('grouped');
+                        markers_with_image.freezeAtZoom(false);
+                        markers_without_image.freezeAtZoom(false);
+                    }
+                }
+            ]}).addTo(map);
+
+        // FILTER
+        var has_image_filtered = "all",
+                    grouping_filtered = "yes",
+                    types_filtered = "all";
+
+        var filterButton = L.easyButton({
+            states:[
+                {
+                    icon: "<i class='fa-solid fa-filter'></i> " + "{{ _('Filtrar') }}",
+                    stateName: 'filter',
+                    width: '100%',
+                    title: filterTooltip,
+                    onClick: function(btn, map){
+                        $('#has_image').val(has_image_filtered);
+                        $('#grouping').val(grouping_filtered);
+                        $('#types').val(types_filtered);
+                        $('#filterModal').modal('show');
+                    }
+                }]}).addTo(map);
+
+        const printButton = L.easyPrint({
+            title: '{{ _("Imprimir mapa") }}',
+            position: 'topleft',
+            sizeModes: ['A4Portrait', 'A4Landscape'],
+            defaultSizeTitles: {A4Landscape: '{{ _("Paisagem") }}', A4Portrait: '{{ _("Retrato") }}'}
+        }).addTo(map);
+
+        const infoButton = L.easyButton(
+            '<i class="fa-solid fa-info"></i>',
+            function() { window.open("{{ url_for('about') }}", '_blank');},
+            '{{ _("Informações sobre o aplicativo") }}'
+        ).addTo(map);
+
+        var saveSelectButton = L.easyButton({
+            states:[
+                {
+                    icon: "<i class='fa-solid fa-download'></i> " + "{{ _('Salvar seleção') }}",
+                    stateName: 'saveselect',
+                    width: '100%',
+                    display: 'none',
+                    title: selectTooltip,
+                    onClick: function(btn, map){
+                        let selectedMarkers = [];
+                        markers_selected.getLayers().forEach(function (marker) {
+                            const match = marker.getPopup().getContent().match(/.*(Q\d+).*/);
+                            selectedMarkers.push(match[1]);
+                        });
+                        $.ajax({
+                                url: "/print_selection",
+                                type: "POST",
+                                data: JSON.stringify({"items":selectedMarkers}),
+                                contentType: "application/json",
+                                dataType: "json",
+
+                                success: function (response) {
+                                    {#alert("Sucesso");#}
+                                    var uri = 'data:text/csv;charset=UTF-8,' + encodeURIComponent(response);
+                                    var link = document.createElement('a');
+                                    link.download = 'route.csv';
+                                    link.href = uri;
+
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    document.body.removeChild(link);
+                                },
+                                error: function (response) {
+                                    alert("Erro");
+                                }
+                            });
+                    }
+                }
+            ]
+        });
+
+        var selectButton = L.easyButton({
+            states:[
+                {
+                    icon: "<i class='fa-solid fa-map-location-dot'></i> " + "{{ _('Selecionar') }}",
+                    stateName: 'select',
+                    width: '100%',
+                    title: selectTooltip,
+                    onClick: function(btn, map){
+                        btn.state('unselect');
+                        toggle_select = !toggle_select;
+                        saveSelectButton.addTo(map);
+                        console.log(toggle_select);
+                    }
+                },
+                {
+                    icon: "<i class='fa-solid fa-map-location-dot''></i> " + "{{ _('Selecionar') }}",
+                    stateName: 'unselect',
+                    width: '100%',
+                    title: unselectTooltip,
+                    onClick: function(btn, map){
+                        btn.state('select');
+                        markers_selected.eachLayer(function (marker){
+                            if(marker.getIcon() === greenblueIcon) {
+                                marker.setIcon(greenIcon);
+                            }
+                            else if (marker.getIcon() === redblueIcon) {
+                                marker.setIcon(redIcon);
+                            }
+                        });
+                        toggle_select = !toggle_select;
+                        saveSelectButton.remove();
+                        console.log(toggle_select);
+                    }
+                },
+            ]
+        }).addTo(map);
+
+        function markerOnClick (e) {
+            if (toggle_select) {
+                e.target.closePopup();
+                if(e.target.getIcon() === greenIcon) {
+                    e.target.setIcon(greenblueIcon);
+                    e.target.addTo(markers_selected);
+                }
+                else if(e.target.getIcon() === greenblueIcon) {
+                    e.target.setIcon(greenIcon);
+                    e.target.removeFrom(markers_selected);
+                }
+                else if (e.target.getIcon() === redIcon) {
+                    e.target.setIcon(redblueIcon);
+                    e.target.addTo(markers_selected);
+                }
+                else {
+                    e.target.setIcon(redIcon);
+                    e.target.removeFrom(markers_selected);
+                }
+                map.removeLayer(markers_selected);
+                console.log("Teste2");
+            }
+            else {
+                console.log("Teste3");
+
+            }
+        }
+
+        {#// Has image button#}
+        {#var hasImageButton = L.easyButton({#}
+        {#    states:[#}
+        {#        {#}
+        {#            icon: "<i class='fa-regular fa-image'></i> " + "{{ _('Todas') }}",#}
+        {#            stateName: 'both',#}
+        {#            width: '100%',#}
+        {#            onClick: function(btn, map){#}
+                        {#$('#presentationModal').modal('show');#}
+        {#                btn.state('yes');#}
+        {#                btn.button.style.backgroundColor = '#72b026';#}
+        {#                btn.button.style.color = 'white';#}
+        {#                map.addLayer(markers_with_image);#}
+        {#                map.removeLayer(markers_without_image);#}
+        {#            }#}
+        {#        },#}
+        {#        {#}
+        {#            icon: "<i class='fa-regular fa-image'></i> " + "{{ _('Sim') }}",#}
+        {#            stateName: 'yes',#}
+        {#            width: '100%',#}
+        {#            onClick: function(btn){#}
+                        {#$('#presentationModal').modal('show');#}
+        {#                btn.state('no');#}
+        {#                btn.button.style.backgroundColor = '#A42E1E';#}
+        {#                btn.button.style.color = 'white';#}
+        {#                map.removeLayer(markers_with_image);#}
+        {#                map.addLayer(markers_without_image);#}
+        {#            }#}
+        {#        },#}
+        {#        {#}
+        {#            icon: "<i class='fa-solid fa-camera'></i> " + "{{ _('Não') }}",#}
+        {#            stateName: 'no',#}
+        {#            width: '100%',#}
+        {#            onClick: function(btn){#}
+                        {#$('#presentationModal').modal('show');#}
+        {#                btn.state('both');#}
+        {#                btn.button.style.backgroundColor = 'white';#}
+        {#                btn.button.style.color = 'black';#}
+        {#                map.addLayer(markers_with_image);#}
+        {#                map.addLayer(markers_without_image);#}
+        {#            }#}
+        {#        }#}
+        {#    ]}).addTo(map);#}
 
         // Actions
         function removeOtherLayers(layer_to_preserve) {

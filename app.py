@@ -7,7 +7,7 @@ from flask_babel import Babel, gettext
 from oauth_wikidata import get_username, upload_file, get_token, build_text
 from requests_oauthlib import OAuth1Session
 from wikidata import query_monuments, query_monuments_without_coords, query_monument, get_category_info, get_article,\
-    get_sitelinks, api_post_request
+    get_sitelinks, api_post_request, query_monuments_selected
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
@@ -157,7 +157,7 @@ def page_not_found(e):
 # Função para exibir a tela de descrição do aplicativo
 @app.route('/about')
 @app.route('/sobre')
-def sobre():
+def about():
     username = get_username()
     lang = pt_to_ptbr(get_locale())
     return render_template('sobre.html',
@@ -169,14 +169,6 @@ def sobre():
 @app.route('/')
 @app.route('/home')
 @app.route('/inicio')
-def inicio():
-    username = get_username()
-    lang = pt_to_ptbr(get_locale())
-    return render_template('inicio.html',
-                           username=username,
-                           lang=lang)
-
-
 @app.route('/mapa')
 @app.route('/map')
 def mapa():
@@ -233,10 +225,10 @@ def mapa_uf(uf):
                 p8592.append(item["item"])
             if "p9721" in item and item["p9721"]:
                 p9721.append(item["item"])
-            comandos += item["item"] + " = L.marker({lon: " + item["coord"][0] + ", lat: " + item["coord"][1] + "}, {icon: greenIcon})" + ".bindTooltip(\"" + tooltip + "\", " + tooltip_style + ").bindPopup(\"" + popup + "\", " + popup_style + "),\n"
+            comandos += item["item"] + " = L.marker({lon: " + item["coord"][0] + ", lat: " + item["coord"][1] + "}, {icon: greenIcon})" + ".bindTooltip(\"" + tooltip + "\", " + tooltip_style + ").bindPopup(\"" + popup + "\", " + popup_style + ").on('click', markerOnClick),\n"
             qids_with_image.append(item["item"])
         else:
-            comandos += item["item"] + " = L.marker({lon: " + item["coord"][0] + ", lat: " + item["coord"][1] + "}, {icon: redIcon})" + ".bindTooltip(\"" + tooltip + "\", " + tooltip_style + ").bindPopup(\"" + popup + "\", " + popup_style + ").addTo(markers_without_image),\n"
+            comandos += item["item"] + " = L.marker({lon: " + item["coord"][0] + ", lat: " + item["coord"][1] + "}, {icon: redIcon})" + ".bindTooltip(\"" + tooltip + "\", " + tooltip_style + ").bindPopup(\"" + popup + "\", " + popup_style + ").on('click', markerOnClick).addTo(markers_without_image),\n"
             qids_without_image.append(item["item"])
 
         comandos = comandos[:-2] + ";\n"
@@ -438,6 +430,15 @@ def send_file():
         else:
             message = gettext(u'Ocorreu algum erro! Verifique o formulário e tente novamente. Caso o erro persista, por favor, reporte em https://github.com/WikiMovimentoBrasil/wikilovesbrasil/issues')
         return jsonify({"message": message, "status": status_code, "filename": form["filename"]})
+
+
+@app.route('/print_selection', methods=["POST"])
+def print_selection():
+    if request.method == "POST":
+        jsondata = request.get_json()
+        items = jsondata['items']
+        results = query_monuments_selected(items, pt_to_ptbr(get_locale()))
+        return jsonify(results), 200
 
 
 ##############################################################

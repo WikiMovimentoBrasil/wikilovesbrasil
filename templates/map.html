@@ -2,17 +2,28 @@
 
 {% block styles %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/bootstrap-side-modals.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
 {% endblock %}
 
 {% block scripts %}
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename= '/js/br-states.js') }}"></script>
     <script type="text/javascript">
         const credits = '{{ _("Contribuidores do OpenStreetMap") }}';
         const youSelectedMsg = "{{_('Você selecionou:')}}";
+        const selectionDefaultMessage = "{{_('Selecione uma região no mapa')}}";
+        const logoImage = "{{ url_for('static', filename='/images/logo - pt.svg') }}";
+        const whereAmIMsg = '{{ _("Mostre-me onde estou") }}';
+        const menuName = '{{ _("Menu") }}';
     </script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/states.js') }}"></script>
 {% endblock %}
@@ -20,62 +31,46 @@
 {% block title %}{{ _("Brasil") }}{% endblock %}
 
 {% block navbar %}
-    {% with lang=lang, username=username %}
-        {% include 'topnavbar.html' %}
-    {% endwith %}
+{#    {% with lang=lang, username=username %}#}
+{#        {% include 'topnavbar.html' %}#}
+{#    {% endwith %}#}
 {% endblock %}
 
 {% block banner %}{% endblock %}
 {% block content %}
-    <div class="w3-row" style="padding: 10px; text-align: center; font-size:125%">
-        {{ _('Selecione um dos estados brasileiros no mapa') }}
-    </div>
-    <div class="w3-row" style="height:calc(100vh - 97.61px); padding:0">
+    <div class="w3-row" style="height:100vh; padding:0">
         <div id="map"></div>
-    </div>
-    <div class="modal fade" id="selectionModal" tabindex="-1" role="dialog" aria-labelledby="selectedState"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="selectedState">{{ _("Seleção de estado") }}</h5>
-                    <button type="button" class="close custom" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="w3-row" style="padding: 10px; text-align: center; font-size:125%">
-                        <p id="nome"></p>
+        <div class="modal modal-left fade" id="presentationModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document" >
+                <div class="modal-content"style="background-color: rgba(255,255,255,0.85);">
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="selectedState">{{ _("Seja bem-vindo(a/e)!") }}</h2>
+                        <button type="button" class="close custom" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                    <div class="w3-row" style="text-align: center; font-size:125%">
-                        <a id="uf_monuments" class="button">
-                            <button class="custom" type="button"
-                                    style="width:100%; font-size: 100%; margin:5px 0; padding: 10px;">
-                                {{ _('Veja monumentos no mapa') }}
+                    <div class="modal-body">
+                        <p>{{ _("Olá, gostaríamos de te dar as boas-vindas!") }}</p>
+                        <p>{{ _("O <b>Wiki Loves Brasil</b> é um aplicativo de envio de imagens para a etapa nacional do maior concurso fotográfico do mundo, o <b><i>Wiki Loves Monuments</i></b>!") }}</p>
+                        <p>{{ _("Envie suas fotografias do patrimônio histórico brasileiro durante o mês de setembro para participar e concorrer a prêmios.") }}</p>
+                        <hr>
+                        <p>{{ _("Comece selecionando uma subdivisão no mapa para ver os monumentos da região.") }}</p>
+                        <hr>
+                        <a target="_blank" href="{{ _('https://pt.wikipedia.org/wiki/Wikipédia:Wiki_Loves_Monuments/Brasil') }}">
+                            <button class="custom" style="color:black; padding:10px; width:100%; background-color: #cdcdcd; margin-bottom: 1rem">
+                                <img src="{{ url_for('static', filename='/images/logowikipedia.png') }}" width="25px">
+                                {{ _("Visite a página do concurso na Wiki") }}
+                            </button>
+                        </a>
+                        <a target="_blank" href="{{ url_for('about') }}">
+                            <button class="custom" style="padding:10px; width:100%; background-color: #990000; margin-bottom: 1rem">
+                                <i class="fas fa-info-circle"></i>
+                                {{ _("Saiba mais sobre este aplicativo") }}
                             </button>
                         </a>
                     </div>
-                    <div class="w3-row" style="text-align: center; font-size:125%">
-                        <a id="uf_monuments_without_coordinates" class="button">
-                            <button class="custom" type="button"
-                                    style="width:100%; font-size: 100%; margin:5px 0; padding: 10px;">
-                                {{ _('Adicione coordenadas a monumentos') }}
-                            </button>
-                        </a>
-                    </div>
-                    <div class="w3-row" style="text-align: center; font-size:125%">
-                        <a id="uf_monuments_suggestion" class="button">
-                            <button class="custom" type="button"
-                                    style="width:100%; font-size: 100%; margin:5px 0; padding: 10px; background-color: #67524a">
-                                {{ _('Sugira monumentos faltantes') }}
-                            </button>
-                        </a>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="custom btn btn-secondary" data-dismiss="modal">
-                        {{ _("Cancelar") }}
-                    </button>
+    {#                <div class="modal-footer">#}
+    {#                </div>#}
                 </div>
             </div>
         </div>

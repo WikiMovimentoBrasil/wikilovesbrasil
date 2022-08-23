@@ -15,9 +15,51 @@ const osm_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
     attribution: '&copy; <a href="https://openstreetmap.org/copyright">' + credits + '</a>'
 });
 
-var map = L.map('map', {layers: [osm_map]}).setMaxBounds([[6.3, -75.1], [-34.8, -27.8]]).setView([-19.5, -54.4], 4);
+var map = L.map('map', {layers: [osm_map], zoomControl:false}).setMaxBounds([[6.3, -75.1], [-34.8, -27.8]]).setView([-19.5, -54.4], 4);
+
+// Zoom
+L.control.zoom({
+    position: 'bottomright'
+}).addTo(map);
+
+// Locate
+var locate = L.control.locate({
+    flyTo: true,
+    position: 'bottomright',
+    returnToPrevBounds: true,
+    icon: 'locate fa-solid fa-location-dot',
+    iconElementTag: 'i',
+    strings: {
+        title: whereAmIMsg
+    },
+}).addTo(map);
+
+// Logo at bottom left
+L.Control.Watermark = L.Control.extend({
+    onAdd: function(map) {
+        var img = L.DomUtil.create('img');
+        img.src = logoImage;
+        img.style.width = '108px';
+        img.style.marginBottom = '26px';
+        return img;
+    }
+});
+L.control.watermark = function(opts) { return new L.Control.Watermark(opts); }
+L.control.watermark({ position: 'bottomleft' }).addTo(map);
+
+// Menu
+const menuButton = L.easyButton({
+    states:[{
+        icon: "<i class='fa-solid fa-bars'></i> " + menuName,
+        stateName: 'menu',
+        onClick: function(){ $('#presentationModal').modal('show'); }}]}).addTo(map);
 
 // Functions
+
+//This code opens the homepage sidemodal at loading
+$(window).on('load', function() {
+    $('#presentationModal').modal('show');
+});
 
 // This code defines the fill color of each state based on its region
 function getFillColor(d) {
@@ -75,12 +117,15 @@ function highlightFeature(e) {
     if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
         layer.bringToFront();
     }
+
+    // info.update(layer.feature.properties);
 }
 
 // This code resets the original style once the mouse is not over
 // the state
 function resetHighlight(e) {
     estados.resetStyle(e.target);
+    // info.update();
 }
 
 // This code makes the map zoom and center the state selected
@@ -88,39 +133,44 @@ function zoomToFeature(e) {
     map.fitBounds(e.target.getBounds());
 }
 
-// This code fills the modal instance with information and buttons
-// about the state selected
-function showFeature(e) {
-    const nameObject = $("#nome");
-    nameObject.text(youSelectedMsg + "\n" + e.target.feature.properties.name);
-    nameObject.html(nameObject.html().replace(/\n/g, '<br/>'));
-    const uf = e.target.feature.properties.uf.toLowerCase();
-    $("#uf_monuments").attr("href", "/mapa/" + uf);
-    $("#uf_monuments_without_coordinates").attr("href", "/mapa/" + uf + "/geolocalizar");
-    $("#uf_monuments_suggestion").attr("href", "/mapa/sugerir?uf=" + uf);
-    $("#uf_monuments button").css({
-        "background-color": getBorderColor(e.target.feature.properties.region),
-        "color": getFontColor(e.target.feature.properties.region)
-    });
-    $("#uf_monuments_without_coordinates button").css({
-        "background-color": getFillColor(e.target.feature.properties.region),
-        "color": getFontColor(e.target.feature.properties.region)
-    });
+function openFeature(e) {
+    window.open("/mapa/"+e.target.feature.properties.uf.toLowerCase(), "_self");
 }
 
+// This code fills the modal instance with information and buttons
+// about the state selected
+// function showFeature(e) {
+//     const nameObject = $("#nome");
+//     nameObject.text(youSelectedMsg + "\n" + e.target.feature.properties.name);
+//     nameObject.html(nameObject.html().replace(/\n/g, '<br/>'));
+//     const uf = e.target.feature.properties.uf.toLowerCase();
+//     $("#uf_monuments").attr("href", "/mapa/" + uf);
+//     $("#uf_monuments_without_coordinates").attr("href", "/mapa/" + uf + "/geolocalizar");
+//     $("#uf_monuments_suggestion").attr("href", "/mapa/sugerir?uf=" + uf);
+//     $("#uf_monuments button").css({
+//         "background-color": getBorderColor(e.target.feature.properties.region),
+//         "color": getFontColor(e.target.feature.properties.region)
+//     });
+//     $("#uf_monuments_without_coordinates button").css({
+//         "background-color": getFillColor(e.target.feature.properties.region),
+//         "color": getFontColor(e.target.feature.properties.region)
+//     });
+// }
+
 // This code opens the modal with a delay
-function openModal() {
-    window.setTimeout(function () {
-        $('#selectionModal').modal('show');
-    }, 750)
-}
+// function openModal() {
+//     window.setTimeout(function () {
+//         $('#selectionModal').modal('show');
+//     }, 750)
+// }
 
 // When the user click in any state on the map, executes
 // the appropriate functions
 function selectFunction(e) {
     zoomToFeature(e);
-    showFeature(e);
-    openModal();
+    openFeature(e);
+    // showFeature(e);
+    // openModal();
 }
 
 // When the user passes the mouve over a state on the map,
