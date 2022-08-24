@@ -226,7 +226,11 @@ button:not(.easy-button-button):not(.submit):not(.custom):not(.send_button) {
     }
 
     .image-type {
-        width: 25% !important;
+        width: 33% !important;
+    }
+
+    .flex-container {
+        flex-direction: column !important;
     }
 }
 
@@ -395,7 +399,12 @@ form button {
 
 .table td, .table th {
     vertical-align: middle !important;
+    padding: 0.5rem !important;
 }
+
+/*td h2 {*/
+/*    margin-bottom: 0 !important;*/
+/*}*/
 
 /* Teste */
 #fileElem {
@@ -420,18 +429,20 @@ form button {
 }
 
 /*Testando*/
+.flex-container {display: flex;}
 .section:nth-child(even) { background-color: var(--special-text-color) }
 .section:nth-child(odd) { background-color: var(--background-color) }
 .margin-container { width: 12.5%; line-height: 0.01; }
 .image-container { display: flex; align-items: center; background-color: gainsboro; }
 .file-upload-container {display: flex; align-items: center; margin: 1rem 0; padding: 1rem;}
-#metadata-table-container { padding: 0 1rem; line-height: 150%; background-color: var(--background-color) }
+#metadata-table-container { line-height: 150%; background-color: var(--background-color) }
 #metadata-table { width: 100%; margin-bottom: 1rem; }
 .title { border-bottom: 1px solid #777777; text-align: left; }
 .table-icon { width:20px; padding: 5px; }
 .no-info { color:#595959; pointer-events: none; }
 .with-info { color: #0067a3 }
 .space-border { padding: 0.75rem }
+.space-border-minus-bottom { padding: 0.75rem 0.75rem 0 0.75rem }
 .cancel { background-color: var(--main-color) !important; }
 .remove_icon {
     float: unset;

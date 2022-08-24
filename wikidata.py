@@ -369,11 +369,11 @@ def query_monuments_selected(qids, lang):
                 gettext("Placa com o nome do lugar (P1766)"): p1766,
                 gettext("Imagem de placa comemorativa (P1801)"): p1801,
                 gettext("Imagem noturna (P3451)"): p3451,
-                gettext("Vista no inverno (P:P5252)"): p5252,
-                gettext("Imagem do interior (P:P5775)"): p5775,
-                gettext("Vista aérea (P:P8592)"): p8592,
-                gettext("Imagem da entrada (P:P9721)"): p9721,
-                gettext("Imagem da inscrição (P:P9906)"): p9906
+                gettext("Vista no inverno (P5252)"): p5252,
+                gettext("Imagem do interior (P5775)"): p5775,
+                gettext("Vista aérea (P8592)"): p8592,
+                gettext("Imagem da entrada (P9721)"): p9721,
+                gettext("Imagem da inscrição (P9906)"): p9906
             })
 
     pd_object = pd.DataFrame.from_records(objects)

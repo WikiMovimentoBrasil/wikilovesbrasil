@@ -1,11 +1,5 @@
 {% extends "base.html" %}
 
-{% block navbar %}
-    {% with lang=lang, username=username %}
-        {% include 'topnavbar.html' %}
-    {% endwith %}
-{% endblock %}
-
 {% block title %}{% if metadata.label %}{{ metadata.label[0] }}{% else %}{{ metadata.qid[0] }}{% endif %}{% endblock %}
 
 {% block styles %}
@@ -21,249 +15,257 @@
 {% block banner %}{% endblock %}
 
 {% block content %}
-    {# Imagem e metadados #}
-    <div class="w3-row section">
-        <div class="w3-col margin-container">&nbsp;</div>
-        <div class="w3-threequarter image-container">
-            <div class="w3-third" id="image">
-                <img style="width:100%" loading="lazy" src="{{ metadata.image }}?width=600px"
-                     alt="{{ metadata.label[0] }}">
-            </div>
-            <div class="w3-twothird" id="metadata-table-container">
-                <table class="table table-borderless" id="metadata-table">
-                    <thead>
-                    <tr class="title">
-                        <th colspan="4"><h2>{{ metadata.label[0] }}</h2></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% if metadata.address[0] %}
-                        <tr id="address">
-                            <td class="table-icon"><i class="fa-solid fa-building"></i></td>
-                            <td colspan="3">{{ metadata.address[0] }}</td>
-                        </tr>
-                    {% endif %}
-                    <tr id="local">
-                        <td class="table-icon"><i class="fa-solid fa-map-location-dot"></i></td>
-                        <td colspan="3">{{ metadata.local | join("; ") }} &bull; {{ metadata.state[0] }}
-                            &bull; {{ metadata.country[0] }}</td>
-                    </tr>
-                    <tr id="category-wikipedia">
-                        <td class="table-icon"><img src="{{ url_for('static', filename='images/commons.svg') }}"
-                                                    width="16px" alt="Wikimedia Commons"></td>
-                        {% if metadata.commons_cat[0] %}
-                            <td><a target="_blank"
-                                   href="https://commons.wikimedia.org/wiki/Category:{{ metadata.commons_cat[0] }}">
-                                {{ _("%(number_images)s imagens", number_images=metadata.cat_info["files"]) }}
-                                {% if metadata.cat_info["subcats"]>0 %}
-                                    {{ _(" e %(number_subcats)s subcategorias", number_subcats=metadata.cat_info["subcats"]) }}
-                                {% endif %}
-                            </a></td>
-                        {% else %}
-                            <td class="no-info">{{ _("Nenhuma categoria no Wikimedia Commons") }}</td>
-                        {% endif %}
-                        <td class="table-icon"><i class="fa-brands fa-wikipedia-w"></i></td>
-                        {% if metadata.sitelinks %}
-                            <td><a href="#wikipedia">
-                                {% set sitelinks_number=metadata.sitelinks|length %}
-                                {% if sitelinks_number == 1 %}
-                                    {{ _("1 artigo") }}
-                                {% elif sitelinks_number > 1 %}
-                                    {{ _("%(number)s artigo(s) em diferentes idiomas", number=sitelinks_number) }}
-                                {% endif %}
-                            </a></td>
-                        {% else %}
-                            <td class="no-info">{{ _("Nenhum artigo na Wikipédia") }}</td>
-                        {% endif %}
-                    </tr>
-                    <tr id="wikidata-website">
-                        <td class="table-icon"><img src="{{ url_for('static', filename='images/wikidata.svg') }}"
-                                                    width="18px" alt="wikidata"></td>
-                        <td><a target="_blank"
-                               href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}">{{ _("Item no Wikidata") }}</a><br><span
-                                class="no-info">{{ metadata.qid[0] }}</span></td>
-                        <td class="table-icon"><i class="fa-solid fa-link"></i></td>
-                        {% if metadata.website and metadata.website[0] %}
-                            <td><a target="_blank" href="{{ metadata.website[0] }}">{{ metadata.website[0] }}</a></td>
-                        {% else %}
-                            <td class="no-info">{{ _("Sem website oficial") }}</td>
-                        {% endif %}
-                    </tr>
-                    {% if metadata.designated_patrimony %}
-                        <tr id="designated-patrimony">
-                            <td class="table-icon"><i class="fa-solid fa-landmark"></i></td>
-                            <td colspan="3">
-                                <ul style="list-style-type:none; padding:0; margin:0">
-                                    {% for key,value in metadata.designated_patrimony.items() %}
-                                        <li>
-                                            <a target="_blank"
-                                               href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#{{ key }}">{{ value.label }}</a>
-                                            {% if value.num %}<br>
-                                                <span class="no-info">{{ value.num }}</span>{% endif %}
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </td>
-                        </tr>
-                    {% endif %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="w3-col margin-container">&nbsp;</div>
-    </div>
-    {# Tipos de imagens #}
-    <div class="w3-row section">
-        <div class="w3-col margin-container">&nbsp;</div>
-        <div class="w3-threequarter space-border" id="types-of-images">
-            <div class="w3-row title space-border"><h2>{{ _("Tipos de imagens") }}</h2></div>
-            <div class="w3-row w3-center space-border">
-                <div class="w3-half">
-                    <div class="w3-quarter image-type">
-                        <a class="custom-link {% if metadata.p18 and metadata.p18[0] %}with-info{% else %}no-info{% endif %}"
-                           target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P18">
-                            <i class="fa-solid fa-image" title="{{ _('Imagem do exterior') }}"></i>
-                            <br>{{ _('Imagem do exterior') }}
-                        </a>
-                    </div>
-                    <div class="w3-quarter image-type">
-                        <a class="custom-link {% if metadata.p1766 and metadata.p1766[0] %}with-info{% else %}no-info{% endif %}"
-                           target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P1766">
-                            <i class="fa-solid fa-map-signs" title="{{ _('Placa com o nome do lugar') }}"></i>
-                            <br>{{ _('Placa com o nome do lugar') }}
-                        </a>
-                    </div>
-                    <div class="w3-quarter image-type">
-                        <a class="custom-link {% if metadata.p1801 and metadata.p1801[0] %}with-info{% else %}no-info{% endif %}"
-                           target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P1801">
-                            <i class="fa-solid fa-medal" title="{{ _('Placa comemorativa') }}"></i>
-                            <br>{{ _('Placa comemorativa') }}
-                        </a>
-                    </div>
-                    <div class="w3-quarter image-type">
-                        <a class="custom-link {% if metadata.p5775 and metadata.p5775[0] %}with-info{% else %}no-info{% endif %}"
-                           target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P5775">
-                            <i class="fa-solid fa-door-open" title="{{ _('Imagem do interior') }}"></i>
-                            <br>{{ _('Imagem do interior') }}
-                        </a>
-                    </div>
-                </div>
-                <div class="w3-half">
-                    <div class="w3-quarter image-type">
-                        <a class="custom-link {% if metadata.p3451 and metadata.p3451[0] %}with-info{% else %}no-info{% endif %}"
-                           target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P3451">
-                            <i class="fa-solid fa-moon" title="{{ _('Vista noturna') }}"></i>
-                            <br>{{ _('Vista noturna') }}
-                        </a>
-                    </div>
-                    <div class="w3-quarter image-type">
-                        <a class="custom-link {% if metadata.p4291 and metadata.p4291[0] %}with-info{% else %}no-info{% endif %}"
-                           target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P4291">
-                            <i class="fa-solid fa-panorama" title="{{ _('Vista panorâmica') }}"></i>
-                            <br>{{ _('Vista panorâmica') }}
-                        </a>
-                    </div>
-                    <div class="w3-quarter image-type">
-                        <a class="custom-link {% if metadata.p8592 and metadata.p8592[0] %}with-info{% else %}no-info{% endif %}"
-                           target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P8592">
-                            <i class="fa-solid fa-helicopter" title="{{ _('Vista aérea') }}"></i>
-                            <br>{{ _('Vista aérea') }}
-                        </a>
-                    </div>
-                    <div class="w3-quarter image-type">
-                        <a class="custom-link {% if metadata.p9721 and metadata.p9721[0] %}with-info{% else %}no-info{% endif %}"
-                           target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P9721">
-                            <i class="fa-solid fa-dungeon" title="{{ _('Imagem da entrada') }}"></i>
-                            <br>{{ _('Imagem da entrada') }}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="w3-col margin-container">&nbsp;</div>
-    </div>
-    {# Envio de imagens #}
-    <div class="w3-row section">
-        <div class="w3-col margin-container">&nbsp;</div>
-        <div class="w3-threequarter space-border">
-            <div class="w3-row title space-border"><h2>{{ _("Envio de imagens") }}</h2></div>
-            <div class="w3-row w3-center">
-                <p class="space-border">
-                    {{ _("Carregue suas fotografias deste monumento entre") }}<br>{{ _("1 e 30 de setembro") }}<br>{{ _("para participar do Wiki Loves Monuments Brasil") }}
-                </p>
-                <div class="w3-container" id="upload_container" style="padding:0">
-                    <form id="upload-images" method="post" enctype="multipart/form-data">
-                        <input id="fileElem" name="fileElem" type="file" multiple onclick="this.value = null;">
-                        <input id="monument_id" name="qid" type="text" value="{{ metadata.qid[0] }}" hidden>
-                        <div class="w3-container" id="file-drop-area">
-                            <p style="margin:0 0 1rem 0">{{ _("Arraste e solte seus arquivos ou clique para selecioná-los") }}</p>
-                            <input type="file" id="fileElem" name="files" multiple accept="image/*">
-                            <label id="selectFiles" for="fileElem" style="font-size: 100%">
-                                <i class="fa-solid fa-file-import"></i> {{ _("Escolher arquivo(s)") }}
-                            </label>
+    <div class="flex-container" style="flex-flow: row-reverse">
+        <div class="w3-half" style="flex: 50%">
+            {# Envio de imagens #}
+            <div class="w3-row section" style="height: 100%">
+                <div class="space-border">
+                    <div class="w3-row title space-border"><h2>{{ _("Envio de imagens") }}</h2></div>
+                    <div class="w3-row w3-center">
+                        <p class="space-border">
+                            {{ _("Carregue suas fotografias deste monumento entre") }} {{ _("1 e 30 de setembro") }} {{ _("para participar do Wiki Loves Monuments Brasil") }}
+                        </p>
+                        <div class="w3-container" id="upload_container" style="padding:0">
+                            <form id="upload-images" method="post" enctype="multipart/form-data">
+                                <input id="fileElem" name="fileElem" type="file" multiple onclick="this.value = null;">
+                                <input id="monument_id" name="qid" type="text" value="{{ metadata.qid[0] }}" hidden>
+                                <div class="w3-container" id="file-drop-area">
+                                    <p style="margin:0 0 1rem 0">{{ _("Arraste e solte seus arquivos ou clique para selecioná-los") }}</p>
+                                    <input type="file" id="fileElem" name="files" multiple accept="image/*">
+                                    <label id="selectFiles" for="fileElem" style="font-size: 100%">
+                                        <i class="fa-solid fa-file-import"></i> {{ _("Escolher arquivo(s)") }}
+                                    </label>
+                                </div>
+                                <div class="w3-container" id="files_to_upload"></div>
+                            </form>
                         </div>
-                        <div class="w3-container" id="files_to_upload"></div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="w3-col margin-container">&nbsp;</div>
-    </div>
-    {# Wikipédia #}
-    {% if metadata.article %}
-        <div class="w3-row section">
-            <div class="w3-col margin-container">&nbsp;</div>
-            <div class="w3-threequarter" style="padding: 0 15px" id="wikipedia">
-                <table class="table table-borderless" style="width:100%; margin:0">
-                    <thead>
-                    <tr>
-                        <th style="border-bottom: 1px solid #777777;text-align: left">
-                            <h2 style="float:left; margin:0"><i
-                                    class="fa-brands fa-wikipedia-w"></i> {{ _("Wikipédia") }}</h2>
-                            <span style="float: right; margin:0"><a target="_blank"
-                                                                    href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#sitelinks-wikipedia">{{ _("Veja artigos em outros idiomas") }}</a></span>
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td style="padding:1rem">
-                            {{ metadata.article|safe }}
-                            <p style="float: right">
-                                <a target="_blank"
-                                   href="https://{{ metadata.article_wiki }}.wikipedia.org/wiki/{{ metadata.article_name }}">{{ _("Leia mais na Wikipédia!") }}</a>
-                            </p>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+        <div class="w3-half" style="flex: 50%">
+            {# Imagem e metadados #}
+            <div class="w3-row section flex-container"; style="display:flex; flex-flow:row; align-items: center">
+                <div class="w3-third space-border" id="image" style="flex:33%; order:1">
+                    <img style="width:100%" loading="lazy" src="{{ metadata.image }}?width=600px" alt="{{ metadata.label[0] }}">
+                </div>
+                <div class="w3-twothird space-border" id="metadata-table-container" style="flex:67%; order:2">
+                    <div class="w3-row title space-border">
+                        <h2>{{ metadata.label[0] }}</h2>
+                    </div>
+                    {% if metadata.address[0] %}
+                        <div class="w3-row space-border-minus-bottom" id="address">
+                            <i class="fa-solid fa-building"></i> {{ metadata.address[0] }}
+                        </div>
+                    {% endif %}
+                    <div class="w3-row space-border-minus-bottom" id="local">
+                        <i class="fa-solid fa-map-location-dot"></i> {{ metadata.local | join("; ") }} &bull; {{ metadata.state[0] }} &bull; {{ metadata.country[0] }}
+                    </div>
+                    <div class="w3-row space-border-minus-bottom" id="wiki">
+                        {% if metadata.commons_cat[0] %}
+                            <div class="w3-half" style="width:50% !important">
+                                <img src="{{ url_for('static', filename='images/commons.svg') }}" width="16px" alt="Wikimedia Commons">
+                                <a target="_blank" href="https://commons.wikimedia.org/wiki/Category:{{ metadata.commons_cat[0] }}">
+                                    {{ _("%(number_images)s imagens", number_images=metadata.cat_info["files"]) }}
+                                </a>
+                            </div>
+                        {% endif %}
+                        {% if metadata.sitelinks %}
+                            <div class="w3-half" style="width:50% !important">
+                                <i class="fa-brands fa-wikipedia-w"></i>
+                                <a href="#wikipedia">{{_("Artigo na Wikipédia")}}</a>
+                            </div>
+                        {% else %}
+                            <div class="w3-half" style="width:50% !important">
+                                <img src="{{ url_for('static', filename='images/wikidata.svg') }}" width="18px" alt="wikidata">
+                                <a target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}">
+                                    {{ _("Item no Wikidata") }}
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="w3-row space-border-minus-bottom" id="designated-patrimony">
+                        <i class="fa-solid fa-landmark"></i>
+                        <ul style="list-style-type:none; padding:0; margin:0; display: inline-table">
+                            {% for key,value in metadata.designated_patrimony.items() %}
+                                <li>
+                                    <a target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#{{ key }}">
+                                        {{ value.label }}
+                                    </a>
+                                    {% if value.num %}
+                                        <br><span class="no-info">{{ value.num }}</span>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="w3-col margin-container">&nbsp;</div>
+            {# Tipos de imagens #}
+            <div class="w3-row section">
+                <div class="space-border" id="types-of-images">
+                    <div class="w3-row title space-border"><h2>{{ _("Tipos de imagens") }}</h2></div>
+                    <div class="w3-row w3-center space-border">
+                        <div class="w3-half" style="margin-bottom: 1rem">
+                            <div class="w3-half" style="width:50% !important;">
+                                <a class="custom-link {% if metadata.p18 and metadata.p18[0] %}with-info{% else %}no-info{% endif %}"
+                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P18">
+                                    <i class="fa-solid fa-image" title="{{ _('Imagem do exterior') }}"></i>
+                                    <br>{{ _('Imagem do exterior') }}
+                                </a>
+                            </div>
+                            <div class="w3-half" style="width:50% !important;">
+                                <a class="custom-link {% if metadata.p5775 and metadata.p5775[0] %}with-info{% else %}no-info{% endif %}"
+                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P5775">
+                                    <i class="fa-solid fa-door-open" title="{{ _('Imagem do interior') }}"></i>
+                                    <br>{{ _('Imagem do interior') }}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="w3-half" style="margin-bottom: 1rem">
+                            <div class="w3-half" style="width:50% !important;">
+                                <a class="custom-link {% if metadata.p9721 and metadata.p9721[0] %}with-info{% else %}no-info{% endif %}"
+                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P9721">
+                                    <i class="fa-solid fa-dungeon" title="{{ _('Imagem da entrada') }}"></i>
+                                    <br>{{ _('Imagem da entrada') }}
+                                </a>
+                            </div>
+                            <div class="w3-half" style="width:50% !important;">
+                                <a class="custom-link {% if metadata.p9906 and metadata.p9906[0] %}with-info{% else %}no-info{% endif %}"
+                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P9906">
+                                    <i class="fa-solid fa-rectangle-list" title="{{ _('Imagem da inscrição') }}"></i>
+                                    <br>{{ _('Imagem da inscrição') }}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="w3-half" style="margin-bottom: 1rem">
+                            <div class="w3-half" style="width:50% !important;">
+                                <a class="custom-link {% if metadata.p3451 and metadata.p3451[0] %}with-info{% else %}no-info{% endif %}"
+                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P3451">
+                                    <i class="fa-solid fa-moon" title="{{ _('Vista noturna') }}"></i>
+                                    <br>{{ _('Vista noturna') }}
+                                </a>
+                            </div>
+                            <div class="w3-half" style="width:50% !important;">
+                                <a class="custom-link {% if metadata.p8592 and metadata.p8592[0] %}with-info{% else %}no-info{% endif %}"
+                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P8592">
+                                    <i class="fa-solid fa-helicopter" title="{{ _('Vista aérea') }}"></i>
+                                    <br>{{ _('Vista aérea') }}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="w3-half" style="margin-bottom: 1rem">
+                            <div class="w3-half" style="width:50% !important;">
+                                <a class="custom-link {% if metadata.p1801 and metadata.p1801[0] %}with-info{% else %}no-info{% endif %}"
+                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P1801">
+                                    <i class="fa-solid fa-medal" title="{{ _('Placa comemorativa') }}"></i>
+                                    <br>{{ _('Placa comemorativa') }}
+                                </a>
+                            </div>
+                            <div class="w3-half" style="width:50% !important;">
+                                <a class="custom-link {% if metadata.p1766 and metadata.p1766[0] %}with-info{% else %}no-info{% endif %}"
+                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P1766">
+                                    <i class="fa-solid fa-map-signs" title="{{ _('Placa com o nome do lugar') }}"></i>
+                                    <br>{{ _('Placa com o nome do lugar') }}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="w3-half" style="margin-bottom: 1rem">
+                            <div class="w3-half" style="width:50% !important;">
+                                <a class="custom-link {% if metadata.p8517 and metadata.p8517[0] %}with-info{% else %}no-info{% endif %}"
+                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P8517">
+                                    <i class="fa-solid fa-mountain-sun" title="{{ _('Vista') }}"></i>
+                                    <br>{{ _('Vista') }}
+                                </a>
+                            </div>
+                            <div class="w3-half" style="width:50% !important;">
+                                <a class="custom-link {% if metadata.p4291 and metadata.p4291[0] %}with-info{% else %}no-info{% endif %}"
+                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P4291">
+                                    <i class="fa-solid fa-panorama" title="{{ _('Vista panorâmica') }}"></i>
+                                    <br>{{ _('Vista panorâmica') }}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="w3-half" style="margin-bottom: 1rem">
+                            <div class="w3-half" style="width:50% !important;">
+                                <a class="custom-link {% if metadata.p5252 and metadata.p5252[0] %}with-info{% else %}no-info{% endif %}"
+                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P5252">
+                                    <i class="fa-solid fa-snowflake" title="{{ _('Vista no inverno') }}"></i>
+                                    <br>{{ _('Vista no inverno') }}
+                                </a>
+                            </div>
+                            <div class="w3-half" style="width:50% !important;">
+                                <a class="custom-link {% if metadata.p4640 and metadata.p4640[0] %}with-info{% else %}no-info{% endif %}"
+                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P4640">
+                                    <i class="fa-solid fa-baseball" title="{{ _('Fotoesfera') }}"></i>
+                                    <br>{{ _('Fotoesfera') }}
+                                </a>
+                            </div>
+                        </div>
+                        <div class="w3-half" style="margin-bottom: 1rem">
+                            <div class="w3-half" style="width:50% !important;">
+                                <a class="custom-link {% if metadata.p3311 and metadata.p3311[0] %}with-info{% else %}no-info{% endif %}"
+                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P3311">
+                                    <i class="fa-solid fa-ruler-combined" title="{{ _('Imagem da planta') }}"></i>
+                                    <br>{{ _('Imagem da planta') }}
+                                </a>
+                            </div>
+                            <div class="w3-half" style="width:50% !important;">
+                                <a class="custom-link {% if metadata.p1442 and metadata.p1442[0] %}with-info{% else %}no-info{% endif %}"
+                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P1442">
+                                    <i class="fa-solid fa-cross" title="{{ _('Imagem do túmulo') }}"></i>
+                                    <br>{{ _('Imagem do túmulo') }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {# Wikipédia #}
+            {% if metadata.article %}
+                <div class="w3-row section">
+                    <div class="space-border">
+                        <div id="wikipedia">
+                            <div class="w3-row title space-border">
+                                <h2>
+                                    <i class="fa-brands fa-wikipedia-w"></i> {{ _("Wikipédia") }}
+                                </h2>
+                            </div>
+                            <div class="w3-row space-border">
+                                {{ metadata.article|safe }}
+                                <a target="_blank" href="https://{{ metadata.article_wiki }}.wikipedia.org/wiki/{{ metadata.article_name }}">{{ _("Leia mais na Wikipédia!") }}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {# Mapa #}
+            <div class="w3-row section">
+                <div class="space-border">
+                    <div id="map_section">
+                        <div class="w3-row title space-border">
+                            <h2>
+                                <i class="fa-solid fa-earth-americas"></i> {{ _("Mapa") }}
+                            </h2>
+                        </div>
+                        <div id="location" style="height:600px;">
+                            <div id="map"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    {% endif %}
-    {# Mapa #}
-    <div class="w3-row section">
-        <div class="w3-col margin-container">&nbsp;</div>
-        <div class="w3-threequarter" style="padding: 0 15px;">
-            <table class="table table-borderless" style="width:100%; margin:0">
-                <thead>
-                <tr>
-                    <th style="border-bottom: 1px solid #777777;text-align: left">
-                        <h2 style="float:left; margin:0"><i class="fa-solid fa-earth-americas"></i> {{ _("Mapa") }}</h2>
-                    </th>
-                </tr>
-                </thead>
-                <tbody id="location">
-                <tr>
-                    <td style="height:600px; padding:0 0 30px 0">
-                        <div id="map"></div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="w3-col margin-container">&nbsp;</div>
     </div>
+{% endblock %}
+
+{% block footer %}
+    <footer style="text-align:left;position: relative;padding: 0 15px" id="footer">
+        <hr>
+        <p style="font-size:90%; text-align: justify">
+            {% set projeto %}<a tabindex="0" target='_blank' aria-label='{{_("Wiki Movimento Brasil")}}' href='https://meta.wikimedia.org/wiki/Wiki_Movement_Brazil_User_Group/{{ lang }}'>{{_("Grupo de usuários Wiki Movimento Brasil")}}</a>{% endset %}
+            {{_("<i>Wiki Loves Brasil</i> é um aplicativo desenvolvido pelo <i><b>%(projeto)s</b></i>, visando melhorar a experiência dos usuários que participam do concurso fotográfico Wiki Loves Monuments na localização e envio de fotografias para o Wikimedia Commons.", projeto=projeto)}}
+        </p>
+    </footer>
 {% endblock %}
 
 {% block scripts %}
@@ -279,7 +281,7 @@
         const credits_wikimedia = '<a href="https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use">{{ _("Mapas da Wikimedia") }}</a> | ' + credits_osm;
         const whereAmIMsg = '{{ _("Mostre-me onde estou") }}';
 
-        var map = L.map('map');
+        let map = L.map('map',{zoomControl:false});
 
         const osm_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 7,
@@ -292,9 +294,6 @@
             minZoom: 4,
             attribution: credits_wikimedia
         });
-
-        // Layers
-        L.control.layers({"OpenStreetMap": osm_map, "Wikimedia": wm_map}, null,{position: 'bottomright'}).addTo(map);
 
         const blueIcon = L.AwesomeMarkers.icon({
             icon: 'fa-solid fa-landmark',
@@ -309,9 +308,16 @@
         }, {icon: blueIcon}).addTo(map);
 
         // Buttons
-        // This code adds a button for users locate themselves in the map
-        const locate = L.control.locate({
+
+        // Zoom
+        L.control.zoom({
+            position: 'bottomright'
+        }).addTo(map);
+
+        // Locate
+        let locate = L.control.locate({
             flyTo: true,
+            position: 'bottomright',
             returnToPrevBounds: true,
             icon: 'locate fa-solid fa-location-dot',
             iconElementTag: 'i',
@@ -319,6 +325,9 @@
                 title: whereAmIMsg
             },
         }).addTo(map);
+
+        // Layers
+        L.control.layers({"OpenStreetMap": osm_map, "Wikimedia": wm_map}, null,{position: 'bottomright'}).addTo(map);
 
         map.setView([{{ metadata.coord[1] }}, {{ metadata.coord[0] }}], 18)
     </script>

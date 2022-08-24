@@ -313,7 +313,7 @@ def monumento(qid):
         return send_file()
     else:
         metadata = query_monument(qid, lang)
-        if "commons_cat" in metadata:
+        if "commons_cat" in metadata and metadata["commons_cat"]:
             metadata["cat_info"] = get_category_info(metadata["commons_cat"][0])
 
         metadata["sitelinks"] = get_sitelinks(qid)

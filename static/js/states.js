@@ -29,7 +29,7 @@ L.control.zoom({
 }).addTo(map);
 
 // Locate
-var locate = L.control.locate({
+let locate = L.control.locate({
     flyTo: true,
     position: 'bottomright',
     returnToPrevBounds: true,
