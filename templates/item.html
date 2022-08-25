@@ -2,6 +2,12 @@
 
 {% block title %}{% if metadata.label %}{{ metadata.label[0] }}{% else %}{{ metadata.qid[0] }}{% endif %}{% endblock %}
 
+{% block navbar %}
+    {% with lang=lang, username=username, mapa_geral=True, mapa=True, geolocate=False, uf=uf, suggest=True %}
+        {% include 'topnavbar.html' %}
+    {% endwith %}
+{% endblock %}
+
 {% block styles %}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/leaflet.awesome-markers.css') }}">
@@ -23,21 +29,29 @@
                     <div class="w3-row title space-border"><h2>{{ _("Envio de imagens") }}</h2></div>
                     <div class="w3-row w3-center">
                         <p class="space-border">
-                            {{ _("Carregue suas fotografias deste monumento entre") }} {{ _("1 e 30 de setembro") }} {{ _("para participar do Wiki Loves Monuments Brasil") }}
+                            {{ _("Carregue suas fotografias deste monumento entre") }} {{ _("1 e 30 de setembro") }} {{ _("para participar do Wiki Loves Monuments Brasil.") }}
                         </p>
                         <div class="w3-container" id="upload_container" style="padding:0">
+                            {% if username %}
                             <form id="upload-images" method="post" enctype="multipart/form-data">
-                                <input id="fileElem" name="fileElem" type="file" multiple onclick="this.value = null;">
                                 <input id="monument_id" name="qid" type="text" value="{{ metadata.qid[0] }}" hidden>
                                 <div class="w3-container" id="file-drop-area">
                                     <p style="margin:0 0 1rem 0">{{ _("Arraste e solte seus arquivos ou clique para selecioná-los") }}</p>
-                                    <input type="file" id="fileElem" name="files" multiple accept="image/*">
+                                    <input type="file" id="fileElem" name="files" multiple accept="image/*" onchange="handleFiles(this.files);">
                                     <label id="selectFiles" for="fileElem" style="font-size: 100%">
                                         <i class="fa-solid fa-file-import"></i> {{ _("Escolher arquivo(s)") }}
                                     </label>
                                 </div>
                                 <div class="w3-container" id="files_to_upload"></div>
                             </form>
+                            {% else %}
+                                <div class="w3-container" id="login-area">
+                                    <p style="margin:0 0 1rem 0">{{ _("Autentique-se para enviar suas imagens") }}</p>
+                                    <a class="custom-link" id="authenticate" style="display:inline-block; font-size: 100%" href="{{ url_for('login', next=request.script_root + request.full_path) }}">
+                                        <i class="fa-solid fa-right-to-bracket"></i> {{ _("Autenticar-se") }}
+                                    </a>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -45,7 +59,7 @@
         </div>
         <div class="w3-half" style="flex: 50%">
             {# Imagem e metadados #}
-            <div class="w3-row section flex-container"; style="display:flex; flex-flow:row; align-items: center">
+            <div class="w3-row section flex-container" style="display:flex; flex-flow:row; align-items: center">
                 <div class="w3-third space-border" id="image" style="flex:33%; order:1">
                     <img style="width:100%" loading="lazy" src="{{ metadata.image }}?width=600px" alt="{{ metadata.label[0] }}">
                 </div>
@@ -105,6 +119,11 @@
             <div class="w3-row section">
                 <div class="space-border" id="types-of-images">
                     <div class="w3-row title space-border"><h2>{{ _("Tipos de imagens") }}</h2></div>
+                    <div class="w3-row">
+                        <p>
+                            {{ _("Abaixo estão os principais tipos de fotografias de monumentos.") }}
+                        </p>
+                    </div>
                     <div class="w3-row w3-center space-border">
                         <div class="w3-half" style="margin-bottom: 1rem">
                             <div class="w3-half" style="width:50% !important;">
@@ -302,7 +321,7 @@
             prefix: 'fas'
         });
 
-        var marker = L.marker({
+        let marker = L.marker({
             lat: {{ metadata.coord[1] }},
             lon: {{ metadata.coord[0] }}
         }, {icon: blueIcon}).addTo(map);
@@ -365,14 +384,20 @@
                             <td>
                                 <select id="image_type_${filename}" style="width:100%; width:100%; min-height:40px; border:2px solid #000000">
                                 <option value="P18" title="{{ _('Não tenho certeza') }}">{{ _('Selecione o tipo de imagem (opcional)') }}</option>
-                                <option value="P18" title="{{ _('Imagem ilustrativa do monumento') }}">{{ _('Imagem') }}</option>
-                                <option value="P1766" title="{{ _('Imagem de placa de trânsito com nome de local') }}">{{ _('Placa com o nome do lugar') }}</option>
-                                <option value="P1801" title="{{ _('Imagem de placa de inauguração ou inscrição mencionando o monumento') }}">{{ _('Placa comemorativa') }}</option>
+                                <option value="P18" title="{{ _('Imagem ilustrativa do monumento') }}">{{ _('Imagem do exterior/Imagem ilustrativa') }}</option>
                                 <option value="P5775" title="{{ _('Vista do interior de um edifício ou espaço fechado') }}">{{ _('Imagem do interior') }}</option>
+                                <option value="P9721" title="{{ _('Vista da entrada de um edifício ou espaço fechado, vista do lado de fora') }}">{{ _('Imagem da entrada') }}</option>
+                                <option value="P9906" title="{{ _('Imagem de inscrições no monumento') }}">{{ _('Imagem da inscrição') }}</option>
+                                <option value="P1801" title="{{ _('Imagem de placa de inauguração ou inscrição mencionando o monumento') }}">{{ _('Placa comemorativa') }}</option>
+                                <option value="P1766" title="{{ _('Imagem de placa de trânsito com nome de local') }}">{{ _('Placa com o nome do lugar') }}</option>
+                                <option value="P8592" title="{{ _('Fotografia de um monumento tirada do ar, por um drone, por exemplo') }}">{{ _('Vista aérea') }}</option>
                                 <option value="P3451" title="{{ _('Monumento ao entardecer ou à noite') }}">{{ _('Vista noturna') }}</option>
                                 <option value="P4291" title="{{ _('Ampla vista geral que contém o monumento') }}">{{ _('Vista panorâmica') }}</option>
-                                <option value="P8592" title="{{ _('Fotografia de um monumento tirada do ar, por um drone, por exemplo') }}">{{ _('Vista aérea') }}</option>
-                                <option value="P9721" title="{{ _('Vista da entrada de um edifício ou espaço fechado, vista do lado de fora') }}">{{ _('Imagem da entrada') }}</option>
+                                <option value="P5252" title="{{ _('Imagem do monumento no inverno, de preferência com neve') }}">{{ _('Vista no inverno') }}</option>
+                                <option value="P8517" title="{{ _('Vista a partir do monumento') }}">{{ _('Vista') }}</option>
+                                <option value="P4640" title="{{ _('Imagem com campo de visão de 360 por 180 graus') }}">{{ _('Fotoesfera') }}</option>
+                                <option value="P3311" title="{{ _('Imagem representando a planta de um edifício ou local') }}">{{ _('Imagem da planta') }}</option>
+                                <option value="P1442" title="{{ _('Imagem de um túmulo, lápide ou jazigo') }}">{{ _('Imagem do túmulo') }}</option>
                                 </select>
                             </td>
                         </tr>
@@ -393,18 +418,23 @@
         const QUALITY = 0.7;
 
         const input = document.getElementById("fileElem");
-        input.onchange = function () {
-            for (var i = 0; i < this.files.length; i++) {
-                if (jQuery.inArray(this.files[i].name,_Files_names) === -1) {
-                    _Files_names.push(this.files[i].name);
-                    _Files.push(this.files[i]);
-                    EXIF.getData(this.files[i], function () {
+
+        // Everytime a change in the input occurs, do the following
+        function handleFiles(e) {
+            // For each new file in input, check the filename and if it is not there already, do the following
+            for (var i = 0; i < e.length; i++) {
+                if (jQuery.inArray(e[i].name,_Files_names) === -1) {
+                    // Get the EXIF information if available and also generate a thumbnail
+                    _Files_names.push(e[i].name);
+                    _Files.push(e[i]);
+                    EXIF.getData(e[i], function () {
                         let filesize = readableBytes(this.size);
                         let filename = this.name;
                         let dateFormatted = dateFormatting(EXIF.getTag(this, "DateTimeOriginal"), this.lastModified);
                         let suggestedFilename = monumentName + " - " + monumentLocal + " - " + timestampFormatting(EXIF.getTag(this, "DateTimeOriginal"), this.lastModified);
                         let coordinates = clearCoordinates(EXIF.getAllTags(this));
 
+                        // Generating a thumbnail image
                         // Part of the code adapted from https://labs.madisoft.it/javascript-image-compression-and-resizing
                         const file = this;
                         const blobURL = URL.createObjectURL(file);
@@ -424,6 +454,7 @@
                                 QUALITY
                             );
 
+                            // Add the element with all the information and thumbnail into the container
                             let elem = ([{ filename: filename, dateTimeOriginal: dateFormatted, coordinates: coordinates, size: filesize, suggestedFilename: suggestedFilename }].map(Item));
                             $("#files_to_upload").append(elem);
                             document.getElementById("image_container_"+filename).append(canvas);
@@ -432,8 +463,9 @@
                     renderLicense();
                 }
             }
-        };
+        }
 
+        // Metadata functions
         function calculateSize(img, maxWidth) {
             let width = maxWidth;
             let height = Math.round((img.height * maxWidth) / img.width);
@@ -514,6 +546,7 @@
                 return latitude + "|" + longitude;
             } else { return ""; }
         }
+        // End of Metadata functions
 
         function removeFile(button_id){
             let file_id = button_id.replace("remove_","");
@@ -526,6 +559,8 @@
                     _Files = _Files.filter(function(e) { return e.name !== file_id; })
                 }
             })
+
+            console.log(_Files_names)
 
             if (_Files.length === 0 || _Files_names.length === 0) {
                 $("#license").remove();
@@ -559,10 +594,19 @@
                     url: "/send_file",
                     data: formData,
                     success: function (response) {
-                        console.log(response.filename + ": " + response.message);
+                        if(response.status === "ERROR") {
+                            var container = document.getElementById("file_upload_container_"+response.filename);
+                            container.style.backgroundColor = "#ff6b6b";
+                            container.title = response.message;
+                        }
+                        else {
+                            document.getElementById("file_upload_container_"+response.filename).style.backgroundColor = "#8aff70";
+                        }
+
                     },
-                    error: function () {
+                    error: function (response) {
                         console.log(error);
+                        document.getElementById("file_upload_container_"+response.filename).style.backgroundColor = "#ff6b6b";
                     },
                     cache: false,
                     contentType: false,
@@ -574,6 +618,56 @@
                 request.send(formData);
             }
         })
+
+        // Drag and drop
+        let dropArea = document.getElementById('file-drop-area')
+        ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false)
+        })
+
+        ;['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false)
+        })
+
+        ;['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false)
+        })
+
+        function preventDefaults(e) {
+            e.preventDefault()
+            e.stopPropagation()
+        }
+
+        function highlight(e) {
+            dropArea.classList.add('highlight')
+        }
+
+        function unhighlight(e) {
+            dropArea.classList.remove('highlight')
+        }
+
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            if (e.dataTransfer && e.dataTransfer.items) {
+                for (var i = 0; i < e.dataTransfer.items.length; i++) {
+                    if (e.dataTransfer.items[i].kind === 'file') {
+                        var file = e.dataTransfer.items[i].getAsFile();
+                        _Files.push(file)
+                    }
+                }
+            } else if (e.dataTransfer && e.dataTransfer.files) {
+                for (var i = 0; i < e.dataTransfer.files.length; i++) {
+                    _Files.push(e.dataTransfer.files[i])
+                }
+            } else {
+                for (var i = 0; i < e.length; i++) {
+                    _Files.push(e[i])
+                }
+            }
+            console.log(_Files);
+            handleFiles(_Files);
+        }
 
     </script>
 {% endblock %}

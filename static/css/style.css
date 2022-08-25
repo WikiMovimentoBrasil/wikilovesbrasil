@@ -222,7 +222,7 @@ button:not(.easy-button-button):not(.submit):not(.custom):not(.send_button) {
     }
 
     .file-upload-container {
-        display: unset !important;
+        display: block !important;
     }
 
     .image-type {
@@ -402,9 +402,24 @@ form button {
     padding: 0.5rem !important;
 }
 
-/*td h2 {*/
-/*    margin-bottom: 0 !important;*/
-/*}*/
+/* Tooltip */
+@media (pointer: coarse), (hover: none) {
+    [title] {
+        position: relative;
+        display: inline-flex;
+        justify-content: center;
+    }
+    [title]:focus::after {
+        content: attr(title);
+        position: absolute;
+        top: 90%;
+        color: #000;
+        background-color: #fff;
+        border: 1px solid;
+        width: fit-content;
+        padding: 3px;
+    }
+}
 
 /* Teste */
 #fileElem {
@@ -456,10 +471,10 @@ form button {
 }
 
 #types-of-images i { font-size: 150%; }
-#file-drop-area { width: 100%; border: 3px dashed gainsboro; padding: 2rem; text-align: center; }
+#file-drop-area, #login-area { width: 100%; border: 3px dashed gainsboro; padding: 2rem; text-align: center; }
 #file-drop-area.highlight { border-color: var(--main-color); }
 #license-message { font-size: small; text-align: justify; }
-#selectFiles { background-color: var(--special-text-color);
+#selectFiles, #authenticate { background-color: var(--special-text-color);
     border: 3px solid var(--main-color);
     border-radius: 5px;
     color: var(--main-color);
