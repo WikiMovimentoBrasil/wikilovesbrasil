@@ -27,67 +27,96 @@
         <div class="w3-container" style="height:100vh; padding:0">
             <div id="map"></div>
             <div class="modal modal-left fade" id="presentationModal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog" role="document" >
-                <div class="modal-content"style="background-color: rgba(255,255,255,0.85);">
-                    <div class="modal-header">
-                        <h2 class="modal-title" id="selectedState">{{ _("Seja bem-vindo(a/e)!") }}</h2>
-                        <button type="button" class="close custom" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>{{ _("Olá, gostaríamos de te dar as boas-vindas!") }}</p>
-                        <p>{{ _("O <b>Wiki Loves Brasil</b> é um aplicativo de envio de imagens para a etapa nacional do maior concurso fotográfico do mundo, o <b><i>Wiki Loves Monuments</i></b>!") }}</p>
-                        <p>{{ _("Envie suas fotografias do patrimônio histórico brasileiro durante o mês de setembro para participar e concorrer a prêmios.") }}</p>
-                        <hr>
-                        <p>{{ _("Comece selecionando uma subdivisão no mapa para ver os monumentos da região.") }}</p>
-                        <hr>
-                        <a target="_blank" href="{{ _('https://pt.wikipedia.org/wiki/Wikipédia:Wiki_Loves_Monuments/Brasil') }}">
-                            <button class="custom" style="color:black; padding:10px; width:100%; background-color: #cdcdcd; margin-bottom: 1rem">
-                                <img src="{{ url_for('static', filename='/images/logowikipedia.png') }}" width="25px">
-                                {{ _("Visite a página do concurso na Wiki") }}
+                <div class="modal-dialog" role="document" >
+                    <div class="modal-content"style="background-color: rgba(255,255,255,0.85);">
+                        <div class="modal-header">
+                            <h2 class="modal-title" id="selectedState">{{ _("Seja bem-vindo(a/e)!") }}</h2>
+                            <button type="button" class="close custom" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
                             </button>
-                        </a>
-                        <a target="_blank" href="{{ url_for('about') }}">
-                            <button class="custom" style="padding:10px; width:100%; background-color: #990000; margin-bottom: 1rem">
-                                <i class="fas fa-info-circle"></i>
-                                {{ _("Saiba mais sobre este aplicativo") }}
-                            </button>
-                        </a>
+                        </div>
+                        <div class="modal-body">
+                            <p>{{ _("Olá, gostaríamos de te dar as boas-vindas!") }}</p>
+                            <p>{{ _("O <b>Wiki Loves Brasil</b> é um aplicativo de envio de imagens para a etapa nacional do maior concurso fotográfico do mundo, o <b><i>Wiki Loves Monuments</i></b>!") }}</p>
+                            <p>{{ _("Envie suas fotografias do patrimônio histórico brasileiro durante o mês de setembro para participar e concorrer a prêmios.") }}</p>
+                            <hr>
+                            <p>{{ _("Comece selecionando uma subdivisão no mapa para ver os monumentos da região.") }}</p>
+                            <hr>
+                            <a target="_blank" href="{{ _('https://pt.wikipedia.org/wiki/Wikipédia:Wiki_Loves_Monuments/Brasil') }}">
+                                <button class="custom" style="color:black; padding:10px; width:100%; background-color: #cdcdcd; margin-bottom: 1rem">
+                                    <img src="{{ url_for('static', filename='/images/logowikipedia.png') }}" width="25px" alt="{{ _('Logotipo') }}">
+                                    {{ _("Visite a página do concurso na Wiki") }}
+                                </button>
+                            </a>
+                            <a target="_blank" href="{{ url_for('about') }}">
+                                <button class="custom" style="padding:10px; width:100%; background-color: #990000; margin-bottom: 1rem">
+                                    <i class="fas fa-info-circle"></i>
+                                    {{ _("Saiba mais sobre este aplicativo") }}
+                                </button>
+                            </a>
+                        </div>
                     </div>
-    {#                <div class="modal-footer">#}
-    {#                </div>#}
                 </div>
             </div>
-        </div>
+            <div class="modal modal-left fade" id="langModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document" >
+                    <div class="modal-content" style="background-color: rgba(255,255,255,0.85);">
+                        <div class="modal-header">
+                            <h2 class="modal-title" id="selectedState">{{ _("Selecione um idioma") }}</h2>
+                            <button type="button" class="close custom" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <ul style="line-height: 200%">
+                                {% for language in AVAILABLE_LANGUAGES %}
+                                    <li>
+                                        <a tabindex="0" href="{{url_for('set_locale', return_to=request.script_root + request.full_path, lang=language)}}">
+                                            {{ language|upper }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="modal modal-left fade" id="aboutModal" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog" role="document" >
-                <div class="modal-content"style="background-color: rgba(255,255,255,0.85);">
+                <div class="modal-content" style="background-color: rgba(255,255,255,0.85);">
                     <div class="modal-header">
-                        <h2 class="modal-title" id="about">{{ _("Seja bem-vindo(a/e)!") }}</h2>
+                        <h2 class="modal-title" id="about">{{ _("Sobre") }}</h2>
                         <button type="button" class="close custom" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>{{ _("Olá, gostaríamos de te dar as boas-vindas!") }}</p>
-                        <p>{{ _("O <b>Wiki Loves Brasil</b> é um aplicativo de envio de imagens para a etapa nacional do maior concurso fotográfico do mundo, o <b><i>Wiki Loves Monuments</i></b>!") }}</p>
-                        <p>{{ _("Envie suas fotografias do patrimônio histórico brasileiro durante o mês de setembro para participar e concorrer a prêmios.") }}</p>
+                        <p>
+                            {{ _("Você está pronto(a) para participar do maior concurso fotográfico do mundo?! O aplicativo <b>Wiki Loves Brasil</b> te oferece diversas formas de participar: Enviando suas fotografias dos monumentos brasileiros de maneira simplificada, geolocalizar monumentos ainda sem coordenadas registradas e sugerir monumentos que por acaso não estejam nas listas.") }}<br><br>
+                            {{ _("O Wiki Loves Monuments é o maior concurso fotográfico do mundo! A etapa nacional ocorre entre 1º e 30 de setembro de 2022.") }}<br><br>
+                            {{ _("No ano de 2021, o Brasil foi o vencedor da etapa internacional, com a imagem <a target='_blank' href='https://commons.wikimedia.org/wiki/File:Real_Gabinete_Português_de_Leitura_10.jpg' title='Real Gabinete Português de Leitura, por Donatas Dabravolskas'>Real Gabinete Português de Leitura</a>, por Donatas Dabravolskas.") }}<br><br>
+                            {{ _("Participe e concorra a prêmios. Mais detalhes na <a target='_blank' href='https://w.wiki/5Bkv' title='Wiki Loves Monuments Brasil 2022'>página do concurso na Wikipédia</a>.") }}
+                        </p>
                         <hr>
-                        <p>{{ _("Comece selecionando uma subdivisão no mapa para ver os monumentos da região.") }}</p>
-                        <hr>
-                        <a target="_blank" href="{{ _('https://pt.wikipedia.org/wiki/Wikipédia:Wiki_Loves_Monuments/Brasil') }}">
-                            <button class="custom" style="color:black; padding:10px; width:100%; background-color: #cdcdcd; margin-bottom: 1rem">
-                                <img src="{{ url_for('static', filename='/images/logowikipedia.png') }}" width="25px">
-                                {{ _("Visite a página do concurso na Wiki") }}
-                            </button>
-                        </a>
-                        <a target="_blank" href="{{ url_for('about') }}">
-                            <button class="custom" style="padding:10px; width:100%; background-color: #990000; margin-bottom: 1rem">
-                                <i class="fas fa-info-circle"></i>
-                                {{ _("Saiba mais sobre este aplicativo") }}
-                            </button>
-                        </a>
+                        <p>
+                            {% set flask %}<a target='_blank' href='https://pt.wikipedia.org/wiki/Flask_(framework_web)'><i>{{ _("Flask") }}</i></a>{% endset %}
+                            {% set github %}<a target='_blank' href='https://github.com/WikiMovimentoBrasil/wikilovesbrasil'>{{ _("GitHub") }}</a>{% endset %}
+                            {% set license_code %}<a target='_blank' href='https://github.com/WikiMovimentoBrasil/wikilovesbrasil/blob/master/LICENSE'>{{ _("GPL v3.0") }}</a>{% endset %}
+                            {% set license_text %}<a target='_blank' href='https://creativecommons.org/licenses/by-sa/4.0/'>{{ _("CC-BY-SA 4.0 Internacional") }}</a>{% endset %}
+                            {% set license_maps %}<a target='_blank' href='https://opendatacommons.org/licenses/odbl/1-0/'>{{ _("ODbL v1.0") }}</a>{% endset %}
+                            {% set license_wikidata %}<a target='_blank' href='https://creativecommons.org/share-your-work/public-domain/cc0/'>{{ _("CC0") }}</a>{% endset %}
+                            {% set reference %}<a target='_blank' href='https://maps.wikilovesmonuments.org'>{{ _("Wiki Loves Monuments Map") }}</a>{% endset %}
+                            <small>
+                                {{ _("Este aplicativo é inspirado no %(reference)s, desenvolvido por Paweł Marynowski e Stephen LaPorte", reference=reference) }}<br>
+                                {{ _("Este aplicativo foi desenvolvido em %(flask)s.", flask=flask) }}<br>
+                                {{ _("O código-fonte está disponível no %(github)s.", github=github) }}<br>
+                                {{ _("Licença do cógido-fonte: %(license_code)s.", license_code=license_code) }}<br>
+                                {{ _("Licença de textos: %(license_text)s.", license_text=license_text) }}<br>
+                                {{ _("Licença de mapas: %(license_maps)s.", license_maps=license_maps) }}<br>
+                                {{ _("Licença dos metadados retornados do Wikidata: %(license_wikidata)s.", license_wikidata=license_wikidata) }}<br>
+                                {{ _("Versão 1.0.") }}
+                            </small>
+                        </p>
                     </div>
     {#                <div class="modal-footer">#}
     {#                </div>#}
@@ -105,20 +134,13 @@
                         </div>
                         <div class="modal-body w3-container" style="font-family: 'Josefin Sans', 'FontAwesome', 'Font Awesome 6 Free', sans-serif">
                             <form>
-                                <div class="w3-row">
-                                    Texto
-                                    <label class="switch">
-                                        <input type="checkbox" checked>
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
                                 <div class="w3-container w3-third">
                                     <div class="form-group">
-                                        <label for="has_image">{{ _("Possui imagem:") }}</label>
+                                        <label for="has_image">{{ _("Monumentos com ou sem imagens?") }}</label>
                                         <select id="has_image" class="form-control">
-                                            <option value="all" selected>{{ _("Indiferente") }}</option>
-                                            <option value="yes">{{ _("Sim") }}</option>
-                                            <option value="no">{{ _("Não") }}</option>
+                                            <option value="all" selected>{{ _("Ambos") }}</option>
+                                            <option value="yes">{{ _("Com") }}</option>
+                                            <option value="no">{{ _("Sem") }}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -127,23 +149,21 @@
                                         <label for="types">{{ _("Tipos de imagem:") }}</label>
                                         <select id="types" class="form-control" disabled>
                                             <option value="all">{{ _("Todos") }}</option>
-                                            <option value="P18" title="{{ _('Imagem ilustrativa do monumento') }}">&#xf03e; {{ _("Imagem do exterior") }}</option>
-                                            <option value="P1766" title="{{ _('Imagem de placa de trânsito com nome de local') }}">&#xf277; {{ _("Placa com o nome do lugar") }}</option>
-                                            <option value="P1801" title="{{ _('Imagem de placa de inauguração ou inscrição mencionando o monumento') }}">&#xf5a2; {{ _("Placa comemorativa") }}</option>
-                                            <option value="P5775" title="{{ _('Vista do interior de um edifício ou espaço fechado') }}">&#xf52b; {{ _("Imagem do interior") }}</option>
-                                            <option value="P3451" title="{{ _('Monumento ao entardecer ou à noite') }}">&#xf186; {{ _("Vista noturna") }}</option>
-                                            <option value="P4291" title="{{ _('Ampla vista geral que contém o monumento') }}">&#xe209; {{ _("Vista panorâmica") }}</option>
-                                            <option value="P8592" title="{{ _('Fotografia de um monumento tirada do ar, por um drone, por exemplo') }}">&#xf533; {{ _("Vista aérea") }}</option>
-                                            <option value="P9721" title="{{ _('Vista da entrada de um edifício ou espaço fechado, vista do lado de fora') }}">&#xf6d9; {{ _("Imagem da entrada") }}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="w3-container w3-third">
-                                    <div class="form-group">
-                                        <label for="grouping">{{ _("Agrupar:") }}</label>
-                                        <select id="grouping" class="form-control">
-                                            <option value="yes" selected>{{ _("Sim") }}</option>
-                                            <option value="no">{{ _("Não") }}</option>
+                                            <option value="P18" title="{{ _('Não tenho certeza') }}">{{ _('Selecione o tipo de imagem (opcional)') }}</option>
+                                            <option value="P18" title="{{ _('Imagem ilustrativa do monumento') }}">&#xf03e; {{ _('Imagem do exterior/Imagem ilustrativa') }}</option>
+                                            <option value="P5775" title="{{ _('Vista do interior de um edifício ou espaço fechado') }}">&#xf52b; {{ _('Imagem do interior') }}</option>
+                                            <option value="P9721" title="{{ _('Vista da entrada de um edifício ou espaço fechado, vista do lado de fora') }}">&#xf6d9; {{ _('Imagem da entrada') }}</option>
+                                            <option value="P9906" title="{{ _('Imagem de inscrições no monumento') }}">&#xf022; {{ _('Imagem da inscrição') }}</option>
+                                            <option value="P1801" title="{{ _('Imagem de placa de inauguração ou inscrição mencionando o monumento') }}">&#xf5a2; {{ _('Placa comemorativa') }}</option>
+                                            <option value="P1766" title="{{ _('Imagem de placa de trânsito com nome de local') }}">&#xf277; {{ _('Placa com o nome do lugar') }}</option>
+                                            <option value="P8592" title="{{ _('Fotografia de um monumento tirada do ar, por um drone, por exemplo') }}">&#xf533; {{ _('Vista aérea') }}</option>
+                                            <option value="P3451" title="{{ _('Monumento ao entardecer ou à noite') }}">&#xf186; {{ _('Vista noturna') }}</option>
+                                            <option value="P4291" title="{{ _('Ampla vista geral que contém o monumento') }}">&#xe209; {{ _('Vista panorâmica') }}</option>
+                                            <option value="P5252" title="{{ _('Imagem do monumento no inverno, de preferência com neve') }}">&#xf2dc; {{ _('Vista no inverno') }}</option>
+                                            <option value="P8517" title="{{ _('Vista a partir do monumento') }}">&#xe52f; {{ _('Vista') }}</option>
+                                            <option value="P4640" title="{{ _('Imagem com campo de visão de 360 por 180 graus') }}">&#xf433; {{ _('Fotoesfera') }}</option>
+                                            <option value="P3311" title="{{ _('Imagem representando a planta de um edifício ou local') }}">&#xf546; {{ _('Imagem da planta') }}</option>
+                                            <option value="P1442" title="{{ _('Imagem de um túmulo, lápide ou jazigo') }}">&#xf654; {{ _('Imagem do túmulo') }}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -350,11 +370,18 @@
                 onClick: function(){ $('#presentationModal').modal('show'); }}]}).addTo(map);
 
 
-        // Home
+        // HOME
         const homeButton = L.easyButton(
             "<i class='fa-solid fa-house'></i>",
             function(){ window.open("{{ url_for('mapa') }}", '_self');},
             '{{ _("Voltar para o mapa principal") }}'
+        ).addTo(map);
+
+        // LANGUAGE
+        const langButton = L.easyButton(
+            "<i class='fa-solid fa-language'></i>",
+            function(){ $('#langModal').modal('show'); },
+            '{{ _("Mudar de idioma") }}'
         ).addTo(map);
 
         // GROUP/UNGROUP
@@ -385,11 +412,10 @@
             ]}).addTo(map);
 
         // FILTER
-        var has_image_filtered = "all",
-                    grouping_filtered = "yes",
-                    types_filtered = "all";
+        let has_image_filtered = "all",
+            types_filtered = "all";
 
-        var filterButton = L.easyButton({
+        let filterButton = L.easyButton({
             states:[
                 {
                     icon: "<i class='fa-solid fa-filter'></i> " + "{{ _('Filtrar') }}",
@@ -398,7 +424,6 @@
                     title: filterTooltip,
                     onClick: function(btn, map){
                         $('#has_image').val(has_image_filtered);
-                        $('#grouping').val(grouping_filtered);
                         $('#types').val(types_filtered);
                         $('#filterModal').modal('show');
                     }
@@ -413,7 +438,7 @@
 
         const infoButton = L.easyButton(
             '<i class="fa-solid fa-info"></i>',
-            function() { window.open("{{ url_for('about') }}", '_blank');},
+            function() { $('#aboutModal').modal('show'); },
             '{{ _("Informações sobre o aplicativo") }}'
         ).addTo(map);
 
@@ -523,53 +548,9 @@
             }
         }
 
-        {#// Has image button#}
-        {#var hasImageButton = L.easyButton({#}
-        {#    states:[#}
-        {#        {#}
-        {#            icon: "<i class='fa-regular fa-image'></i> " + "{{ _('Todas') }}",#}
-        {#            stateName: 'both',#}
-        {#            width: '100%',#}
-        {#            onClick: function(btn, map){#}
-                        {#$('#presentationModal').modal('show');#}
-        {#                btn.state('yes');#}
-        {#                btn.button.style.backgroundColor = '#72b026';#}
-        {#                btn.button.style.color = 'white';#}
-        {#                map.addLayer(markers_with_image);#}
-        {#                map.removeLayer(markers_without_image);#}
-        {#            }#}
-        {#        },#}
-        {#        {#}
-        {#            icon: "<i class='fa-regular fa-image'></i> " + "{{ _('Sim') }}",#}
-        {#            stateName: 'yes',#}
-        {#            width: '100%',#}
-        {#            onClick: function(btn){#}
-                        {#$('#presentationModal').modal('show');#}
-        {#                btn.state('no');#}
-        {#                btn.button.style.backgroundColor = '#A42E1E';#}
-        {#                btn.button.style.color = 'white';#}
-        {#                map.removeLayer(markers_with_image);#}
-        {#                map.addLayer(markers_without_image);#}
-        {#            }#}
-        {#        },#}
-        {#        {#}
-        {#            icon: "<i class='fa-solid fa-camera'></i> " + "{{ _('Não') }}",#}
-        {#            stateName: 'no',#}
-        {#            width: '100%',#}
-        {#            onClick: function(btn){#}
-                        {#$('#presentationModal').modal('show');#}
-        {#                btn.state('both');#}
-        {#                btn.button.style.backgroundColor = 'white';#}
-        {#                btn.button.style.color = 'black';#}
-        {#                map.addLayer(markers_with_image);#}
-        {#                map.addLayer(markers_without_image);#}
-        {#            }#}
-        {#        }#}
-        {#    ]}).addTo(map);#}
-
         // Actions
         function removeOtherLayers(layer_to_preserve) {
-            $.each([P18, P1766, P1801, P5775, P3451, P4291, P8592, P9721], function (index, layer) {
+            $.each([P1442, P1766, P18, P1801, P3311, P3451, P4291, P4640, P5252, P5775, P8517, P8592, P9721, P9906], function (index, layer) {
                 if (layer_to_preserve !== layer) {
                     map.removeLayer(layer);
                 }
@@ -600,64 +581,56 @@
                 map.addLayer(markers_without_image);
             }
 
-            // GROUPING
-            var grouping = $('#grouping').val();
-            if (grouping === "yes") {
-                markers_with_image.freezeAtZoom(false);
-                markers_without_image.freezeAtZoom(false);
-            } else {
-                markers_with_image.freezeAtZoom("max");
-                markers_without_image.freezeAtZoom("max");
-            }
-
             // TYPES
             var types = $('#types').val();
             if (types === "all") {
-                $.each([P18, P1766, P1801, P5775, P3451, P4291, P8592, P9721], function (index, layer) {
+                $.each([P1442, P1766, P18, P1801, P3311, P3451, P4291, P4640, P5252, P5775, P8517, P8592, P9721, P9906], function (index, layer) {
                     map.addLayer(layer);
                 });
-            } else if (types === "P18") {
-                removeOtherLayers(P18);
-            } else if (types === "P1766") {
-                removeOtherLayers(P1766);
-            } else if (types === "P1801") {
-                removeOtherLayers(P1801);
-            } else if (types === "P5775") {
-                removeOtherLayers(P5775);
-            } else if (types === "P3451") {
-                removeOtherLayers(P3451);
-            } else if (types === "P4291") {
-                removeOtherLayers(P4291);
-            } else if (types === "P8592") {
-                removeOtherLayers(P8592);
-            } else if (types === "P9721") {
-                removeOtherLayers(P9721);
-            }
+            } else if (types === "P1442") { removeOtherLayers(P1442); }
+            else if (types === "P1766") { removeOtherLayers(P1766); }
+            else if (types === "P18") { removeOtherLayers(P18); }
+            else if (types === "P1801") { removeOtherLayers(P1801); }
+            else if (types === "P3311") { removeOtherLayers(P3311); }
+            else if (types === "P3451") { removeOtherLayers(P3451); }
+            else if (types === "P4291") { removeOtherLayers(P4291); }
+            else if (types === "P4640") { removeOtherLayers(P4640); }
+            else if (types === "P5252") { removeOtherLayers(P5252); }
+            else if (types === "P5775") { removeOtherLayers(P5775); }
+            else if (types === "P8517") { removeOtherLayers(P8517); }
+            else if (types === "P8592") { removeOtherLayers(P8592); }
+            else if (types === "P9721") { removeOtherLayers(P9721); }
+            else if (types === "P9906") { removeOtherLayers(P9906); }
 
             has_image_filtered = has_image;
-            grouping_filtered = grouping;
             types_filtered = types;
         });
 
-        $('#has_image').on('click', function () {
-            if (this.value === "yes") {
-                $('#types').prop("disabled", false);
-            } else {
+        $('#has_image').on('change', function () {
+            if (this.value === "all") {
                 $('#types').prop("disabled", true);
+            } else {
+                $('#types').prop("disabled", false);
                 $('#types option[value="all"]').prop("selected", true);
             }
         })
 
         {{markers|safe}}
 
-        const P18 = {{ P18|safe }},
+        const P1442 = {{ P1442|safe }},
             P1766 = {{ P1766|safe }},
+            P18 = {{ P18|safe }},
             P1801 = {{ P1801|safe }},
-            P5775 = {{ P5775|safe }},
+            P3311 = {{ P3311|safe }},
             P3451 = {{ P3451|safe }},
             P4291 = {{ P4291|safe }},
+            P4640 = {{ P4640|safe }},
+            P5252 = {{ P5252|safe }},
+            P5775 = {{ P5775|safe }},
+            P8517 = {{ P8517|safe }},
             P8592 = {{ P8592|safe }},
-            P9721 = {{ P9721|safe }};
+            P9721 = {{ P9721|safe }},
+            P9906 = {{ P9906|safe }};
     </script>
     <script src="{{ url_for('static', filename='js/state-monuments.js') }}"></script>
 {% endblock %}

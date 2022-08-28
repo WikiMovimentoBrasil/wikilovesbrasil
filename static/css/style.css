@@ -483,6 +483,10 @@ form button {
     padding: 20px;
     text-align: center;}
 
+.keep-third {
+    width: 33% !important;
+}
+
 /* Switcher */
 .switch {
   position: relative;
