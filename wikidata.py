@@ -76,12 +76,14 @@ def query_monuments(qid, lang):
 
             imagem = next(filter(lambda img: img, [p18, p3451, p5775, p8592, p9721, p4291, p8517, p5252, p1801,
                                                    p1766, p9906, p1442, p4640, p3311]), "No-image.png")
+            types = [".addTo(" + x + ")" for x in ["P18", "P3311", "P4291", "P4640", "P8517", "P1442", "P1766", "P1801", "P3451", "P5252", "P5775", "P8592", "P9721", "P9906"] if x in item]
 
             items.append({
                 "item": qid,
                 "coord": coord,
                 "imagem": imagem,
                 "label": label,
+                "types": types,
                 "p18": p18,
                 "p3451": p3451,
                 "p5775": p5775,

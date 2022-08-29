@@ -214,35 +214,8 @@ def mapa_uf(uf):
         popup = "<span style='text-align:center'><b>" + item["label"] + "</b></span><br><br>" + "<a class='custom-link' target='_blank' href='" + url_for("monumento", qid=item['item']) + "'><button class='send_button'><i class='fa-solid fa-arrow-up-from-bracket'></i> " + gettext("Enviar fotografia(s)") + "</div>"
         popup_style = "{closeButton: false}"
         if "imagem" in item and item["imagem"] != "No-image.png":
-            if "p1442" in item and item["p1442"]:
-                p1442.append(item["item"])
-            if "p1766" in item and item["p1766"]:
-                p1766.append(item["item"])
-            if "p18" in item and item["p18"]:
-                p18.append(item["item"])
-            if "p1801" in item and item["p1801"]:
-                p1801.append(item["item"])
-            if "p3311" in item and item["p3311"]:
-                p3311.append(item["item"])
-            if "p3451" in item and item["p3451"]:
-                p3451.append(item["item"])
-            if "p4291" in item and item["p4291"]:
-                p4291.append(item["item"])
-            if "p4640" in item and item["p4640"]:
-                p4640.append(item["item"])
-            if "p5252" in item and item["p5252"]:
-                p5252.append(item["item"])
-            if "p5775" in item and item["p5775"]:
-                p5775.append(item["item"])
-            if "p8517" in item and item["p8517"]:
-                p8517.append(item["item"])
-            if "p8592" in item and item["p8592"]:
-                p8592.append(item["item"])
-            if "p9721" in item and item["p9721"]:
-                p9721.append(item["item"])
-            if "p9906" in item and item["p9906"]:
-                p9906.append(item["item"])
-            comandos += item["item"] + " = L.marker({lon: " + item["coord"][0] + ", lat: " + item["coord"][1] + "}, {icon: greenIcon})" + ".bindTooltip(\"" + tooltip + "\", " + tooltip_style + ").bindPopup(\"" + popup + "\", " + popup_style + ").on('click', markerOnClick),\n"
+            if "types" in item and item["types"]:
+                comandos += item["item"] + " = L.marker({lon: " + item["coord"][0] + ", lat: " + item["coord"][1] + "}, {icon: greenIcon})" + ".bindTooltip(\"" + tooltip + "\", " + tooltip_style + ").bindPopup(\"" + popup + "\", " + popup_style + ").on('click', markerOnClick)" + "".join(item["types"]) + ",\n"
             qids_with_image.append(item["item"])
         else:
             comandos += item["item"] + " = L.marker({lon: " + item["coord"][0] + ", lat: " + item["coord"][1] + "}, {icon: redIcon})" + ".bindTooltip(\"" + tooltip + "\", " + tooltip_style + ").bindPopup(\"" + popup + "\", " + popup_style + ").on('click', markerOnClick).addTo(markers_without_image),\n"
@@ -254,20 +227,6 @@ def mapa_uf(uf):
                            markers=comandos,
                            markers_list="[" + ",".join(list(set(qids_without_image+qids_with_image))) + "]",
                            bounds=uf_bounds(uf),
-                           P1442="L.featureGroup.subGroup(markers_with_image, [" + ",".join(p1442) + "]).addTo(map)",
-                           P1766="L.featureGroup.subGroup(markers_with_image, [" + ",".join(p1766) + "]).addTo(map)",
-                           P18="L.featureGroup.subGroup(markers_with_image, [" + ",".join(p18) + "]).addTo(map)",
-                           P1801="L.featureGroup.subGroup(markers_with_image, [" + ",".join(p1801) + "]).addTo(map)",
-                           P3311="L.featureGroup.subGroup(markers_with_image, [" + ",".join(p3311) + "]).addTo(map)",
-                           P3451="L.featureGroup.subGroup(markers_with_image, [" + ",".join(p3451) + "]).addTo(map)",
-                           P4291="L.featureGroup.subGroup(markers_with_image, [" + ",".join(p4291) + "]).addTo(map)",
-                           P4640="L.featureGroup.subGroup(markers_with_image, [" + ",".join(p4640) + "]).addTo(map)",
-                           P5252="L.featureGroup.subGroup(markers_with_image, [" + ",".join(p5252) + "]).addTo(map)",
-                           P5775="L.featureGroup.subGroup(markers_with_image, [" + ",".join(p5775) + "]).addTo(map)",
-                           P8517="L.featureGroup.subGroup(markers_with_image, [" + ",".join(p8517) + "]).addTo(map)",
-                           P8592="L.featureGroup.subGroup(markers_with_image, [" + ",".join(p8592) + "]).addTo(map)",
-                           P9721="L.featureGroup.subGroup(markers_with_image, [" + ",".join(p9721) + "]).addTo(map)",
-                           P9906="L.featureGroup.subGroup(markers_with_image, [" + ",".join(p9906) + "]).addTo(map)",
                            username=username,
                            lang=lang,
                            uf=uf)
