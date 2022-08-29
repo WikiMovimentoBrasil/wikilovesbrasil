@@ -134,7 +134,7 @@
                         </div>
                         <div class="modal-body w3-container" id ="filter_content" style="font-family: 'Josefin Sans', 'FontAwesome', 'Font Awesome 6 Free', sans-serif">
                             <form>
-                                <div class="w3-container w3-third">
+                                <div class="w3-row">
                                     <div class="form-group">
                                         <label for="has_image">{{ _("Monumentos com ou sem imagens?") }}</label>
                                         <select id="has_image" class="form-control">
@@ -144,12 +144,12 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="w3-container w3-third">
+                                <div class="w3-row">
                                     <div class="form-group">
                                         <label for="types">{{ _("Tipos de imagem:") }}</label>
                                         <select id="types" class="form-control" disabled>
-                                            <option value="all">{{ _("Todos") }}</option>
-                                            <option value="P18" title="{{ _('Não tenho certeza') }}">{{ _('Selecione o tipo de imagem (opcional)') }}</option>
+                                            <option value="select" title="{{ _('Não tenho certeza') }}" selected disabled>{{ _('Selecione o tipo de imagem (opcional)') }}</option>
+                                            <option value="all" title="Todas as opções disponíveis">{{ _("Todos os tipos") }}</option>
                                             <option value="P18" title="{{ _('Imagem ilustrativa do monumento') }}">&#xf03e; {{ _('Imagem do exterior/Imagem ilustrativa') }}</option>
                                             <option value="P5775" title="{{ _('Vista do interior de um edifício ou espaço fechado') }}">&#xf52b; {{ _('Imagem do interior') }}</option>
                                             <option value="P9721" title="{{ _('Vista da entrada de um edifício ou espaço fechado, vista do lado de fora') }}">&#xf6d9; {{ _('Imagem da entrada') }}</option>
@@ -627,10 +627,14 @@
         $('#has_image').on('change', function () {
             if (this.value === "all") {
                 $('#types').prop("disabled", true);
+            } else if (this.value === "no") {
+                $('#types').prop("disabled", false);
+                $("#types option[value='all']").text("{{ _('Nenhum tipo') }}");
             } else {
                 $('#types').prop("disabled", false);
-                $('#types option[value="all"]').prop("selected", true);
+                $("#types option[value='all']").text("{{ _('Todos os tipos') }}");
             }
+            $('#types option[value="select"]').prop("selected", true);
         })
 
         var P1442=L.featureGroup.subGroup(markers_with_image).addTo(map),
