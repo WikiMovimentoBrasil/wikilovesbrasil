@@ -576,107 +576,107 @@ msgstr ""
 
 #: templates/map_uf.html:16
 msgid "WLM Brasil"
-msgstr ""
+msgstr "WLM Suriname"
 
 #: templates/map_uf.html:47
 msgid "Logotipo"
-msgstr ""
+msgstr "Logo"
 
 #: templates/map_uf.html:65 templates/map_uf.html:109 templates/map_uf.html:145
 msgid "Filtrar"
-msgstr ""
+msgstr "Filteren"
 
 #: templates/map_uf.html:74
 msgid "Monumentos com ou sem imagens?"
-msgstr ""
+msgstr "Monumenten zonder of met foto?"
 
 #: templates/map_uf.html:76
 msgid "Ambos"
-msgstr ""
+msgstr "Beiden"
 
 #: templates/map_uf.html:77
 msgid "Com"
-msgstr ""
+msgstr "Met"
 
 #: templates/map_uf.html:78
 msgid "Sem"
-msgstr ""
+msgstr "Zonder"
 
 #: templates/map_uf.html:84
 msgid "Tipos de imagem:"
-msgstr ""
+msgstr "Soorten foto's"
 
 #: templates/map_uf.html:87 templates/map_uf.html:152
 msgid "Todos os tipos"
-msgstr ""
+msgstr "Alle soorten"
 
 #: templates/map_uf.html:133
 msgid "Filtre os monumentos"
-msgstr ""
+msgstr "Filter monumenten"
 
 #: templates/map_uf.html:134
 msgid "Selecione os monumentos"
-msgstr ""
+msgstr "Selecteer monumenten"
 
 #: templates/map_uf.html:135
 msgid "Limpar seleção"
-msgstr ""
+msgstr "Selectie opheffen"
 
 #: templates/map_uf.html:136
 msgid "Voltar para o mapa principal"
-msgstr ""
+msgstr "Terug naar overzichtskaart"
 
 #: templates/map_uf.html:138
 msgid "Desagrupar monumentos"
-msgstr ""
+msgstr "Groeperen monumenten opheffen"
 
 #: templates/map_uf.html:139
 msgid "Agrupar monumentos"
-msgstr ""
+msgstr "Groeperen monumenten"
 
 #: templates/map_uf.html:141
 msgid "Adicione coordenadas a monumentos"
-msgstr ""
+msgstr "Voeg coördinaten toe aan monumenten"
 
 #: templates/map_uf.html:142
 msgid "Sugira monumentos para o mapa"
-msgstr ""
+msgstr "Suggereer monumenten voor de kaart"
 
 #: templates/map_uf.html:143
 msgid "Desagrupar"
-msgstr ""
+msgstr "Degroeperen"
 
 #: templates/map_uf.html:144
 msgid "Agrupar"
-msgstr ""
+msgstr "Groeperen"
 
 #: templates/map_uf.html:146
 msgid "Imprimir mapa"
-msgstr ""
+msgstr "Kaart afdrukken"
 
 #: templates/map_uf.html:147
 msgid "Paisagem"
-msgstr ""
+msgstr "Landschap"
 
 #: templates/map_uf.html:148
 msgid "Retrato"
-msgstr ""
+msgstr "Portret"
 
 #: templates/map_uf.html:149
 msgid "Salvar seleção"
-msgstr ""
+msgstr "Selectie opslaan"
 
 #: templates/map_uf.html:150
 msgid "Selecionar"
-msgstr ""
+msgstr "Selecteren"
 
 #: templates/map_uf.html:151
 msgid "Nenhum tipo"
-msgstr ""
+msgstr "Geen soort"
 
 #: templates/suggest.html:17
 msgid "Sugira monumentos"
-msgstr ""
+msgstr "Suggereer monumenten"
 
 #: templates/suggest.html:43
 msgid ""
@@ -684,188 +684,93 @@ msgid ""
 "mapas ou nas\n"
 "                listas do Wiki Loves Monuments Brasil."
 msgstr ""
+"Gebruik het formulier hieronder om monumenten die nog niet "
+"op de lijst of kaart van" 
+" Wiki Loves Monuments Suriname staan door te geven"
+
+
 
 #: templates/suggest.html:48
 msgid "Qual o nome do monumento? <sup style=\"color:#990000\">*</sup>"
-msgstr ""
+msgstr "Wat is de naam van het monument? <sup style=\"color:#990000\">*</sup>"
 
 #: templates/suggest.html:51
 msgid "Digite o nome do monumento"
-msgstr ""
+msgstr "Geef de naam van het monument"
 
 #: templates/suggest.html:54
 msgid "Em qual estado está localizado? <sup style=\"color:#990000\">*</sup>"
-msgstr ""
+msgstr "In welke district ligt het monument? <sup style=\"color:#990000\">*</sup>"
 
 #: templates/suggest.html:56
 msgid "Selecione um estado"
-msgstr ""
+msgstr "Seleteer een district"
 
 #: templates/suggest.html:57
 msgid "Região Norte"
-msgstr ""
+msgstr "Commewijne"
 
 #: templates/suggest.html:58
 msgid "Acre"
-msgstr ""
+msgstr "Coronie"
 
 #: templates/suggest.html:59
 msgid "Amapá"
-msgstr ""
+msgstr "Nickerie"
 
 #: templates/suggest.html:60
 msgid "Amazonas"
-msgstr ""
+msgstr "Para"
 
 #: templates/suggest.html:61
 msgid "Pará"
-msgstr ""
+msgstr "Paramaribo"
 
 #: templates/suggest.html:62
 msgid "Rondônia"
-msgstr ""
-
-#: templates/suggest.html:63
-msgid "Roraima"
-msgstr ""
-
-#: templates/suggest.html:64
-msgid "Tocantins"
-msgstr ""
-
-#: templates/suggest.html:66
-msgid "Região Nordeste"
-msgstr ""
-
-#: templates/suggest.html:67
-msgid "Alagoas"
-msgstr ""
-
-#: templates/suggest.html:68
-msgid "Bahia"
-msgstr ""
-
-#: templates/suggest.html:69
-msgid "Ceará"
-msgstr ""
-
-#: templates/suggest.html:70
-msgid "Maranhão"
-msgstr ""
-
-#: templates/suggest.html:71
-msgid "Paraíba"
-msgstr ""
-
-#: templates/suggest.html:72
-msgid "Pernambuco"
-msgstr ""
-
-#: templates/suggest.html:73
-msgid "Piauí"
-msgstr ""
-
-#: templates/suggest.html:74
-msgid "Rio Grande do Norte"
-msgstr ""
-
-#: templates/suggest.html:75
-msgid "Sergipe"
-msgstr ""
-
-#: templates/suggest.html:77
-msgid "Região Centro-Oeste"
-msgstr ""
-
-#: templates/suggest.html:78
-msgid "Distrito Federal"
-msgstr ""
-
-#: templates/suggest.html:79
-msgid "Goiás"
-msgstr ""
-
-#: templates/suggest.html:80
-msgid "Mato Grosso"
-msgstr ""
-
-#: templates/suggest.html:81
-msgid "Mato Grosso do Sul"
-msgstr ""
-
-#: templates/suggest.html:83
-msgid "Região Sudeste"
-msgstr ""
-
-#: templates/suggest.html:84
-msgid "Espírito Santo"
-msgstr ""
-
-#: templates/suggest.html:85
-msgid "Minas Gerais"
-msgstr ""
-
-#: templates/suggest.html:86
-msgid "Rio de Janeiro"
-msgstr ""
-
-#: templates/suggest.html:87
-msgid "São Paulo"
-msgstr ""
-
-#: templates/suggest.html:89
-msgid "Região Sul"
-msgstr ""
-
-#: templates/suggest.html:90
-msgid "Paraná"
-msgstr ""
-
-#: templates/suggest.html:91
-msgid "Rio Grande do Sul"
-msgstr ""
-
-#: templates/suggest.html:92
-msgid "Santa Catarina"
-msgstr ""
+msgstr "Saramacca"
 
 #: templates/suggest.html:97
 msgid ""
 "Em qual(is) município(s) está localizado? <sup "
 "style=\"color:#990000\">*</sup>"
 msgstr ""
+"In welk district ligt het?  <sup "
+"style=\"color:#990000\">*</sup>"
 
 #: templates/suggest.html:100
 msgid "Digite o nome do município"
-msgstr ""
+msgstr "Geef de naam van het district"
 
 #: templates/suggest.html:103
 msgid "Você sabe o endereço?"
-msgstr ""
+msgstr "Weet je het adres?"
 
 #: templates/suggest.html:105
 msgid "Digite o endereço"
-msgstr ""
+msgstr "Vul het adres in"
 
 #: templates/suggest.html:108
 msgid ""
 "Você possui um link para referência sobre o monumento? Se sim, cole-o "
 "abaixo: <sup style=\"color:#990000\">*</sup>"
 msgstr ""
+"Heb je een link met een referentie voor het monument? Zo ja, voeg deze hieronder toe: "
+"<sup style=\"color:#990000\">*</sup>"
 
 #: templates/suggest.html:110
 msgid "Insira a URL de referência"
-msgstr ""
+msgstr "Voeg de link van de referentie toe"
 
 #: templates/suggest.html:113
 msgid "Algum comentário sobre o monumento?"
-msgstr ""
+msgstr "Nog andere opmerkingen over het monument?"
 
 #: templates/suggest.html:118
 msgid "Enviar sugestão"
-msgstr ""
+msgstr "Verstuur suggestie"
 
 #: templates/topnavbar.html:2
 msgid "Mapa Geral"
-msgstr ""
+msgstr "Algemene kaart"
 
