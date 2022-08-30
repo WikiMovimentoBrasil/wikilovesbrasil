@@ -1,3 +1,6 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// CONSTANTS
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const colorTriples = [
     ["#006400", "#004B23", "#FFFFFF"],
     ["#D90202", "#7C0606", "#FFFFFF"],
@@ -9,27 +12,35 @@ const colorTriples = [
 
 const regions = ["N", "NE", "CO", "SE", "S"]
 
-var map = L.map('map', {zoomControl:false}).setMaxBounds([[6.3, -75.1], [-34.8, -27.8]]).setView([-19.5, -54.4], 4);
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAP LAYER
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+let map = L.map('map', {zoomControl: false}).setMaxBounds([[6.3, -75.1], [-34.8, -27.8]]).setView([-19.5, -54.4], 4);
 
-const osm_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 7,
+// OpenStreetMap
+let osm_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 17,
     minZoom: 4,
     attribution: credits_osm
 }).addTo(map);
 
+// Wikimedia
 const wm_map = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
     maxZoom: 7,
     minZoom: 4,
     attribution: credits_wikimedia
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// BUTTONS
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Zoom
 L.control.zoom({
     position: 'bottomright'
 }).addTo(map);
 
 // Locate
-let locate = L.control.locate({
+var locate = L.control.locate({
     flyTo: true,
     position: 'bottomright',
     returnToPrevBounds: true,
@@ -41,35 +52,51 @@ let locate = L.control.locate({
 }).addTo(map);
 
 // Layers
-L.control.layers({"OpenStreetMap": osm_map, "Wikimedia": wm_map}, null,{position: 'bottomright'}).addTo(map);
+L.control.layers({"OpenStreetMap": osm_map, "Wikimedia": wm_map}, null, {position: 'bottomright'}).addTo(map);
 
-// Logo at bottom left
+// Logo
 L.Control.Watermark = L.Control.extend({
-    onAdd: function(map) {
+    onAdd: function (map) {
         var img = L.DomUtil.create('img');
-        img.src = logoImage;
+        img.src = logo_path;
         img.style.width = '108px';
         img.style.marginBottom = '26px';
         return img;
     }
 });
-L.control.watermark = function(opts) { return new L.Control.Watermark(opts); }
-L.control.watermark({ position: 'bottomleft' }).addTo(map);
+L.control.watermark = function (opts) {
+    return new L.Control.Watermark(opts);
+}
+L.control.watermark({position: 'bottomleft'}).addTo(map);
 
 // Menu
-const menuButton = L.easyButton({
-    states:[{
-        icon: "<i class='fa-solid fa-bars'></i> " + menuName,
+L.easyButton({
+    states: [{
+        icon: "<i class='fa-solid fa-bars'></i> ",
         stateName: 'menu',
-        onClick: function(){ $('#presentationModal').modal('show'); }}]}).addTo(map);
+        onClick: function () {
+            $('#presentationModal').modal('show');
+        }
+    }]
+}).addTo(map);
 
-// Functions
+// Language
+L.easyButton(
+    "<i class='fa-solid fa-language'></i>",
+    function () { $('#langModal').modal('show'); },
+    langTooltip
+).addTo(map);
 
-//This code opens the homepage sidemodal at loading
-$(window).on('load', function() {
-    $('#presentationModal').modal('show');
-});
+// Info
+L.easyButton(
+    '<i class="fa-solid fa-info"></i>',
+    function () { $('#aboutModal').modal('show'); },
+    infoTooltip
+).addTo(map);
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// FUNCTIONS
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This code defines the fill color of each state based on its region
 function getFillColor(d) {
     return d === regions[0] ? colorTriples[0][0] :
@@ -133,7 +160,7 @@ function highlightFeature(e) {
 // This code resets the original style once the mouse is not over
 // the state
 function resetHighlight(e) {
-    estados.resetStyle(e.target);
+    states.resetStyle(e.target);
     // info.update();
 }
 
@@ -146,43 +173,14 @@ function openFeature(e) {
     window.open("/mapa/"+e.target.feature.properties.uf.toLowerCase(), "_self");
 }
 
-// This code fills the modal instance with information and buttons
-// about the state selected
-// function showFeature(e) {
-//     const nameObject = $("#nome");
-//     nameObject.text(youSelectedMsg + "\n" + e.target.feature.properties.name);
-//     nameObject.html(nameObject.html().replace(/\n/g, '<br/>'));
-//     const uf = e.target.feature.properties.uf.toLowerCase();
-//     $("#uf_monuments").attr("href", "/mapa/" + uf);
-//     $("#uf_monuments_without_coordinates").attr("href", "/mapa/" + uf + "/geolocalizar");
-//     $("#uf_monuments_suggestion").attr("href", "/mapa/sugerir?uf=" + uf);
-//     $("#uf_monuments button").css({
-//         "background-color": getBorderColor(e.target.feature.properties.region),
-//         "color": getFontColor(e.target.feature.properties.region)
-//     });
-//     $("#uf_monuments_without_coordinates button").css({
-//         "background-color": getFillColor(e.target.feature.properties.region),
-//         "color": getFontColor(e.target.feature.properties.region)
-//     });
-// }
-
-// This code opens the modal with a delay
-// function openModal() {
-//     window.setTimeout(function () {
-//         $('#selectionModal').modal('show');
-//     }, 750)
-// }
-
 // When the user click in any state on the map, executes
 // the appropriate functions
 function selectFunction(e) {
     zoomToFeature(e);
     openFeature(e);
-    // showFeature(e);
-    // openModal();
 }
 
-// When the user passes the mouve over a state on the map,
+// When the user passes the mouse over a state on the map,
 // executes the appropriate functions
 function onEachFeature(feature, layer) {
     layer.on({
@@ -192,4 +190,4 @@ function onEachFeature(feature, layer) {
     });
 }
 
-const estados = L.geoJson(statesData, {style: style, onEachFeature: onEachFeature}).addTo(map);
+let states = L.geoJson(statesData, {style: style, onEachFeature: onEachFeature}).addTo(map);

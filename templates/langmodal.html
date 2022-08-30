@@ -1,0 +1,24 @@
+<div class="modal modal-left fade" id="langModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="background-color: rgba(255,255,255,0.85);">
+            <div class="modal-header">
+                <h2 class="modal-title" id="selectedState">{{ _("Selecione um idioma") }}</h2>
+                <button type="button" class="close custom" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul style="line-height: 200%">
+                    {% for language in AVAILABLE_LANGUAGES %}
+                        <li>
+                            <a tabindex="0"
+                               href="{{ url_for('set_locale', return_to=request.script_root + request.full_path, lang=language) }}">
+                                {{ language|upper }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

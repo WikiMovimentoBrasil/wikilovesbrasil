@@ -25,6 +25,9 @@
         const logoImage = "{{ url_for('static', filename='/images/logo.svg') }}";
         const whereAmIMsg = '{{ _("Mostre-me onde estou") }}';
         const menuName = '{{ _("Menu") }}';
+        const logo_path = "{{ url_for('static', filename='images/logo.svg') }}";
+        const langTooltip = "{{ _('Mudar de idioma') }}";
+        const infoTooltip = "{{ _('Informações sobre o aplicativo') }}";
     </script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/states.js') }}"></script>
 {% endblock %}
@@ -43,7 +46,7 @@
         <div id="map"></div>
         <div class="modal modal-left fade" id="presentationModal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document" >
-                <div class="modal-content"style="background-color: rgba(255,255,255,0.85);">
+                <div class="modal-content" style="background-color: rgba(255,255,255,0.85);">
                     <div class="modal-header">
                         <h2 class="modal-title" id="selectedState">{{ _("Seja bem-vindo(a/e)!") }}</h2>
                         <button type="button" class="close custom" data-dismiss="modal" aria-label="Close">
@@ -70,10 +73,10 @@
                             </button>
                         </a>
                     </div>
-    {#                <div class="modal-footer">#}
-    {#                </div>#}
                 </div>
             </div>
         </div>
+        {% include 'langmodal.html' %}
+        {% include 'aboutmodal.html' %}
     </div>
 {% endblock %}
