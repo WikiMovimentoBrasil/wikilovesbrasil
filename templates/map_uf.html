@@ -201,6 +201,8 @@
         const ungroupTooltip = "{{ _('Desagrupar monumentos') }}";
         const groupTooltip = "{{ _('Agrupar monumentos') }}";
         const infoTooltip = "{{ _('Informações sobre o aplicativo') }}";
+        const coordinatesTooltip = "{{ _('Adicione coordenadas a monumentos') }}";
+        const suggestionsTooltip = "{{ _('Sugira monumentos para o mapa') }}";
         const ungroupTitle = "{{ _('Desagrupar') }}";
         const groupTitle = "{{ _('Agrupar') }}";
         const filterTitle = "{{ _('Filtrar') }}";
@@ -216,6 +218,8 @@
         const credits_wikimedia = '<a href="https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use">{{ _("Mapas da Wikimedia") }}</a> | ' + credits_osm;
         const logo_path = "{{ url_for('static', filename='images/logo.svg') }}";
         const home_url = "{{ url_for('mapa') }}";
+        const coordinates_url = "{{ url_for('geolocate', uf=uf) }}";
+        const suggestions_url = "{{ url_for('suggest', uf=uf)}}";
     </script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/map_uf.js') }}"></script>
     <script type="text/javascript">{{ markers|safe }}</script>

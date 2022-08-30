@@ -312,7 +312,6 @@ L.easyButton({
                 btn.state('unselect');
                 toggle_select = !toggle_select;
                 saveSelectButton.addTo(map);
-                console.log(toggle_select);
             }
         },
         {
@@ -331,14 +330,27 @@ L.easyButton({
                 });
                 toggle_select = !toggle_select;
                 saveSelectButton.remove();
-                console.log(toggle_select);
             }
         },
     ]
 }).addTo(map);
 
+// Geocoordinates
+L.easyButton(
+    '<i class="fa-solid fa-globe"></i>',
+    function () { window.open(coordinates_url, '_self'); },
+    coordinatesTooltip
+).addTo(map);
+
+// Suggest
+L.easyButton(
+    '<i class="fa-solid fa-comment-dots"></i>',
+    function () { window.open(suggestions_url, '_self'); },
+    suggestionsTooltip
+).addTo(map);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// BUTTONS
+// FUNCTIONS AND ACTIONS
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Function of each marker to change it when selected for making a route
 function markerOnClick(e) {
@@ -451,7 +463,8 @@ $('#has_image').on('change', function () {
     $('#types option[value="select"]').prop("selected", true);
 });
 
-var P1442 = L.featureGroup.subGroup(markers_with_image).addTo(map),
+// Create subgroups
+let P1442 = L.featureGroup.subGroup(markers_with_image).addTo(map),
     P1766 = L.featureGroup.subGroup(markers_with_image).addTo(map),
     P18 = L.featureGroup.subGroup(markers_with_image).addTo(map),
     P1801 = L.featureGroup.subGroup(markers_with_image).addTo(map),
