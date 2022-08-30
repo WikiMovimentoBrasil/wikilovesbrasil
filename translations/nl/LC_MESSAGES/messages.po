@@ -1,4 +1,4 @@
-# Portuguese (Brazil) translations for PROJECT.
+# Dutch translations for PROJECT.
 # Copyright (C) 2022 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
@@ -8,11 +8,11 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2022-08-30 04:38-0300\n"
-"PO-Revision-Date: 2022-08-28 02:21-0300\n"
+"PO-Revision-Date: 2022-08-30 05:03-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: pt_BR\n"
-"Language-Team: pt_BR <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: nl\n"
+"Language-Team: nl <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -868,67 +868,4 @@ msgstr ""
 #: templates/topnavbar.html:2
 msgid "Mapa Geral"
 msgstr ""
-
-#~ msgid " e %(number_subcats)s subcategorias"
-#~ msgstr ""
-
-#~ msgid "Nenhuma categoria no Wikimedia Commons"
-#~ msgstr ""
-
-#~ msgid "1 artigo"
-#~ msgstr ""
-
-#~ msgid "%(number)s artigo(s) em diferentes idiomas"
-#~ msgstr ""
-
-#~ msgid "Nenhum artigo na Wikipédia"
-#~ msgstr ""
-
-#~ msgid "Sem website oficial"
-#~ msgstr ""
-
-#~ msgid "para participar do Wiki Loves Monuments Brasil"
-#~ msgstr ""
-
-#~ msgid "Veja artigos em outros idiomas"
-#~ msgstr ""
-
-#~ msgid "Selecione um dos estados brasileiros no mapa"
-#~ msgstr ""
-
-#~ msgid "Seleção de estado"
-#~ msgstr ""
-
-#~ msgid "Veja monumentos no mapa"
-#~ msgstr ""
-
-#~ msgid "Sugira monumentos faltantes"
-#~ msgstr ""
-
-#~ msgid "Possui imagem:"
-#~ msgstr ""
-
-#~ msgid "Indiferente"
-#~ msgstr ""
-
-#~ msgid "Sim"
-#~ msgstr ""
-
-#~ msgid "Não"
-#~ msgstr ""
-
-#~ msgid "Todos"
-#~ msgstr ""
-
-#~ msgid "Agrupar:"
-#~ msgstr ""
-
-#~ msgid "Mapa geral"
-#~ msgstr ""
-
-#~ msgid "Geolocalizar"
-#~ msgstr ""
-
-#~ msgid "Sugerir"
-#~ msgstr ""
 
