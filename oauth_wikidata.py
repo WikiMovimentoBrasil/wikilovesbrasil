@@ -194,8 +194,8 @@ def build_text(form):
         for item in result["results"]["bindings"]:
             lang = item["lang"]["value"] if "lang" in item else "pt"
             descr = item["itemDescription"]["value"] if "itemDescription" in item and item["itemDescription"]["value"] else "fotografia de bem tombado em " + item["localLabel"]["value"] + ", " + item["estadoLabel"]["value"] + "."
-            category_monument = item["name"]["value"] if "name" in item else ""
-            category_local = item["local_cat"]["value"] if "local_cat" in item else ""
+            category_monument = item["name"]["value"].replace("Category:", "") if "name" in item else ""
+            category_local = item["local_cat"]["value"].replace("Category:", "") if "local_cat" in item else ""
             local_ = item["local"]["value"].replace("http://www.wikidata.org/entity/", "") if "local" in item else ""
             state_ = item["estado"]["value"].replace("http://www.wikidata.org/entity/", "") if "estado" in item else ""
 
@@ -224,7 +224,7 @@ def build_text(form):
             "|author=[[User:" + username + "|" + username + "]]\n" +
             "}}\n" +
             coordinates +
-            "{{test upload}}\n\n" +
+            "\n\n" +
             "=={{int:license-header}}==\n" +
             "{{self|cc-by-sa-4.0}}\n{{Wiki Loves Monuments " + year + "|br}}\n\n" +
             "[[Category:" + "]]\n[[Category:".join(categories) + "]]\n"
