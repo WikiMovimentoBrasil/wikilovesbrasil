@@ -197,7 +197,7 @@ def mapa_uf(uf):
     for item in monuments:
         tooltip = item["label"]
         tooltip_style = "{direction:'top', offset: [0, -37]}"
-        popup = "<span style='text-align:center'><b>" + item["label"] + "</b></span><br><br>" + "<a class='custom-link' target='_blank' href='" + url_for("monumento", qid=item['item']) + "'><button class='send_button'><i class='fa-solid fa-arrow-up-from-bracket'></i> " + gettext("Enviar fotografia(s)") + "</div>"
+        popup = "<span style='text-align:center'><b>" + item["label"] + "</b></span><br><br>" + "<a class='custom-link' target='_blank' href='" + url_for("monumento", qid=item['item']) + "'><button class='send_button'><i class='fa-solid fa-arrow-up-from-bracket'></i> " + gettext("Ver mais informações e enviar fotografias") + "</div>"
         popup_style = "{closeButton: false}"
         if "imagem" in item and item["imagem"] != "No-image.png":
             if "types" in item and item["types"]:
