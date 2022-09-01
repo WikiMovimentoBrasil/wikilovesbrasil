@@ -157,6 +157,7 @@
         const home_url = "{{ url_for('mapa') }}";
         const coordinates_url = "{{ url_for('geolocate', uf=uf) }}";
         const suggestions_url = "{{ url_for('suggest', uf=uf)}}";
+        const instruction = "{{ _('Selecione um monumento') }}";
     </script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/map_uf.js') }}"></script>
     <script type="text/javascript">{{ markers|safe }}</script>

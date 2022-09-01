@@ -28,6 +28,7 @@
         const logo_path = "{{ url_for('static', filename='images/logo.svg') }}";
         const langTooltip = "{{ _('Mudar de idioma') }}";
         const infoTooltip = "{{ _('Informações sobre o aplicativo') }}";
+        const instruction = "{{ _('Selecione um estado') }}";
     </script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/states.js') }}"></script>
 {% endblock %}
@@ -43,7 +44,9 @@
 {% block banner %}{% endblock %}
 {% block content %}
     <div class="w3-row" style="height:100vh; padding:0">
-        <div id="map"></div>
+        <div id="map">
+            <h2>Test</h2>
+        </div>
         <div class="modal modal-left fade" id="presentationModal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document" >
                 <div class="modal-content" style="background-color: rgba(255,255,255,0.85);">

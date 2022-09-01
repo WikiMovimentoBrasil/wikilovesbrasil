@@ -34,13 +34,27 @@ const wm_map = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png'
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // BUTTONS
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Title
+L.Control.Textbox = L.Control.extend({
+		onAdd: function(map) {
+		let text = L.DomUtil.create('div', 'map-instructions');
+		text.id = "info_text";
+		text.innerHTML = "<strong style='font-size: 150%'>" + instruction + "</strong>"
+		return text;
+		},
+
+		onRemove: function(map) {}
+	});
+L.control.textbox = function(opts) { return new L.Control.Textbox(opts);}
+L.control.textbox({ position: 'topleft' }).addTo(map);
+
 // Zoom
 L.control.zoom({
     position: 'bottomright'
 }).addTo(map);
 
 // Locate
-var locate = L.control.locate({
+let locate = L.control.locate({
     flyTo: true,
     position: 'bottomright',
     returnToPrevBounds: true,
