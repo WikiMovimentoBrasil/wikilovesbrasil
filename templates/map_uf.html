@@ -26,38 +26,6 @@
     <div class="w3-row" style="height:100%">
         <div class="w3-container" style="height:100vh; padding:0">
             <div id="map"></div>
-            <div class="modal modal-left fade" id="presentationModal" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog" role="document" >
-                    <div class="modal-content"style="background-color: rgba(255,255,255,0.85);">
-                        <div class="modal-header">
-                            <h2 class="modal-title" id="selectedState">{{ _("Seja bem-vindo(a/e)!") }}</h2>
-                            <button type="button" class="close custom" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <p>{{ _("Olá, gostaríamos de te dar as boas-vindas!") }}</p>
-                            <p>{{ _("O <b>Wiki Loves Brasil</b> é um aplicativo de envio de imagens para a etapa nacional do maior concurso fotográfico do mundo, o <b><i>Wiki Loves Monuments</i></b>!") }}</p>
-                            <p>{{ _("Envie suas fotografias do patrimônio histórico brasileiro durante o mês de setembro para participar e concorrer a prêmios.") }}</p>
-                            <hr>
-                            <p>{{ _("Comece selecionando uma subdivisão no mapa para ver os monumentos da região.") }}</p>
-                            <hr>
-                            <a target="_blank" href="{{ _('https://pt.wikipedia.org/wiki/Wikipédia:Wiki_Loves_Monuments/Brasil') }}">
-                                <button class="custom" style="color:black; padding:10px; width:100%; background-color: #cdcdcd; margin-bottom: 1rem">
-                                    <img src="{{ url_for('static', filename='/images/logowikipedia.png') }}" width="25px" alt="{{ _('Logotipo') }}">
-                                    {{ _("Visite a página do concurso na Wiki") }}
-                                </button>
-                            </a>
-                            <a target="_blank" href="{{ url_for('about') }}">
-                                <button class="custom" style="padding:10px; width:100%; background-color: #990000; margin-bottom: 1rem">
-                                    <i class="fas fa-info-circle"></i>
-                                    {{ _("Saiba mais sobre este aplicativo") }}
-                                </button>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="modal modal-left fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="selectedState" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -111,6 +79,7 @@
                     </div>
                 </div>
             </div>
+            {% include 'presentationmodal.html' %}
             {% include 'langmodal.html' %}
             {% include 'aboutmodal.html' %}
         </div>
