@@ -1,5 +1,5 @@
 const osm_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 17,
+    maxZoom: 19,
     minZoom: 1,
     attribution: '&copy; <a href="https://openstreetmap.org/copyright">' + credits + '</a>'
 });

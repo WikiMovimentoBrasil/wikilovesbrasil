@@ -19,14 +19,14 @@ let map = L.map('map', {zoomControl: false}).setMaxBounds([[6.3, -75.1], [-34.8,
 
 // OpenStreetMap
 let osm_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 17,
+    maxZoom: 19,
     minZoom: 4,
     attribution: credits_osm
 }).addTo(map);
 
 // Wikimedia
 const wm_map = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
-    maxZoom: 7,
+    maxZoom: 19,
     minZoom: 4,
     attribution: credits_wikimedia
 });

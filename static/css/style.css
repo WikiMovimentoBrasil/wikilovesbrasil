@@ -404,7 +404,7 @@ form button {
 
 /* Tooltip */
 @media (pointer: coarse), (hover: none) {
-    [title] {
+    [title]:not(a) {
         position: relative;
         display: inline-flex;
         justify-content: center;
@@ -470,7 +470,7 @@ form button {
     border: 2px solid var(--main-color);
 }
 
-#types-of-images i { font-size: 150%; }
+#types-of-images i:not(.fa-solid.fa-chevron-down) { font-size: 150%; }
 #file-drop-area, #login-area { width: 100%; border: 3px dashed gainsboro; padding: 2rem; text-align: center; }
 #file-drop-area.highlight { border-color: var(--main-color); }
 #license-message { font-size: small; text-align: justify; }

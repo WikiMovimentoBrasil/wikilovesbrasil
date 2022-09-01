@@ -80,7 +80,11 @@
                             <div class="w3-half" style="width:50% !important">
                                 <img src="{{ url_for('static', filename='images/commons.svg') }}" width="16px" alt="Wikimedia Commons">
                                 <a target="_blank" href="https://commons.wikimedia.org/wiki/Category:{{ metadata.commons_cat[0] }}">
-                                    {{ _("%(number_images)s imagens", number_images=metadata.cat_info["files"]) }}
+                                    {% if metadata.cat_info["files"] > 1 %}
+                                        {{ _("%(number_images)s imagens", number_images=metadata.cat_info["files"]) }}
+                                    {% else %}
+                                        {{ _("Única imagem") }}
+                                    {% endif %}
                                 </a>
                             </div>
                         {% endif %}
@@ -118,123 +122,106 @@
             {# Tipos de imagens #}
             <div class="w3-row section">
                 <div class="space-border" id="types-of-images">
-                    <div class="w3-row title space-border"><h2>{{ _("Tipos de imagens") }}</h2></div>
-                    <div class="w3-row">
-                        <p>
-                            {{ _("Abaixo estão os principais tipos de fotografias de monumentos.") }}
-                        </p>
+                    <div class="w3-row title space-border">
+                        <h2 class="collapsable-title" data-toggle="collapse" href="#types-of-image-container" aria-expanded="false" aria-controls="types-of-image-container">
+                            {{ _("Tipos de imagens") }} <span style="float:right"><i class="fa-solid fa-chevron-down"></i></span>
+                        </h2>
                     </div>
-                    <div class="w3-row w3-center space-border">
-                        <div class="w3-half" style="margin-bottom: 1rem">
-                            <div class="w3-half" style="width:50% !important;">
-                                <a class="custom-link {% if metadata.p18 and metadata.p18[0] %}with-info{% else %}no-info{% endif %}"
-                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P18">
-                                    <i class="fa-solid fa-image" title="{{ _('Imagem do exterior') }}"></i>
-                                    <br>{{ _('Imagem do exterior') }}
-                                </a>
-                            </div>
-                            <div class="w3-half" style="width:50% !important;">
-                                <a class="custom-link {% if metadata.p5775 and metadata.p5775[0] %}with-info{% else %}no-info{% endif %}"
-                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P5775">
-                                    <i class="fa-solid fa-door-open" title="{{ _('Imagem do interior') }}"></i>
-                                    <br>{{ _('Imagem do interior') }}
-                                </a>
-                            </div>
+                    <div class="collapse" id="types-of-image-container">
+                        <div class="w3-row">
+                            <p>
+                                {{ _("Abaixo estão os principais tipos de fotografias de monumentos.") }}
+                            </p>
                         </div>
-                        <div class="w3-half" style="margin-bottom: 1rem">
-                            <div class="w3-half" style="width:50% !important;">
-                                <a class="custom-link {% if metadata.p9721 and metadata.p9721[0] %}with-info{% else %}no-info{% endif %}"
-                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P9721">
-                                    <i class="fa-solid fa-dungeon" title="{{ _('Imagem da entrada') }}"></i>
-                                    <br>{{ _('Imagem da entrada') }}
-                                </a>
+                        <div class="w3-row w3-center space-border">
+                            <div class="w3-half" style="margin-bottom: 1rem">
+                                <div class="w3-half" style="width:50% !important;">
+                                    <a class="custom-link {% if metadata.p18 and metadata.p18[0] %}with-info{% else %}no-info{% endif %}"
+                                       target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P18" title="{{ _('Imagem ilustrativa do monumento') }}">
+                                        <i class="fa-solid fa-image"></i>
+                                        <br>{{ _('Imagem do exterior/Imagem ilustrativa') }}
+                                    </a>
+                                </div>
+                                <div class="w3-half" style="width:50% !important;">
+                                    <a class="custom-link {% if metadata.p5775 and metadata.p5775[0] %}with-info{% else %}no-info{% endif %}"
+                                       target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P5775" title="{{ _('Vista do interior de um edifício ou espaço fechado') }}">
+                                        <i class="fa-solid fa-door-open"></i>
+                                        <br>{{ _('Imagem do interior do monumento') }}
+                                    </a>
+                                </div>
                             </div>
-                            <div class="w3-half" style="width:50% !important;">
-                                <a class="custom-link {% if metadata.p9906 and metadata.p9906[0] %}with-info{% else %}no-info{% endif %}"
-                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P9906">
-                                    <i class="fa-solid fa-rectangle-list" title="{{ _('Imagem da inscrição') }}"></i>
-                                    <br>{{ _('Imagem da inscrição') }}
-                                </a>
+                            <div class="w3-half" style="margin-bottom: 1rem">
+                                <div class="w3-half" style="width:50% !important;">
+                                    <a class="custom-link {% if metadata.p9721 and metadata.p9721[0] %}with-info{% else %}no-info{% endif %}"
+                                       target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P9721" title="{{ _('Vista da entrada de um edifício ou espaço fechado, vista do lado') }}">
+                                        <i class="fa-solid fa-dungeon"></i>
+                                        <br>{{ _('Imagem da entrada vista de fora ') }}
+                                    </a>
+                                </div>
+                                <div class="w3-half" style="width:50% !important;">
+                                    <a class="custom-link {% if metadata.p9906 and metadata.p9906[0] %}with-info{% else %}no-info{% endif %}"
+                                       target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P9906" title="{{ _('Imagem de inscrições no monumento') }}">
+                                        <i class="fa-solid fa-rectangle-list"></i>
+                                        <br>{{ _('Imagem de inscrição no monumento') }}
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="w3-half" style="margin-bottom: 1rem">
-                            <div class="w3-half" style="width:50% !important;">
-                                <a class="custom-link {% if metadata.p3451 and metadata.p3451[0] %}with-info{% else %}no-info{% endif %}"
-                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P3451">
-                                    <i class="fa-solid fa-moon" title="{{ _('Vista noturna') }}"></i>
-                                    <br>{{ _('Vista noturna') }}
-                                </a>
+                            <div class="w3-half" style="margin-bottom: 1rem">
+                                <div class="w3-half" style="width:50% !important;">
+                                    <a class="custom-link {% if metadata.p3451 and metadata.p3451[0] %}with-info{% else %}no-info{% endif %}"
+                                       target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P3451" title="{{ _('Monumento ao entardecer ou à noite') }}">
+                                        <i class="fa-solid fa-moon"></i>
+                                        <br>{{ _('Vista noturna ou ao entardecer') }}
+                                    </a>
+                                </div>
+                                <div class="w3-half" style="width:50% !important;">
+                                    <a class="custom-link {% if metadata.p8592 and metadata.p8592[0] %}with-info{% else %}no-info{% endif %}"
+                                       target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P8592" title="{{ _('Fotografia de um monumento tirada do ar, por um drone, por exemplo') }}">
+                                        <i class="fa-solid fa-helicopter"></i>
+                                        <br>{{ _('Vista aérea') }}
+                                    </a>
+                                </div>
                             </div>
-                            <div class="w3-half" style="width:50% !important;">
-                                <a class="custom-link {% if metadata.p8592 and metadata.p8592[0] %}with-info{% else %}no-info{% endif %}"
-                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P8592">
-                                    <i class="fa-solid fa-helicopter" title="{{ _('Vista aérea') }}"></i>
-                                    <br>{{ _('Vista aérea') }}
-                                </a>
+                            <div class="w3-half" style="margin-bottom: 1rem">
+                                <div class="w3-half" style="width:50% !important;">
+                                    <a class="custom-link {% if metadata.p1801 and metadata.p1801[0] %}with-info{% else %}no-info{% endif %}"
+                                       target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P1801" title="{{ _('Imagem de placa de inauguração ou inscrição mencionando o monumento') }}">
+                                        <i class="fa-solid fa-medal"></i>
+                                        <br>{{ _('Placa comemorativa ou de inauguração') }}
+                                    </a>
+                                </div>
+                                <div class="w3-half" style="width:50% !important;">
+                                    <a class="custom-link {% if metadata.p1766 and metadata.p1766[0] %}with-info{% else %}no-info{% endif %}"
+                                       target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P1766" title="{{ _('Imagem de placa de trânsito com nome de local') }}">
+                                        <i class="fa-solid fa-map-signs"></i>
+                                        <br>{{ _('Placa de trânsito com o nome do monumento') }}
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="w3-half" style="margin-bottom: 1rem">
-                            <div class="w3-half" style="width:50% !important;">
-                                <a class="custom-link {% if metadata.p1801 and metadata.p1801[0] %}with-info{% else %}no-info{% endif %}"
-                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P1801">
-                                    <i class="fa-solid fa-medal" title="{{ _('Placa comemorativa') }}"></i>
-                                    <br>{{ _('Placa comemorativa') }}
-                                </a>
+                            <div class="w3-half" style="margin-bottom: 1rem">
+                                <div class="w3-half" style="width:50% !important;">
+                                    <a class="custom-link {% if metadata.p8517 and metadata.p8517[0] %}with-info{% else %}no-info{% endif %}"
+                                       target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P8517" title="{{ _('Imagem que o observador vê estando no monumento') }}">
+                                        <i class="fa-solid fa-mountain-sun"></i>
+                                        <br>{{ _('Vista a partir do monumento') }}
+                                    </a>
+                                </div>
+                                <div class="w3-half" style="width:50% !important;">
+                                    <a class="custom-link {% if metadata.p4291 and metadata.p4291[0] %}with-info{% else %}no-info{% endif %}"
+                                       target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P4291" title="{{ _('Ampla vista geral que contém o monumento') }}">
+                                        <i class="fa-solid fa-panorama"></i>
+                                        <br>{{ _('Imagem panorâmica do monumento') }}
+                                    </a>
+                                </div>
                             </div>
-                            <div class="w3-half" style="width:50% !important;">
-                                <a class="custom-link {% if metadata.p1766 and metadata.p1766[0] %}with-info{% else %}no-info{% endif %}"
-                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P1766">
-                                    <i class="fa-solid fa-map-signs" title="{{ _('Placa com o nome do lugar') }}"></i>
-                                    <br>{{ _('Placa com o nome do lugar') }}
-                                </a>
-                            </div>
-                        </div>
-                        <div class="w3-half" style="margin-bottom: 1rem">
-                            <div class="w3-half" style="width:50% !important;">
-                                <a class="custom-link {% if metadata.p8517 and metadata.p8517[0] %}with-info{% else %}no-info{% endif %}"
-                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P8517">
-                                    <i class="fa-solid fa-mountain-sun" title="{{ _('Vista') }}"></i>
-                                    <br>{{ _('Vista') }}
-                                </a>
-                            </div>
-                            <div class="w3-half" style="width:50% !important;">
-                                <a class="custom-link {% if metadata.p4291 and metadata.p4291[0] %}with-info{% else %}no-info{% endif %}"
-                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P4291">
-                                    <i class="fa-solid fa-panorama" title="{{ _('Vista panorâmica') }}"></i>
-                                    <br>{{ _('Vista panorâmica') }}
-                                </a>
-                            </div>
-                        </div>
-                        <div class="w3-half" style="margin-bottom: 1rem">
-                            <div class="w3-half" style="width:50% !important;">
-                                <a class="custom-link {% if metadata.p5252 and metadata.p5252[0] %}with-info{% else %}no-info{% endif %}"
-                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P5252">
-                                    <i class="fa-solid fa-snowflake" title="{{ _('Vista no inverno') }}"></i>
-                                    <br>{{ _('Vista no inverno') }}
-                                </a>
-                            </div>
-                            <div class="w3-half" style="width:50% !important;">
-                                <a class="custom-link {% if metadata.p4640 and metadata.p4640[0] %}with-info{% else %}no-info{% endif %}"
-                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P4640">
-                                    <i class="fa-solid fa-baseball" title="{{ _('Fotoesfera') }}"></i>
-                                    <br>{{ _('Fotoesfera') }}
-                                </a>
-                            </div>
-                        </div>
-                        <div class="w3-half" style="margin-bottom: 1rem">
-                            <div class="w3-half" style="width:50% !important;">
-                                <a class="custom-link {% if metadata.p3311 and metadata.p3311[0] %}with-info{% else %}no-info{% endif %}"
-                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P3311">
-                                    <i class="fa-solid fa-ruler-combined" title="{{ _('Imagem da planta') }}"></i>
-                                    <br>{{ _('Imagem da planta') }}
-                                </a>
-                            </div>
-                            <div class="w3-half" style="width:50% !important;">
-                                <a class="custom-link {% if metadata.p1442 and metadata.p1442[0] %}with-info{% else %}no-info{% endif %}"
-                                   target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P1442">
-                                    <i class="fa-solid fa-cross" title="{{ _('Imagem do túmulo') }}"></i>
-                                    <br>{{ _('Imagem do túmulo') }}
-                                </a>
+                            <div class="w3-half" style="margin-bottom: 1rem">
+                                <div class="w3-half" style="width:50% !important;">
+                                    <a class="custom-link {% if metadata.p3311 and metadata.p3311[0] %}with-info{% else %}no-info{% endif %}"
+                                       target="_blank" href="https://www.wikidata.org/wiki/{{ metadata.qid[0] }}#P3311" title="{{ _('Imagem representando a planta de um edifício ou local') }}">
+                                        <i class="fa-solid fa-ruler-combined"></i>
+                                        <br>{{ _('Imagem da planta de um edifício') }}
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -246,11 +233,11 @@
                     <div class="space-border">
                         <div id="wikipedia">
                             <div class="w3-row title space-border">
-                                <h2>
-                                    <i class="fa-brands fa-wikipedia-w"></i> {{ _("Wikipédia") }}
+                                <h2 class="collapsable-title" data-toggle="collapse" href="#wikipedia-container" aria-expanded="false" aria-controls="wikipedia-container">
+                                    <i class="fa-brands fa-wikipedia-w"></i> {{ _("Wikipédia") }} <span style="float:right"><i class="fa-solid fa-chevron-down"></i></span>
                                 </h2>
                             </div>
-                            <div class="w3-row space-border">
+                            <div id="wikipedia-container" class="w3-row space-border collapse">
                                 {{ metadata.article|safe }}
                                 <a target="_blank" href="https://{{ metadata.article_wiki }}.wikipedia.org/wiki/{{ metadata.article_name }}">{{ _("Leia mais na Wikipédia!") }}</a>
                             </div>
@@ -303,13 +290,13 @@
         let map = L.map('map',{zoomControl:false});
 
         const osm_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 7,
+            maxZoom: 19,
             minZoom: 4,
             attribution: credits_osm
         }).addTo(map);
 
         const wm_map = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
-            maxZoom: 7,
+            maxZoom: 19,
             minZoom: 4,
             attribution: credits_wikimedia
         });
@@ -383,21 +370,18 @@
                             <td style="width:15%; max-width:100px; padding:0.75rem 0"><label for="image_type_${filename}">{{ _('Típo: ') }}</label></td>
                             <td>
                                 <select id="image_type_${filename}" style="width:100%; width:100%; min-height:40px; border:2px solid #000000">
-                                <option value="P18" title="{{ _('Não tenho certeza') }}">{{ _('Selecione o tipo de imagem (opcional)') }}</option>
-                                <option value="P18" title="{{ _('Imagem ilustrativa do monumento') }}">{{ _('Imagem do exterior/Imagem ilustrativa') }}</option>
-                                <option value="P5775" title="{{ _('Vista do interior de um edifício ou espaço fechado') }}">{{ _('Imagem do interior') }}</option>
-                                <option value="P9721" title="{{ _('Vista da entrada de um edifício ou espaço fechado, vista do lado de fora') }}">{{ _('Imagem da entrada') }}</option>
-                                <option value="P9906" title="{{ _('Imagem de inscrições no monumento') }}">{{ _('Imagem da inscrição') }}</option>
-                                <option value="P1801" title="{{ _('Imagem de placa de inauguração ou inscrição mencionando o monumento') }}">{{ _('Placa comemorativa') }}</option>
-                                <option value="P1766" title="{{ _('Imagem de placa de trânsito com nome de local') }}">{{ _('Placa com o nome do lugar') }}</option>
-                                <option value="P8592" title="{{ _('Fotografia de um monumento tirada do ar, por um drone, por exemplo') }}">{{ _('Vista aérea') }}</option>
-                                <option value="P3451" title="{{ _('Monumento ao entardecer ou à noite') }}">{{ _('Vista noturna') }}</option>
-                                <option value="P4291" title="{{ _('Ampla vista geral que contém o monumento') }}">{{ _('Vista panorâmica') }}</option>
-                                <option value="P5252" title="{{ _('Imagem do monumento no inverno, de preferência com neve') }}">{{ _('Vista no inverno') }}</option>
-                                <option value="P8517" title="{{ _('Vista a partir do monumento') }}">{{ _('Vista') }}</option>
-                                <option value="P4640" title="{{ _('Imagem com campo de visão de 360 por 180 graus') }}">{{ _('Fotoesfera') }}</option>
-                                <option value="P3311" title="{{ _('Imagem representando a planta de um edifício ou local') }}">{{ _('Imagem da planta') }}</option>
-                                <option value="P1442" title="{{ _('Imagem de um túmulo, lápide ou jazigo') }}">{{ _('Imagem do túmulo') }}</option>
+                                    <option value="P18" title="{{ _('Não tenho certeza') }}">{{ _('Selecione o tipo de imagem (opcional)') }}</option>
+                                    <option value="P18" title="{{ _('Imagem ilustrativa do monumento') }}">{{ _('Imagem do exterior/Imagem ilustrativa') }}</option>
+                                    <option value="P5775" title="{{ _('Vista do interior de um edifício ou espaço fechado') }}">{{ _('Imagem do interior do monumento') }}</option>
+                                    <option value="P9721" title="{{ _('Vista da entrada de um edifício ou espaço fechado, vista do lado de fora') }}">{{ _('Imagem da entrada vista de fora') }}</option>
+                                    <option value="P9906" title="{{ _('Imagem de inscrições no monumento') }}">{{ _('Imagem de inscrição no monumento') }}</option>
+                                    <option value="P1801" title="{{ _('Imagem de placa de inauguração ou inscrição mencionando o monumento') }}">{{ _('Placa comemorativa ou de inauguração') }}</option>
+                                    <option value="P1766" title="{{ _('Imagem de placa de trânsito com nome de local') }}">{{ _('Placa de trânsito com o nome do monumento') }}</option>
+                                    <option value="P8592" title="{{ _('Fotografia de um monumento tirada do ar, por um drone, por exemplo') }}">{{ _('Vista aérea do monumento') }}</option>
+                                    <option value="P3451" title="{{ _('Monumento ao entardecer ou à noite') }}">{{ _('Vista noturna ou ao entardecer') }}</option>
+                                    <option value="P4291" title="{{ _('Ampla vista geral que contém o monumento') }}">{{ _('Imagem panorâmica do monumento') }}</option>
+                                    <option value="P8517" title="{{ _('Imagem que o observador vê estando no monumento') }}">{{ _('Vista a partir do monumento') }}</option>
+                                    <option value="P3311" title="{{ _('Imagem representando a planta de um edifício ou local') }}">{{ _('Imagem da planta de um edifício') }}</option>
                                 </select>
                             </td>
                         </tr>

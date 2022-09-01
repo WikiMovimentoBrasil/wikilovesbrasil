@@ -5,14 +5,14 @@ let map = L.map('map', {zoomControl: false}).setMaxBounds([[10, -20], [-40, -90]
 
 // OpenStreetMap
 let osm_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 17,
+    maxZoom: 19,
     minZoom: 4,
     attribution: credits_osm
 }).addTo(map);
 
 // Wikimedia
 const wm_map = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
-    maxZoom: 7,
+    maxZoom: 19,
     minZoom: 4,
     attribution: credits_wikimedia
 });
@@ -389,7 +389,7 @@ function markerOnClick(e) {
 
 // Removal of all layers and addition of selected layer. Has image and is of type target_layer
 function removeOtherLayers(target_layer) {
-    $.each([P1442, P1766, P18, P1801, P3311, P3451, P4291, P4640, P5252, P5775, P8517, P8592, P9721, P9906], function (index, layer) {
+    $.each([P1766, P18, P1801, P3311, P3451, P4291, P5775, P8517, P8592, P9721, P9906], function (index, layer) {
         map.removeLayer(layer);
     });
     map.addLayer(target_layer);
@@ -399,7 +399,7 @@ function removeOtherLayers(target_layer) {
 
 // Addition of all layers and removal of selected layer. Has no image of type target_layer
 function removeThisLayer(target_layer) {
-    $.each([P1442, P1766, P18, P1801, P3311, P3451, P4291, P4640, P5252, P5775, P8517, P8592, P9721, P9906], function (index, layer) {
+    $.each([P1766, P18, P1801, P3311, P3451, P4291, P5775, P8517, P8592, P9721, P9906], function (index, layer) {
         map.addLayer(layer);
     });
     map.removeLayer(target_layer);
@@ -413,16 +413,13 @@ $('#filter').on('click', function (event) {
     if (has_image === "yes") {
         map.removeLayer(markers_without_image);
         map.addLayer(markers_with_image);
-        if (types === "all") {$.each([P1442, P1766, P18, P1801, P3311, P3451, P4291, P4640, P5252, P5775, P8517, P8592, P9721, P9906], function (index, layer) {map.addLayer(layer);});}
-        else if (types === "P1442") {removeOtherLayers(P1442);}
+        if (types === "all") {$.each([P1766, P18, P1801, P3311, P3451, P4291, P5775, P8517, P8592, P9721, P9906], function (index, layer) {map.addLayer(layer);});}
         else if (types === "P1766") {removeOtherLayers(P1766);}
         else if (types === "P18") {removeOtherLayers(P18);}
         else if (types === "P1801") {removeOtherLayers(P1801);}
         else if (types === "P3311") {removeOtherLayers(P3311);}
         else if (types === "P3451") {removeOtherLayers(P3451);}
         else if (types === "P4291") {removeOtherLayers(P4291);}
-        else if (types === "P4640") {removeOtherLayers(P4640);}
-        else if (types === "P5252") {removeOtherLayers(P5252);}
         else if (types === "P5775") {removeOtherLayers(P5775);}
         else if (types === "P8517") {removeOtherLayers(P8517);}
         else if (types === "P8592") {removeOtherLayers(P8592);}
@@ -431,16 +428,13 @@ $('#filter').on('click', function (event) {
     } else if (has_image === "no") {
         map.addLayer(markers_without_image);
         map.addLayer(markers_with_image);
-        if (types === "all") {$.each([P1442, P1766, P18, P1801, P3311, P3451, P4291, P4640, P5252, P5775, P8517, P8592, P9721, P9906], function (index, layer) {map.removeLayer(layer);});}
-        else if (types === "P1442") {removeThisLayer(P1442);}
+        if (types === "all") {$.each([P1766, P18, P1801, P3311, P3451, P4291, P5775, P8517, P8592, P9721, P9906], function (index, layer) {map.removeLayer(layer);});}
         else if (types === "P1766") {removeThisLayer(P1766);}
         else if (types === "P18") {removeThisLayer(P18);}
         else if (types === "P1801") {removeThisLayer(P1801);}
         else if (types === "P3311") {removeThisLayer(P3311);}
         else if (types === "P3451") {removeThisLayer(P3451);}
         else if (types === "P4291") {removeThisLayer(P4291);}
-        else if (types === "P4640") {removeThisLayer(P4640);}
-        else if (types === "P5252") {removeThisLayer(P5252);}
         else if (types === "P5775") {removeThisLayer(P5775);}
         else if (types === "P8517") {removeThisLayer(P8517);}
         else if (types === "P8592") {removeThisLayer(P8592);}
@@ -449,7 +443,7 @@ $('#filter').on('click', function (event) {
     } else {
         map.addLayer(markers_without_image);
         map.addLayer(markers_with_image);
-        $.each([P1442, P1766, P18, P1801, P3311, P3451, P4291, P4640, P5252, P5775, P8517, P8592, P9721, P9906, markers_without_image], function (index, layer) {
+        $.each([P1766, P18, P1801, P3311, P3451, P4291, P5775, P8517, P8592, P9721, P9906, markers_without_image], function (index, layer) {
             map.addLayer(layer);
         });
     }
@@ -478,15 +472,12 @@ $('#has_image').on('change', function () {
 });
 
 // Create subgroups
-let P1442 = L.featureGroup.subGroup(markers_with_image).addTo(map),
-    P1766 = L.featureGroup.subGroup(markers_with_image).addTo(map),
+let P1766 = L.featureGroup.subGroup(markers_with_image).addTo(map),
     P18 = L.featureGroup.subGroup(markers_with_image).addTo(map),
     P1801 = L.featureGroup.subGroup(markers_with_image).addTo(map),
     P3311 = L.featureGroup.subGroup(markers_with_image).addTo(map),
     P3451 = L.featureGroup.subGroup(markers_with_image).addTo(map),
     P4291 = L.featureGroup.subGroup(markers_with_image).addTo(map),
-    P4640 = L.featureGroup.subGroup(markers_with_image).addTo(map),
-    P5252 = L.featureGroup.subGroup(markers_with_image).addTo(map),
     P5775 = L.featureGroup.subGroup(markers_with_image).addTo(map),
     P8517 = L.featureGroup.subGroup(markers_with_image).addTo(map),
     P8592 = L.featureGroup.subGroup(markers_with_image).addTo(map),
