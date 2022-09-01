@@ -14,19 +14,19 @@
                 <hr>
                 <p>{{ _("Comece selecionando uma subdivisão no mapa para ver os monumentos da região.") }}</p>
                 <hr>
-                <a target="_blank" href="{{ _('https://pt.wikipedia.org/wiki/Wikipédia:Wiki_Loves_Monuments/Brasil') }}">
-                    <button class="custom" style="color:black; padding:10px; width:100%; background-color: #cdcdcd; margin-bottom: 1rem">
-                        <img src="{{ url_for('static', filename='/images/logowikipedia.png') }}" width="25px" alt="{{ _('Logotipo') }}">
+                <p>
+                    <img src="{{ url_for('static', filename='/images/logowikipedia.png') }}" width="25px" alt="{{ _('Logo da Wikipédia') }}">
+                    <a target="_blank" href="{{ _('https://pt.wikipedia.org/wiki/Wikipédia:Wiki_Loves_Monuments/Brasil') }}">
                         {{ _("Visite a página do concurso na Wiki") }}
-                    </button>
-                </a>
-                <a target="_blank" href="{{ url_for('about') }}">
-                    <button class="custom"
-                            style="padding:10px; width:100%; background-color: #990000; margin-bottom: 1rem">
-                        <i class="fas fa-info-circle"></i>
-                        {{ _("Saiba mais sobre este aplicativo") }}
-                    </button>
-                </a>
+                    </a>
+                </p>
+                <hr>
+                <p>
+                    {% set projeto %}<a tabindex="0" target='_blank' aria-label='{{ _("Wiki Movimento Brasil") }}' href='https://meta.wikimedia.org/wiki/Wiki_Movement_Brazil_User_Group/{{ lang }}'>{{ _("Grupo de usuários Wiki Movimento Brasil") }}</a>{% endset %}
+                    {% set developer %}<a target='_blank' href='mailto:eder.porto@wmnobrasil.org'><i>{{ _("eder.porto@wmnobrasil.org") }}</i></a>{% endset %}
+                    {{ _("<i>Wiki Loves Brasil</i> é um aplicativo desenvolvido pelo <i><b>%(projeto)s</b></i>.", projeto=projeto) }}<br><br>
+                    {{ _("Dúvidas, reclamações, sugestões ou elogios: Envie uma mensagem para %(developer)s.", developer=developer) }}
+                </p>
             </div>
         </div>
     </div>
