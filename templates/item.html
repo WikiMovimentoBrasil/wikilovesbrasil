@@ -32,7 +32,7 @@
                             {{ _("Carregue suas fotografias deste monumento entre") }} {{ _("1 e 30 de setembro") }} {{ _("para participar do Wiki Loves Monuments Brasil.") }}
                         </p>
                         <div class="w3-container" id="upload_container" style="padding:0">
-{#                            {% if username %}#}
+                            {% if username %}
                             <form id="upload-images" method="post" enctype="multipart/form-data">
                                 <input id="monument_id" name="qid" type="text" value="{{ metadata.qid[0] }}" hidden>
                                 <div class="w3-container" id="file-drop-area">
@@ -44,14 +44,14 @@
                                 </div>
                                 <div class="w3-container" id="files_to_upload"></div>
                             </form>
-{#                            {% else %}#}
-{#                                <div class="w3-container" id="login-area">#}
-{#                                    <p style="margin:0 0 1rem 0">{{ _("Autentique-se para enviar suas imagens") }}</p>#}
-{#                                    <a class="custom-link" id="authenticate" style="display:inline-block; font-size: 100%" href="{{ url_for('login', next=request.script_root + request.full_path) }}">#}
-{#                                        <i class="fa-solid fa-right-to-bracket"></i> {{ _("Autenticar-se") }}#}
-{#                                    </a>#}
-{#                                </div>#}
-{#                            {% endif %}#}
+                            {% else %}
+                                <div class="w3-container" id="login-area">
+                                    <p style="margin:0 0 1rem 0">{{ _("Autentique-se para enviar suas imagens") }}</p>
+                                    <a class="custom-link" id="authenticate" style="display:inline-block; font-size: 100%" href="{{ url_for('login', next=request.script_root + request.full_path) }}">
+                                        <i class="fa-solid fa-right-to-bracket"></i> {{ _("Autenticar-se") }}
+                                    </a>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
