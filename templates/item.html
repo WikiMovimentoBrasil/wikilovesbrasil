@@ -586,14 +586,20 @@
                     url: "/send_file",
                     data: formData,
                     success: function (response) {
+                        console.log("message: " + response.message + "\nstatus: " + response.status + "\nfilename: " + response.filename);
                         if(response.status === "ERROR") {
                             var container = document.getElementById("file_upload_container_"+response.filename);
                             container.style.backgroundColor = "#ff6b6b";
                             container.title = response.message;
                         }
                         else {
+                            let sent = document.createElement("span");
+                            sent.className = "sent_icon";
+                            sent.id = "sent_" + response.filename;
+                            sent.innerHTML = "<i class=\"fa-solid fa-check\"></i></i> {{ _('Arquivo enviado') }}</button>";
                             document.getElementById("file_upload_container_"+response.filename).style.backgroundColor = "#8aff70";
-                            document.getElementById("remove_"+response.filename).remove();
+                            document.getElementById("remove_"+response.filename).replaceWith(sent);
+
                         }
                         document.getElementById("loading_"+response.filename).remove();
                     },

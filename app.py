@@ -385,13 +385,17 @@ def send_file():
                 message = gettext(u"Uma outra imagem costumava utilizar este mesmo título. Por favor, reformule o título.")
             elif "upload" in data and "warnings" in data["upload"] and "exists" in data["upload"]["warnings"]:
                 message = gettext(u"Uma imagem com este exato título já existe. Por favor, reformule o título.")
+            #TODO:lockmanager-fail-conflict is an error that does not impact in sending the files. For now, treat as success
+            elif "error" in data and "code" in data["error"] and data["error"]["code"] == "lockmanager-fail-conflict":
+                message = gettext(u"Imagem enviada com sucesso! Verifique suas contribuições clicando em seu nome de usuário(a).") + " (lockmanager-fail-conflict)"
+                status_code = "SUCCESS"
             elif "error" in data:
                 message = data["error"]["code"]
             elif "upload" in data and "result" in data["upload"] and data["upload"]["result"] == "Success":
                 message = gettext(u"Imagem enviada com sucesso! Verifique suas contribuições clicando em seu nome de usuário(a).")
-            else:
-                message = gettext(u"Teste.")
                 status_code = "SUCCESS"
+            else:
+                message = gettext(u"Error.")
         else:
             message = gettext(u'Ocorreu algum erro! Verifique o formulário e tente novamente. Caso o erro persista, '
                               u'por favor, reporte em https://github.com/WikiMovimentoBrasil/wikilovesbrasil/issues')

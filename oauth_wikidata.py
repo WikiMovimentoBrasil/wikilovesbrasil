@@ -154,7 +154,7 @@ def upload_file(uploaded_file, form, text):
 
     media_file = {'file': (form["filename"], uploaded_file.read(), 'multipart/form-data')}
 
-    req = raw_post_request(media_file, params, "https://commons.wikimedia.org/w/api.php?")
+    req = raw_post_request(media_file, params, "https:/commons.wikimedia.org/w/api.php?")
     data = req.json()
 
     return data
