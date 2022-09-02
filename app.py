@@ -364,7 +364,6 @@ def uf_bounds(uf):
 @app.route('/send_file', methods=["POST"])
 def send_file():
     username = get_username()
-    message = None
 
     status_code = "ERROR"
     if request.method == "POST":
@@ -378,22 +377,20 @@ def send_file():
             if "error" in data and data["error"]["code"] == "fileexists-shared-forbidden":
                 message = gettext(u"Uma imagem com este exato título já existe. Por favor, reformule o título.")
             elif "upload" in data and "warnings" in data["upload"] and "duplicate" in data["upload"]["warnings"]:
-                message = gettext(
-                    u"Esta imagem é uma duplicata exata da imagem https://commons.wikimedia.org/wiki/File:%(file_)s",
+                message = gettext(u"Esta imagem é uma duplicata exata da imagem https://commons.wikimedia.org/wiki/File:%(file_)s",
                     file_=data["upload"]["warnings"]["duplicate"][0])
-            elif "upload" in data and "warnings" in data["upload"] and "duplicate-archive" in data["upload"][
-                "warnings"]:
+            elif "upload" in data and "warnings" in data["upload"] and "duplicate-archive" in data["upload"]["warnings"]:
                 message = gettext(u"Esta imagem é uma duplicata exata de uma outra imagem que foi deletada da base.")
             elif "upload" in data and "warnings" in data["upload"] and "was-deleted" in data["upload"]["warnings"]:
-                message = gettext(
-                    u"Uma outra imagem costumava utilizar este mesmo título. Por favor, reformule o título.")
+                message = gettext(u"Uma outra imagem costumava utilizar este mesmo título. Por favor, reformule o título.")
             elif "upload" in data and "warnings" in data["upload"] and "exists" in data["upload"]["warnings"]:
                 message = gettext(u"Uma imagem com este exato título já existe. Por favor, reformule o título.")
             elif "error" in data:
                 message = data["error"]["code"]
+            elif "upload" in data and "result" in data["upload"] and data["upload"]["result"] == "Success":
+                message = gettext(u"Imagem enviada com sucesso! Verifique suas contribuições clicando em seu nome de usuário(a).")
             else:
-                message = gettext(
-                    u"Imagem enviada com sucesso! Verifique suas contribuições clicando em seu nome de usuário(a).")
+                message = gettext(u"Teste.")
                 status_code = "SUCCESS"
         else:
             message = gettext(u'Ocorreu algum erro! Verifique o formulário e tente novamente. Caso o erro persista, '

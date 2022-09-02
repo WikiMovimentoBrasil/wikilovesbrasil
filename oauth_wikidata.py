@@ -82,65 +82,6 @@ def read_chunks(file_object, chunk_size=5000):
 
 
 def upload_file(uploaded_file, form, text):
-    # token = get_token("https://commons.wikimedia.org/w/api.php?")
-    #
-    # size = uploaded_file.tell()
-    # uploaded_file.seek(0, 0)
-    #
-    # chunks = read_chunks(uploaded_file)
-    # chunk = next(chunks)
-    #
-    # filename = form["filename"]
-    #
-    # file_ext = get_file_ext(filename)
-    # params = {
-    #     "action": "upload",
-    #     "stash": 1,
-    #     "filename": form["name"]+file_ext,
-    #     "offset": 0,
-    #     "filesize": size,
-    #     "format": "json",
-    #     "token": token,
-    #     "ignorewarnings": 1
-    # }
-    #
-    # index = 0
-    # file = {'chunk': (('{}' + file_ext).format(index), chunk, 'multipart/form-data')}
-    # index += 1
-    # res = raw_post_request(file, params, "https://commons.wikimedia.org/w/api.php")
-    # data = res.json()
-    #
-    # for chunk in chunks:
-    #     params = {
-    #         "action": "upload",
-    #         "stash": 1,
-    #         "filename": form["name"]+file_ext,
-    #         "filekey": data["upload"]["filekey"],
-    #         "offset": data["upload"]["offset"],
-    #         "filesize": size,
-    #         "format": "json",
-    #         "token": token,
-    #         "ignorewarnings": 1
-    #     }
-    #     file = {'chunk': (('{}' + file_ext).format(index), chunk, 'multipart/form-data')}
-    #     index += 1
-    #     res = raw_post_request(file, params, "https://commons.wikimedia.org/w/api.php?")
-    #     data = res.json()
-    #
-    # params = {
-    #     "action": "upload",
-    #     "filename": form["name"] + file_ext,
-    #     "filekey": data["upload"]["filekey"],
-    #     "format": "json",
-    #     "token": token,
-    #     "comment": "Uploaded using Wiki Loves Brasil",
-    #     "text": text
-    # }
-    #
-    # res = raw_post_request(None, params, "https://commons.wikimedia.org/w/api.php?")
-    # data = res.json()
-    #
-    # return data
     token = get_token("https://commons.wikimedia.org/w/api.php?")
 
     params = {
@@ -224,7 +165,7 @@ def build_text(form):
             "|author=[[User:" + username + "|" + username + "]]\n" +
             "}}\n" +
             coordinates +
-            "\n\n" +
+            "\n\n{{test upload}}\n\n" +
             "=={{int:license-header}}==\n" +
             "{{self|cc-by-sa-4.0}}\n{{Wiki Loves Monuments " + year + "|br}}\n\n" +
             "[[Category:" + "]]\n[[Category:".join(categories) + "]]\n"
