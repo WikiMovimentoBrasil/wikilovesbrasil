@@ -21,7 +21,7 @@ msgstr ""
 #: templates/aboutmodal.html:5 templates/sobre.html:9
 #: templates/topnavbar.html:3
 msgid "Sobre"
-msgstr ""
+msgstr "About"
 
 #: templates/aboutmodal.html:12 templates/sobre.html:30
 msgid ""
@@ -31,12 +31,19 @@ msgid ""
 "maneira simplificada, geolocalizar monumentos ainda sem coordenadas "
 "registradas e sugerir monumentos que por acaso não estejam nas listas."
 msgstr ""
+" Klaar om deel te nemen aan de grootste fotowedstrijd ter wereld?"
+"Met <b>Wiki Loves Suriname</b> app doe je op verschillende manieren mee: "
+"Voeg eenvoudig jouw foto's van Surinaamse monumenten toe, "
+"Voeg geolocaties toe aan monumenten die dat nog niet hebben en doe"
+"Suggesties voor monumenten die niet op de werklijsten staan."
 
 #: templates/aboutmodal.html:13 templates/sobre.html:31
 msgid ""
 "O Wiki Loves Monuments é o maior concurso fotográfico do mundo! A etapa "
 "nacional ocorre entre 1º e 30 de setembro de 2022."
 msgstr ""
+" Wiki Loves Monuments is de grootste fotowedstrijd te wereld! De nationale " 
+" editie is van 1 tot 30 september 2022."
 
 #: templates/aboutmodal.html:14 templates/sobre.html:32
 msgid ""
@@ -47,6 +54,8 @@ msgid ""
 "Dabravolskas'>Real Gabinete Português de Leitura</a>, por Donatas "
 "Dabravolskas."
 msgstr ""
+" Dit is het eerste jaar dat Suriname meedoet! Help jij met het " 
+"fotograferen van de bijna 300 monumenten? " 
 
 #: templates/aboutmodal.html:15 templates/sobre.html:33
 msgid ""
@@ -54,34 +63,36 @@ msgid ""
 "href='https://w.wiki/5Bkv' title='Wiki Loves Monuments Brasil "
 "2022'>página do concurso na Wikipédia</a>."
 msgstr ""
-
+" Doe mee en win een prijs. Meer details vind je op <a target='_blank' "
+"href='https://www.wikilovesmonuments.sr' title='Wiki Loves Monuments Suriname "
+"2022'>wedstrijdpagina op Wikipedia</a>."
 #: templates/aboutmodal.html:20 templates/sobre.html:37
 msgid "Flask"
-msgstr ""
+msgstr "Flask"
 
 #: templates/aboutmodal.html:22 templates/sobre.html:38
 msgid "GitHub"
-msgstr ""
+msgstr "GitHub"
 
 #: templates/aboutmodal.html:24 templates/sobre.html:39
 msgid "GPL v3.0"
-msgstr ""
+msgstr "GPL v3.0"
 
 #: templates/aboutmodal.html:26 templates/sobre.html:40
 msgid "CC-BY-SA 4.0 Internacional"
-msgstr ""
+msgstr "CC-BY-SA 4.0 Internacional"
 
 #: templates/aboutmodal.html:28 templates/sobre.html:41
 msgid "ODbL v1.0"
-msgstr ""
+msgstr "ODbL v1.0"
 
 #: templates/aboutmodal.html:30 templates/sobre.html:42
 msgid "CC0"
-msgstr ""
+msgstr "CC0"
 
 #: templates/aboutmodal.html:32 templates/sobre.html:43
 msgid "Wiki Loves Monuments Map"
-msgstr ""
+msgstr "Wiki Loves Monuments kaart"
 
 #: templates/aboutmodal.html:34 templates/sobre.html:45
 #, python-format
@@ -89,125 +100,128 @@ msgid ""
 "Este aplicativo é inspirado no %(reference)s, desenvolvido por Paweł "
 "Marynowski e Stephen LaPorte"
 msgstr ""
+"Deze app is gebaseerd op %(reference)s, ontwikkeld door Paweł "
+"Marynowski en Stephen LaPorte"
 
 #: templates/aboutmodal.html:35 templates/sobre.html:46
 #, python-format
 msgid "Este aplicativo foi desenvolvido em %(flask)s."
-msgstr ""
+msgstr "Deze app is ontwikkeld in %(flask)s."
 
 #: templates/aboutmodal.html:36 templates/sobre.html:47
 #, python-format
 msgid "O código-fonte está disponível no %(github)s."
-msgstr ""
+msgstr "De code is beschikbaar in %(github)s."
 
 #: templates/aboutmodal.html:37 templates/sobre.html:48
 #, python-format
 msgid "Licença do cógido-fonte: %(license_code)s."
-msgstr ""
+msgstr "Licentie van de broncode: %(license_code)s."
 
 #: templates/aboutmodal.html:38 templates/sobre.html:49
 #, python-format
 msgid "Licença de textos: %(license_text)s."
-msgstr ""
+msgstr "licentie van de teksten: %(license_text)s."
 
 #: templates/aboutmodal.html:39 templates/sobre.html:50
 #, python-format
 msgid "Licença de mapas: %(license_maps)s."
-msgstr ""
+msgstr "Licentie van de kaarten: %(license_maps)s."
 
 #: templates/aboutmodal.html:40 templates/sobre.html:51
 #, python-format
 msgid "Licença dos metadados retornados do Wikidata: %(license_wikidata)s."
-msgstr ""
+msgstr "Licentie van de metadata opgehaald van Wikidata: %(license_wikidata)s."
 
 #: templates/aboutmodal.html:41 templates/sobre.html:52
 msgid "Versão 1.0."
-msgstr ""
+msgstr "Versie 1.0."
 
 #: templates/base.html:12 templates/inicio.html:9
 msgid "Página inicial"
-msgstr ""
+msgstr "Hoofdpagina"
 
 #: templates/base.html:12
 msgid "Wiki Loves Brasil"
-msgstr ""
+msgstr "Wiki Loves Suriname"
 
 #: templates/base.html:23 templates/base.html:26 templates/inicio.html:17
 #: templates/inicio.html:20 templates/sobre.html:17 templates/sobre.html:20
 msgid "Logotipo Wiki Loves Monuments Brasil"
-msgstr ""
+msgstr "Wiki Loves Monuments Suriname logo"
 
 #: templates/error.html:9 templates/error.html:29
 msgid "Algo deu errado!"
-msgstr ""
+msgstr "Er ging iets mis!"
 
 #: templates/error.html:17 templates/error.html:20
 msgid "Logotipo Wiki Loves Brasil"
-msgstr ""
+msgstr "Wiki Loves Monuments Suriname logo"
 
 #: templates/error.html:36
 msgid "Erro"
-msgstr ""
+msgstr "Fout"
 
 #: templates/error.html:47
 msgid "REPORTAR ERRO"
-msgstr ""
+msgstr "Rapporteer fout"
 
 #: templates/error.html:59
 msgid "VOLTAR À PÁGINA INICIAL"
-msgstr ""
+msgstr "Terug naar homepage"
 
 #: templates/geolocate.html:22 templates/item.html:299 templates/map.html:21
 #: templates/map_uf.html:154
 msgid "Contribuidores do OpenStreetMap"
-msgstr ""
+msgstr "OpenStreeMap Contributors"
 
 #: templates/geolocate.html:24 templates/item.html:301 templates/map.html:26
 #: templates/map_uf.html:153
 msgid "Mostre-me onde estou"
-msgstr ""
+msgstr "Toon mijn locatie"
 
 #: templates/geolocate.html:25
 msgid "Localize no mapa"
-msgstr ""
+msgstr "Lokaliseer op de kaart"
 
 #: templates/geolocate.html:26 templates/geolocate.html:124
 #: templates/map_uf.html:108
 msgid "Cancelar"
-msgstr ""
+msgstr "Annuleren"
 
 #: templates/geolocate.html:27
 msgid "Ver em tela cheia"
-msgstr ""
+msgstr "Fullscreen"
 
 #: templates/geolocate.html:28
 msgid "Sair da tela cheia"
-msgstr ""
+msgstr "Sluit fullscreen"
 
 #: templates/geolocate.html:33
 msgid "Localize monumentos"
-msgstr ""
+msgstr "Lokaliseer monumenten"
 
 #: templates/geolocate.html:46
 msgid "Filtre os monumentos da tabela pelo município em que estão localizados"
-msgstr ""
+msgstr ""  
+"Filter de monumenten in de tabel o.b.v. het district waarin ze liggen."
 
 #: templates/geolocate.html:47
 msgid "Digite o nome de um município"
-msgstr ""
+msgstr "Geef de naam van een district"
 
 #: templates/geolocate.html:54
 msgid "Imagem"
-msgstr ""
+msgstr "Afbeelding"
 
 #: templates/geolocate.html:55
 msgid "Monumentos sem coordenadas"
-msgstr ""
+msgstr "Monumenten zonder coördinaten"
 
 #: templates/geolocate.html:56 templates/geolocate.html:81
 #: templates/geolocate.html:93
 msgid "Adicionar coordenadas"
-msgstr ""
+msgstr "Coördinaten toevoegen"
 
 #: templates/geolocate.html:104
 msgid ""
@@ -215,24 +229,26 @@ msgid ""
 "                        fa-map-pin\"></i> e posicionando o marcador no "
 "mapa ou manualmente no campo abaixo."
 msgstr ""
+" Om coördinaten toe te voegen, klik je op de <i class=\"fa-solid fa-map-pin\"></i> en zet je de marker op de "
+" kaart of handmatig in het veld hieronder."
 
 #: templates/geolocate.html:109
 msgid "Coordenadas"
-msgstr ""
+msgstr "Coördinaten"
 
 #: templates/geolocate.html:128
 msgid "Confirmar"
-msgstr ""
+msgstr "Bevestigen"
 
 #: templates/geolocate.html:139 templates/inicio.html:66
 #: templates/item.html:284 templates/sobre.html:63 templates/suggest.html:128
 msgid "Wiki Movimento Brasil"
-msgstr ""
+msgstr "Stichting Gebouwd Erfgoed Suriname"
 
 #: templates/geolocate.html:139 templates/inicio.html:66
 #: templates/item.html:284 templates/sobre.html:63 templates/suggest.html:128
 msgid "Grupo de usuários Wiki Movimento Brasil"
-msgstr ""
+msgstr "Wikimedia Nederland"
 
 #: templates/geolocate.html:140 templates/inicio.html:67
 #: templates/item.html:285 templates/sobre.html:64 templates/suggest.html:129
@@ -243,246 +259,252 @@ msgid ""
 "que participam do concurso fotográfico Wiki Loves Monuments na "
 "localização e envio de fotografias para o Wikimedia Commons."
 msgstr ""
+" <i>Wiki Loves Suriname</i> is een app ontwikkeld door " 
+" "<i><b>%(projeto)s</b></i>, bedoeld om het voor deelnemers aan " 
+" Wiki Loves Monuments eenvoudig te maken om monumenten te lokaliseren " 
+" en foto's toe te voegen aan Wikimedia Commons." 
 
 #: templates/inicio.html:28
 msgid "Bem-vindo(a/e) ao<br><i>Wiki Loves Monuments Brasil 2022</i>"
-msgstr ""
+msgstr "Welkom bij ao<br><i>Wiki Loves Monuments Suriname 2022</i>""
 
 #: templates/inicio.html:31
 msgid ""
 "Neste aplicativo, você envia suas fotografias do patrimônio histórico "
 "brasileiro e participa do maior concurso fotográfico do mundo!"
 msgstr ""
+" Met deze app stuur je jouw foto's van historisch Surinaams erfgoed in " 
+" om mee te doen aan de grootste fotowedstrijd ter wereld!" 
 
 #: templates/inicio.html:45 templates/item.html:267
 msgid "Mapa"
-msgstr ""
+msgstr "Kaart"
 
 #: templates/inicio.html:53 templates/item.html:51 templates/topnavbar.html:25
 msgid "Autenticar-se"
-msgstr ""
+msgstr "Inloggen"
 
 #: templates/item.html:29
 msgid "Envio de imagens"
-msgstr ""
+msgstr "Foto's versturen"
 
 #: templates/item.html:32
 msgid "Carregue suas fotografias deste monumento entre"
-msgstr ""
+msgstr "Stuur je foto's van dit monument in tussen"
 
 #: templates/item.html:32
 msgid "1 e 30 de setembro"
-msgstr ""
+msgstr "1 en 30 september"
 
 #: templates/item.html:32
 msgid "para participar do Wiki Loves Monuments Brasil."
-msgstr ""
+msgstr "om mee te doen aan Wiki Loves Monuments Suriname."
 
 #: templates/item.html:39
 msgid "Arraste e solte seus arquivos ou clique para selecioná-los"
-msgstr ""
+msgstr "Selecteer en sleep je bestanden, of klik om ze te selecteren."
 
 #: templates/item.html:42
 msgid "Escolher arquivo(s)"
-msgstr ""
+msgstr "Kies bestand(en)"
 
 #: templates/item.html:49
 msgid "Autentique-se para enviar suas imagens"
-msgstr ""
+msgstr "Login om je foto's te versturen"
 
 #: templates/item.html:83
 #, python-format
 msgid "%(number_images)s imagens"
-msgstr ""
+msgstr "%(number_images)s foto's"
 
 #: templates/item.html:90
 msgid "Artigo na Wikipédia"
-msgstr ""
+msgstr "Artikel op Wikipedia"
 
 #: templates/item.html:96
 msgid "Item no Wikidata"
-msgstr ""
+msgstr "Item nr op Wikidata"
 
 #: templates/item.html:121
 msgid "Tipos de imagens"
-msgstr ""
+msgstr "Soorten afbeeldingen"
 
 #: templates/item.html:124
 msgid "Abaixo estão os principais tipos de fotografias de monumentos."
-msgstr ""
+msgstr "Hieronder staan de belangrijkste soorten foto's van monumenten."
 
 #: templates/item.html:132 templates/item.html:133
 msgid "Imagem do exterior"
-msgstr ""
+msgstr "Foto van het exterieur"
 
 #: templates/item.html:139 templates/item.html:140 templates/item.html:388
 #: templates/map_uf.html:89
 msgid "Imagem do interior"
-msgstr ""
+msgstr "Foto van het interieur"
 
 #: templates/item.html:148 templates/item.html:149 templates/item.html:389
 #: templates/map_uf.html:90
 msgid "Imagem da entrada"
-msgstr ""
+msgstr "Foto van de ingang"
 
 #: templates/item.html:155 templates/item.html:156 templates/item.html:390
 #: templates/map_uf.html:91
 msgid "Imagem da inscrição"
-msgstr ""
+msgstr "Foto van inscriptie"
 
 #: templates/item.html:164 templates/item.html:165 templates/item.html:394
 #: templates/map_uf.html:95
 msgid "Vista noturna"
-msgstr ""
+msgstr "Nachtgezicht"
 
 #: templates/item.html:171 templates/item.html:172 templates/item.html:393
 #: templates/map_uf.html:94
 msgid "Vista aérea"
-msgstr ""
+msgstr "Luchtfoto"
 
 #: templates/item.html:180 templates/item.html:181 templates/item.html:391
 #: templates/map_uf.html:92
 msgid "Placa comemorativa"
-msgstr ""
+msgstr "Gedenkplaat"
 
 #: templates/item.html:187 templates/item.html:188 templates/item.html:392
 #: templates/map_uf.html:93
 msgid "Placa com o nome do lugar"
-msgstr ""
+msgstr "Plaquette met de naam van de plaats"
 
 #: templates/item.html:196 templates/item.html:197 templates/item.html:397
 #: templates/map_uf.html:98
 msgid "Vista"
-msgstr ""
+msgstr "Uitzicht"
 
 #: templates/item.html:203 templates/item.html:204 templates/item.html:395
 #: templates/map_uf.html:96
 msgid "Vista panorâmica"
-msgstr ""
+msgstr "Uitzichtspunt"
 
 #: templates/item.html:212 templates/item.html:213 templates/item.html:396
 #: templates/map_uf.html:97
 msgid "Vista no inverno"
-msgstr ""
+msgstr "Wintergezicht"
 
 #: templates/item.html:219 templates/item.html:220 templates/item.html:398
 #: templates/map_uf.html:99
 msgid "Fotoesfera"
-msgstr ""
+msgstr "360 graden foto"
 
 #: templates/item.html:228 templates/item.html:229 templates/item.html:399
 #: templates/map_uf.html:100
 msgid "Imagem da planta"
-msgstr ""
+msgstr "Foto van de plattegrond"
 
 #: templates/item.html:235 templates/item.html:236 templates/item.html:400
 #: templates/map_uf.html:101
 msgid "Imagem do túmulo"
-msgstr ""
+msgstr "Foto van grafzerk"
 
 #: templates/item.html:250
 msgid "Wikipédia"
-msgstr ""
+msgstr "Wikipedia"
 
 #: templates/item.html:255
 msgid "Leia mais na Wikipédia!"
-msgstr ""
+msgstr "Lees meer op Wikipedia"
 
 #: templates/item.html:300 templates/map.html:22 templates/map_uf.html:155
 msgid "Mapas da Wikimedia"
-msgstr ""
+msgstr "Kaarten van Wikimedia"
 
 #: templates/item.html:366
 msgid "Remover"
-msgstr ""
+msgstr "Verwijderen"
 
 #: templates/item.html:371
 msgid "Título: "
-msgstr ""
+msgstr "Titel"
 
 #: templates/item.html:374
 msgid "Nome do arquivo"
-msgstr ""
+msgstr "Bestandsnaam"
 
 #: templates/item.html:376
 msgid "Data"
-msgstr ""
+msgstr "Gegevens"
 
 #: templates/item.html:378
 msgid "Coordenadas Geográficas"
-msgstr ""
+msgstr "Geografische coördinaten"
 
 #: templates/item.html:383
 msgid "Típo: "
-msgstr ""
+msgstr "Soort"
 
 #: templates/item.html:386 templates/map_uf.html:86
 msgid "Não tenho certeza"
-msgstr ""
+msgstr "Ik weet het niet zeker"
 
 #: templates/item.html:386 templates/map_uf.html:86
 msgid "Selecione o tipo de imagem (opcional)"
-msgstr ""
+msgstr "Selecteer de soort foto (optioneel)"
 
 #: templates/item.html:387 templates/map_uf.html:88
 msgid "Imagem ilustrativa do monumento"
-msgstr ""
+msgstr "Illustratieve foto van het monument"
 
 #: templates/item.html:387 templates/map_uf.html:88
 msgid "Imagem do exterior/Imagem ilustrativa"
-msgstr ""
+msgstr "Foto van het exterieur"
 
 #: templates/item.html:388 templates/map_uf.html:89
 msgid "Vista do interior de um edifício ou espaço fechado"
-msgstr ""
+msgstr "Gezicht vanuit het interieur van een gebouw of omheinde ruimte"
 
 #: templates/item.html:389 templates/map_uf.html:90
 msgid "Vista da entrada de um edifício ou espaço fechado, vista do lado de fora"
-msgstr ""
+msgstr "Gezicht op de ingang van het gebouw of omheinde ruimte, gezien van de voorkant"
 
 #: templates/item.html:390 templates/map_uf.html:91
 msgid "Imagem de inscrições no monumento"
-msgstr ""
+msgstr "Foto van inscripties op het monument"
 
 #: templates/item.html:391 templates/map_uf.html:92
 msgid "Imagem de placa de inauguração ou inscrição mencionando o monumento"
-msgstr ""
+msgstr "Foto van de inaugurele plaqye of inscriptie die het monument noemt"
 
 #: templates/item.html:392 templates/map_uf.html:93
 msgid "Imagem de placa de trânsito com nome de local"
-msgstr ""
+msgstr "Foto van het verkeersbord met plaatsnaam"
 
 #: templates/item.html:393 templates/map_uf.html:94
 msgid "Fotografia de um monumento tirada do ar, por um drone, por exemplo"
-msgstr ""
+msgstr "Luchtfoto van het monument, b.v. gemaakt met drone"
 
 #: templates/item.html:394 templates/map_uf.html:95
 msgid "Monumento ao entardecer ou à noite"
-msgstr ""
+msgstr "Foto van het monument bij avond of nacht"
 
 #: templates/item.html:395 templates/map_uf.html:96
 msgid "Ampla vista geral que contém o monumento"
-msgstr ""
+msgstr "Overzichtsfoto met het monument"
 
 #: templates/item.html:396 templates/map_uf.html:97
 msgid "Imagem do monumento no inverno, de preferência com neve"
-msgstr ""
+msgstr "Foto van het monument in de winter, bij voorkeur met sneeuw"
 
 #: templates/item.html:397 templates/map_uf.html:98
 msgid "Vista a partir do monumento"
-msgstr ""
+msgstr "Foto vanuit het monument"
 
 #: templates/item.html:398 templates/map_uf.html:99
 msgid "Imagem com campo de visão de 360 por 180 graus"
-msgstr ""
+msgstr "Foto met 360 of 180 graden view"
 
 #: templates/item.html:399 templates/map_uf.html:100
 msgid "Imagem representando a planta de um edifício ou local"
-msgstr ""
+msgstr "Foto met de plattegrond van een gebouw of site"
 
 #: templates/item.html:400 templates/map_uf.html:101
 msgid "Imagem de um túmulo, lápide ou jazigo"
-msgstr ""
+msgstr "Foto van een graf of grafsteen"
 
 #: templates/item.html:572
 #, python-format
@@ -495,10 +517,17 @@ msgid ""
 "esta imagem, contanto que me creditem e compartilhem qualquer obra "
 "derivada sob esta mesma licença."
 msgstr ""
+"Ik, %(username)s, de auteursrechthebbende van deze foto, geef " 
+"hierbij iedereen het <b>onherroepelijke</b> recht dit werk te gebruiken onder de  <a "
+"target='_blank ' href='https://creativecommons.org/licenses/by-"
+"sa/4.0/deed.pt_BR'>Creative Commons-licentie Naamsvermelding-Gelijk delen 4.0 "
+"license</a>. Iedereen mag dit werk gebruiken, delen en remixen, " 
+"onder vermelding van mijn naam en mits alle afgeleide werken onder " 
+"deze licentie gedeeld worden." 
 
 #: templates/item.html:573
 msgid "Enviar imagem(ns)"
-msgstr ""
+msgstr "Verstuur foto"
 
 #: templates/item.html:580
 msgid ""
@@ -506,42 +535,45 @@ msgid ""
 " erro persista, por favor, reporte em "
 "https://github.com/WikiMovimentoBrasil/wikilovesbrasil/issues"
 msgstr ""
+"Er ging iets mis! Controleer of je bent ingelogd en controleer je invoer "
+" Als het zich blijft voordoen, geef het door aan ons " 
+"https://github.com/WikiMovimentoBrasil/wikilovesbrasil/issues"
 
 #: templates/langmodal.html:5
 msgid "Selecione um idioma"
-msgstr ""
+msgstr "Selecteer een taal"
 
 #: templates/map.html:23
 msgid "Você selecionou:"
-msgstr ""
+msgstr "Je hebt geselecteerd:"
 
 #: templates/map.html:24
 msgid "Selecione uma região no mapa"
-msgstr ""
+msgstr "Selecteer een regio op de kaart"
 
 #: templates/map.html:27 templates/topnavbar.html:27
 msgid "Menu"
-msgstr ""
+msgstr "Menu"
 
 #: templates/map.html:29 templates/map_uf.html:137
 msgid "Mudar de idioma"
-msgstr ""
+msgstr "Wijzig taal"
 
 #: templates/map.html:30 templates/map_uf.html:140
 msgid "Informações sobre o aplicativo"
-msgstr ""
+msgstr "Over deze app"
 
 #: templates/map.html:35
 msgid "Brasil"
-msgstr ""
+msgstr "Suriname"
 
 #: templates/map.html:51 templates/map_uf.html:33
 msgid "Seja bem-vindo(a/e)!"
-msgstr ""
+msgstr "Welkom!"
 
 #: templates/map.html:57 templates/map_uf.html:39
 msgid "Olá, gostaríamos de te dar as boas-vindas!"
-msgstr ""
+msgstr "Hallo, en welkom!"
 
 #: templates/map.html:58 templates/map_uf.html:40
 msgid ""
