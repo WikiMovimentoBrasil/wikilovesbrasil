@@ -15,19 +15,19 @@ const regions = ["N", "NE", "CO", "SE", "S"]
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // MAP LAYER
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-let map = L.map('map', {zoomControl: false}).setMaxBounds([[6.3, -75.1], [-34.8, -27.8]]).setView([-19.5, -54.4], 4);
+let map = L.map('map', {zoomControl: false}).setMaxBounds([[6.3, -75.1], [-34.8, -27.8]]).setView([-19.5, -54.4], 3);
 
 // OpenStreetMap
 let osm_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    minZoom: 4,
+    maxZoom: 8,
+    minZoom: 3,
     attribution: credits_osm
 }).addTo(map);
 
 // Wikimedia
 const wm_map = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    minZoom: 4,
+    maxZoom: 8,
+    minZoom: 3,
     attribution: credits_wikimedia
 });
 
