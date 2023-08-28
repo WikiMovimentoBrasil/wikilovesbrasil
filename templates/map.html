@@ -11,11 +11,11 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
     <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/leaflet-locatecontrol/0.79.0/L.Control.Locate.min.js" charset="utf-8"></script>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/Leaflet.EasyButton/2.4.0/easy-button.min.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename= '/js/br-states.js') }}"></script>
     <script type="text/javascript">
         const credits_osm = '&copy; <a href="https://openstreetmap.org/copyright">{{ _("Contribuidores do OpenStreetMap") }}</a>';
