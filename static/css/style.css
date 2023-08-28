@@ -499,10 +499,10 @@ form button {
 }
 
 .map-instructions {
-    position:absolute !important;
-    text-align:center;
-    width:100%;
-    background-color:rgba(255,255,255,0.4);
+    text-align:center !important;
+    width:calc(100% - 2.5em - 30px);
+    background-color:rgba(255,255,255,1);
+    border-radius: 4px !important;
 }
 
 .search-container {
