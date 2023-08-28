@@ -3,23 +3,15 @@
 {% block styles %}
     <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-side-modals.css') }}">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+    <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/leaflet/1.9.4/leaflet.css"/>
+    <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/Leaflet.EasyButton/2.4.0/easy-button.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/leaflet.awesome-markers.css') }}">
-    <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css"/>
+    <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/leaflet-locatecontrol/0.79.0/L.Control.Locate.min.css"/>
+    <link rel="stylesheet" href="https://tools-static.wmflabs.org/cdnjs/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css"/>
 {% endblock %}
 
 {% block title %}{{ _("WLM Brasil") }}{% endblock %}
-
-{#{% block navbar %}#}
-{#    {% with lang=lang, username=username, mapa_geral=True, mapa=False, geolocate=True, uf=uf, suggest=True %}#}
-{#        {% include 'topnavbar.html' %}#}
-{#    {% endwith %}#}
-{#{% endblock %}#}
 
 {% block banner %}{% endblock %}
 {% block content %}
@@ -41,7 +33,7 @@
                                     <div class="form-group">
                                         <label for="has_image">{{ _("Monumentos com ou sem imagens?") }}</label>
                                         <select id="has_image" class="form-control">
-                                            <option value="all" selected>{{ _("Ambos") }}</option>
+                                            <option value="all">{{ _("Ambos") }}</option>
                                             <option value="yes">{{ _("Com") }}</option>
                                             <option value="no">{{ _("Sem") }}</option>
                                         </select>
@@ -84,46 +76,38 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/Leaflet.EasyButton/2.4.0/easy-button.min.js"></script>
     <script src="{{ url_for('static', filename='js/leaflet.awesome-markers.js') }}"></script>
-    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
     <script src="https://unpkg.com/leaflet.featuregroup.subgroup@1.0.2/dist/leaflet.featuregroup.subgroup.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster.freezable@1.0.0/dist/leaflet.markercluster.freezable.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+    <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/leaflet-locatecontrol/0.79.0/L.Control.Locate.min.js" charset="utf-8"></script>
     <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-easyprint@2.1.9/dist/bundle.min.js" charset="utf-8"></script>
     <script type="text/javascript">
         const bounds = {{ bounds | safe }};
-        const filterTooltip = "{{ _('Filtrar os monumentos') }}";
-        const selectTooltip = "{{ _('Selecionar os monumentos') }}";
-        const unselectTooltip = "{{ _('Limpar seleção') }}";
-        const homeTooltip = "{{ _('Voltar para o mapa principal') }}";
-        const langTooltip = "{{ _('Mudar de idioma') }}";
-        const ungroupTooltip = "{{ _('Desagrupar monumentos') }}";
-        const groupTooltip = "{{ _('Agrupar monumentos') }}";
-        const infoTooltip = "{{ _('Informações sobre o aplicativo') }}";
-        const coordinatesTooltip = "{{ _('Adicionar coordenadas a monumentos') }}";
-        const suggestionsTooltip = "{{ _('Sugerir monumentos para o mapa') }}";
-        const ungroupTitle = "{{ _('Desagrupar') }}";
-        const groupTitle = "{{ _('Agrupar') }}";
-        const filterTitle = "{{ _('Filtrar') }}";
-        const printTitle = "{{ _('Imprimir mapa') }}";
-        const landscapeTitle = "{{ _('Paisagem') }}";
-        const portraitTitle = "{{ _('Retrato') }}";
-        const saveSelectionTitle = "{{ _('Salvar seleção') }}";
-        const selectTitle = "{{ _('Selecionar') }}";
-        const noTypeTitle = "{{ _('Nenhum tipo') }}";
-        const allTypesTitle = "{{ _('Todos os tipos') }}";
-        const whereAmIMsg = '{{ _("Mostre-me onde estou") }}';
         const credits_osm = '&copy; <a href="https://openstreetmap.org/copyright">{{ _("Contribuidores do OpenStreetMap") }}</a>';
         const credits_wikimedia = '<a href="https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use">{{ _("Mapas da Wikimedia") }}</a> | ' + credits_osm;
-        const logo_path = "{{ url_for('static', filename='images/logo.svg') }}";
-        const home_url = "{{ url_for('mapa') }}";
+        const searchString = '{{ _("Pesquisar") }}';
+        const homeTooltip = '{{ _("Voltar para o mapa principal") }}';
+        const langTooltip = '{{ _("Mudar de idioma") }}';
+        const home_url = '{{ url_for("mapa") }}';
+        const whereAmIMsg = '{{ _("Mostre-me onde estou") }}';
+        const ungroupTooltip = "{{ _('Desagrupar monumentos') }}";
+        const groupTooltip = "{{ _('Agrupar monumentos') }}";
+        const filterTitle = "{{ _('Filtrar') }}";
+        const filterTooltip = "{{ _('Filtrar os monumentos') }}";
+        const infoTooltip = "{{ _('Informações sobre o aplicativo') }}";
+        const saveSelectionTitle = "{{ _('Salvar seleção') }}";
+        const selectTooltip = "{{ _('Selecionar os monumentos') }}";
+        const unselectTooltip = "{{ _('Limpar seleção') }}";
+        const selectTitle = "{{ _('Selecionar') }}";
+        const coordinatesTooltip = "{{ _('Adicionar coordenadas a monumentos') }}";
+        const suggestionsTooltip = "{{ _('Sugerir monumentos para o mapa') }}";
         const coordinates_url = "{{ url_for('geolocate', uf=uf) }}";
         const suggestions_url = "{{ url_for('suggest', uf=uf)}}";
-        const instruction = "{{ _('Selecione um monumento') }}";
+        const instruction = "{{ _('Selecione ou pesquise um monumento') }}";
     </script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/map_uf.js') }}"></script>
     <script type="text/javascript">{{ markers|safe }}</script>
