@@ -17,6 +17,9 @@ const wm_map = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png'
     attribution: credits_wikimedia
 });
 
+// Making map fit to the state
+map.fitBounds(bounds);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ICONS
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -126,28 +129,24 @@ markers_with_image.addTo(map);
 
 markers_without_image.addTo(map);
 
+let all_markers = L.layerGroup([markers_with_image, markers_without_image])
+
 // Subgroup for the selected items
 let markers_selected = L.featureGroup.subGroup();
-
-// Making map fit to the state
-map.fitBounds(bounds);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // BUTTONS
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Title
-L.Control.Textbox = L.Control.extend({
-		onAdd: function(map) {
-		let text = L.DomUtil.create('div', 'map-instructions');
-		text.id = "info_text";
-		text.innerHTML = "<strong style='font-size: 150%'>" + instruction + "</strong>"
-		return text;
-		},
-
-		onRemove: function(map) {}
-	});
-L.control.textbox = function(opts) { return new L.Control.Textbox(opts);}
-L.control.textbox({ position: 'topleft' }).addTo(map);
+// // Menu
+// L.easyButton({
+//     states: [{
+//         icon: "<i class='fa-solid fa-bars'></i> ",
+//         stateName: 'menu',
+//         onClick: function () {
+//             $('#presentationModal').modal('show');
+//         }
+//     }]
+// }).addTo(map);
 
 // Zoom
 L.control.zoom({
@@ -155,7 +154,7 @@ L.control.zoom({
 }).addTo(map);
 
 // Locate
-var locate = L.control.locate({
+let locate = L.control.locate({
     flyTo: true,
     position: 'bottomright',
     returnToPrevBounds: true,
@@ -167,53 +166,81 @@ var locate = L.control.locate({
 }).addTo(map);
 
 // Layers
-L.control.layers({"OpenStreetMap": osm_map, "Wikimedia": wm_map}, null, {position: 'bottomright'}).addTo(map);
+L.control.layers({"OpenStreetMap": osm_map, "Wikimedia": wm_map}, null, {position: 'bottomright', icon: 'fa-light fa-layer-group'}).addTo(map);
 
-// Logo
-L.Control.Watermark = L.Control.extend({
-    onAdd: function (map) {
-        var img = L.DomUtil.create('img');
-        img.src = logo_path;
-        img.style.width = '108px';
-        img.style.marginBottom = '26px';
-        return img;
-    }
+// Search
+let search_button = L.Control.extend({
+    options: { position: 'topright' },
+    onAdd: function(map) {
+        let container = L.DomUtil.create('div', 'leaflet-bar leaflet-control search-container');
+        let inputField = L.DomUtil.create('input', 'form-control search-input', container);
+        let resultsList = L.DomUtil.create('div', 'list-group', container);
+
+        inputField.type = 'search';
+        inputField.placeholder = instruction;
+        inputField.ariaLabel = searchString;
+
+        L.DomEvent.disableClickPropagation(container);
+
+        L.DomEvent.addListener(inputField, 'keyup', function (e) {
+            switch (e.keyCode) {
+                case 27:
+                case 38:
+                case 40:
+                case 45:
+                case 46:
+                case 37:
+                case 39:
+                case 16:
+                case 17:
+                case 35:
+                case 36:
+                    break;
+                default:
+                    if (this.value.length >= 3) {
+                        resultsList.innerHTML = "";
+                        let searchString = this.value.toLowerCase();
+                        all_markers.eachLayer(function (clusterlayer) {
+                            clusterlayer.eachLayer(function (layer) {
+                                if (layer.options && (layer.options.item.toLowerCase().includes(searchString) || layer.options.label.toLowerCase().includes(searchString))) {
+                                    var a = L.DomUtil.create('a', 'list-group-item');
+                                    a.href = '';
+                                    a.setAttribute('data-result-name', layer.options.label.toLowerCase());
+                                    a.setAttribute('data-result-qid', layer.options.item.toLowerCase());
+                                    a.innerHTML = layer.options.label + " (" + layer.options.item + ")";
+                                    a.onclick = function (e) {
+                                        e.preventDefault();
+                                        map.setView(layer._latlng, 19);
+                                        resultsList.innerHTML = "";
+                                    }
+                                    resultsList.appendChild(a);
+
+                                    return a;
+                                }
+                            });
+                        });
+                    } else {
+                        resultsList.innerHTML = "";
+                    }
+            }
+        });
+
+        return container;
+        },
 });
-L.control.watermark = function (opts) {
-    return new L.Control.Watermark(opts);
-}
-L.control.watermark({position: 'bottomleft'}).addTo(map);
-
-// Menu
-L.easyButton({
-    states: [{
-        icon: "<i class='fa-solid fa-bars'></i> ",
-        stateName: 'menu',
-        onClick: function () {
-            $('#presentationModal').modal('show');
-        }
-    }]
-}).addTo(map);
+map.addControl(new search_button());
 
 // Home
-L.easyButton(
-    "<i class='fa-solid fa-house'></i>",
-    function () { window.open(home_url, '_self'); },
-    homeTooltip
-).addTo(map);
+L.easyButton("<i class='fa-solid fa-house'></i>", function () { window.open(home_url, '_self'); }, homeTooltip).addTo(map);
 
 // Language
-L.easyButton(
-    "<i class='fa-solid fa-language'></i>",
-    function () { $('#langModal').modal('show'); },
-    langTooltip
-).addTo(map);
+L.easyButton("<i class='fa-solid fa-language'></i>", function () { $('#langModal').modal('show'); }, langTooltip).addTo(map);
 
 // Group/Ungroup
 L.easyButton({
     states: [
         {
-            icon: "<i class='fa-solid fa-object-ungroup'></i> " + ungroupTitle,
+            icon: "<i class='fa-solid fa-object-ungroup'></i>",
             stateName: 'grouped',
             width: '100%',
             title: ungroupTooltip,
@@ -224,7 +251,7 @@ L.easyButton({
             }
         },
         {
-            icon: "<i class='fa-solid fa-object-group'></i> " + groupTitle,
+            icon: "<i class='fa-solid fa-object-group'></i>",
             stateName: 'ungrouped',
             width: '100%',
             title: groupTooltip,
@@ -238,44 +265,24 @@ L.easyButton({
 }).addTo(map);
 
 // Filter
-let has_image_filtered = "all",
-    types_filtered = "all";
-
 L.easyButton({
     states: [
         {
-            icon: "<i class='fa-solid fa-filter'></i> " + filterTitle,
+            icon: "<i class='fa-solid fa-filter'></i>",
             stateName: 'filter',
             width: '100%',
             title: filterTooltip,
             onClick: function (btn, map) {
-                $('#has_image').val(has_image_filtered);
-                $('#types').val(types_filtered);
                 $('#filterModal').modal('show');
             }
         }]
 }).addTo(map);
 
-// Print
-L.easyPrint({
-    title: printTitle,
-    position: 'topleft',
-    sizeModes: ['A4Portrait', 'A4Landscape'],
-    defaultSizeTitles: {A4Landscape: landscapeTitle, A4Portrait: portraitTitle}
-}).addTo(map);
-
-// Info
-L.easyButton(
-    '<i class="fa-solid fa-info"></i>',
-    function () { $('#aboutModal').modal('show'); },
-    infoTooltip
-).addTo(map);
-
 // Save Selection
-var saveSelectButton = L.easyButton({
+let saveSelectButton = L.easyButton({
     states: [
         {
-            icon: "<i class='fa-solid fa-download'></i> " + saveSelectionTitle,
+            icon: "<i class='fa-solid fa-download'></i>",
             stateName: 'saveselect',
             width: '100%',
             display: 'none',
@@ -318,7 +325,7 @@ let toggle_select = false;
 L.easyButton({
     states: [
         {
-            icon: "<i class='fa-solid fa-map-location-dot'></i> " + selectTitle,
+            icon: "<i class='fa-solid fa-map-location-dot'></i>",
             stateName: 'select',
             width: '100%',
             title: selectTooltip,
@@ -329,7 +336,7 @@ L.easyButton({
             }
         },
         {
-            icon: "<i class='fa-solid fa-map-location-dot''></i> " + selectTitle,
+            icon: "<i class='fa-solid fa-map-location-dot''></i>",
             stateName: 'unselect',
             width: '100%',
             title: unselectTooltip,
@@ -350,18 +357,13 @@ L.easyButton({
 }).addTo(map);
 
 // Geocoordinates
-L.easyButton(
-    '<i class="fa-solid fa-globe"></i>',
-    function () { window.open(coordinates_url, '_self'); },
-    coordinatesTooltip
-).addTo(map);
+L.easyButton('<i class="fa-solid fa-globe"></i>', function () { window.open(coordinates_url, '_self'); }, coordinatesTooltip).addTo(map);
 
 // Suggest
-L.easyButton(
-    '<i class="fa-solid fa-comment-dots"></i>',
-    function () { window.open(suggestions_url, '_self'); },
-    suggestionsTooltip
-).addTo(map);
+L.easyButton('<i class="fa-solid fa-comment-dots"></i>', function () { window.open(suggestions_url, '_self'); }, suggestionsTooltip).addTo(map);
+
+// Info
+L.easyButton('<i class="fa-solid fa-info"></i>', function () { $('#aboutModal').modal('show'); }, infoTooltip).addTo(map);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // FUNCTIONS AND ACTIONS
@@ -407,8 +409,8 @@ function removeThisLayer(target_layer) {
 
 // Filter function
 $('#filter').on('click', function (event) {
-    var has_image = $('#has_image').val(); // HAS IMAGE
-    var types = $('#types').val(); // TYPES
+    let has_image = $('#has_image').val(); // HAS IMAGE
+    let types = $('#types').val(); // TYPES
 
     if (has_image === "yes") {
         map.removeLayer(markers_without_image);
@@ -427,7 +429,7 @@ $('#filter').on('click', function (event) {
         else if (types === "P9906") {removeOtherLayers(P9906);}
     } else if (has_image === "no") {
         map.addLayer(markers_without_image);
-        map.addLayer(markers_with_image);
+        map.removeLayer(markers_with_image);
         if (types === "all") {$.each([P1766, P18, P1801, P3311, P3451, P4291, P5775, P8517, P8592, P9721, P9906], function (index, layer) {map.removeLayer(layer);});}
         else if (types === "P1766") {removeThisLayer(P1766);}
         else if (types === "P18") {removeThisLayer(P18);}
