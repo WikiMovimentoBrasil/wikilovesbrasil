@@ -20,34 +20,44 @@ def query_wikidata(query):
 
 
 def query_monuments(qid, lang):
-    result = query_wikidata("SELECT DISTINCT ?item ?itemLabel ?local ?localLabel ?coord "
-                            "?P18 ?P5775 ?P9721 ?P9906 ?P1801 ?P1766 ?P8592 ?P3451 ?P4291 ?P8517 ?P3311 "
-                            "WITH { "
-                            "SELECT DISTINCT ?item WHERE { ?item wdt:P131* wd:" + qid + "; wdt:P1435 []. } "
-                            "} AS %items "
-                            "WHERE { "
-                            "INCLUDE %items. "
-                            "?item wdt:P625 ?coord. "
-                            "{ ?item p:P131/ps:P131 ?local. ?local wdt:P31 wd:Q3184121. } "
-                            "UNION "
-                            "{ ?item p:P131/ps:P131 [wdt:P131 ?local]. ?local wdt:P31 wd:Q3184121. } "
-                            "OPTIONAL {?item wdt:P18 ?P18}"
-                            "OPTIONAL {?item wdt:P5775 ?P5775}"
-                            "OPTIONAL {?item wdt:P9721 ?P9721}"
-                            "OPTIONAL {?item wdt:P9906 ?P9906}"
-                            "OPTIONAL {?item wdt:P1801 ?P1801}"
-                            "OPTIONAL {?item wdt:P1766 ?P1766}"
-                            "OPTIONAL {?item wdt:P8592 ?P8592}"
-                            "OPTIONAL {?item wdt:P3451 ?P3451}"
-                            "OPTIONAL {?item wdt:P4291 ?P4291}"
-                            "OPTIONAL {?item wdt:P8517 ?P8517}"
-                            "OPTIONAL {?item wdt:P3311 ?P3311}"
-                            "SERVICE wikibase:label { bd:serviceParam wikibase:language "
-                            "'"+lang+",pt-br,pt,en,es,fr,de,ja,[AUTO_LANGUAGE]'.} "
-                            "MINUS { ?item wdt:P31/wdt:P279* wd:Q22698. } "
-                            "MINUS { ?item wdt:P31/wdt:P279* wd:Q473972. } "
-                            "MINUS { ?item wdt:P31/wdt:P279* wd:Q271669. } "
-                            "}")
+    result = query_wikidata("""
+    SELECT DISTINCT ?item ?itemLabel ?local ?localLabel
+    (SAMPLE(?coord) AS ?coord)
+    (SAMPLE(?P18) AS ?P18)
+    (SAMPLE(?P5775) AS ?P5775)
+    (SAMPLE(?P9721) AS ?P9721)
+    (SAMPLE(?P9906) AS ?P9906)
+    (SAMPLE(?P1801) AS ?P1801)
+    (SAMPLE(?P1766) AS ?P1766)
+    (SAMPLE(?P8592) AS ?P8592)
+    (SAMPLE(?P3451) AS ?P3451)
+    (SAMPLE(?P4291) AS ?P4291)
+    (SAMPLE(?P8517) AS ?P8517)
+    (SAMPLE(?P3311) AS ?P3311)
+    WITH {
+        SELECT DISTINCT ?item WHERE {
+            ?item wdt:P131* wd:""" + qid + """; wdt:P1435 [].
+            MINUS { ?item wdt:P31/wdt:P279* wd:Q22698. }
+            MINUS { ?item wdt:P31/wdt:P279* wd:Q271669. } }
+        } AS %items
+        WHERE {
+            INCLUDE %items.
+            ?item wdt:P625 ?coord.
+            { ?item p:P131/ps:P131 ?local. ?local wdt:P31 wd:Q3184121. } UNION { ?item p:P131/ps:P131 [wdt:P131 ?local]. ?local wdt:P31 wd:Q3184121. }
+            OPTIONAL {?item wdt:P18 ?P18}
+            OPTIONAL {?item wdt:P5775 ?P5775}
+            OPTIONAL {?item wdt:P9721 ?P9721}
+            OPTIONAL {?item wdt:P9906 ?P9906}
+            OPTIONAL {?item wdt:P1801 ?P1801}
+            OPTIONAL {?item wdt:P1766 ?P1766}
+            OPTIONAL {?item wdt:P8592 ?P8592}
+            OPTIONAL {?item wdt:P3451 ?P3451}
+            OPTIONAL {?item wdt:P4291 ?P4291}
+            OPTIONAL {?item wdt:P8517 ?P8517}
+            OPTIONAL {?item wdt:P3311 ?P3311}
+            SERVICE wikibase:label { bd:serviceParam wikibase:language '""" + lang + """,pt-br,pt,en,es,fr,de,ja,[AUTO_LANGUAGE]'.}
+        } GROUP BY ?item ?itemLabel ?local ?localLabel""")
+
     items = []
     if "bindings" in result["results"] and result["results"]["bindings"]:
         for item in result["results"]["bindings"]:
@@ -91,29 +101,25 @@ def query_monuments(qid, lang):
 
 
 def query_monuments_without_coords(qid, lang):
-    result = query_wikidata("SELECT DISTINCT ?item ?itemLabel ?local ?localLabel ?imagem ?endereço "
-                            "WITH { "
-                            "SELECT DISTINCT ?item ?local WHERE { "
-                            "?item wdt:P131* wd:" + qid + "; wdt:P1435 []. } } AS %items "
-                            "WITH { "
-                            "SELECT DISTINCT ?item ?local "
-                            "(SAMPLE(?imagem) AS ?imagem) (SAMPLE(?endereço) AS ?endereço) WHERE { "
-                            "INCLUDE %items. "
-                            "{ ?item p:P131/ps:P131 ?local. ?local wdt:P31 wd:Q3184121. } "
-                            "UNION "
-                            "{ ?item p:P131/ps:P131 [wdt:P131 ?local]. ?local wdt:P31 wd:Q3184121. } "
-                            "OPTIONAL {?item wdt:p18|wdt:p5775|wdt:p9721|wdt:p9906|wdt:p1801|wdt:p1766|"
-                            "wdt:p8592|wdt:p3451|wdt:p4291|wdt:p8517|wdt:p3311 ?imagem } "
-                            "OPTIONAL {?item wdt:P6375 ?endereço} } GROUP BY ?item ?local "
-                            "} AS %filtered "
-                            "WHERE { "
-                            "INCLUDE %filtered. "
-                            "MINUS { ?item wdt:P31/wdt:P279* wd:Q22698. } "
-                            "MINUS { ?item wdt:P31/wdt:P279* wd:Q473972. } "
-                            "MINUS { ?item wdt:P31/wdt:P279* wd:Q271669. } "
-                            "MINUS { ?item wdt:P625 ?coord. } "
-                            "SERVICE wikibase:label { bd:serviceParam wikibase:language "
-                            "'"+lang+",pt-br,pt,en,es,fr,de,ja,[AUTO_LANGUAGE]'. } }")
+    result = query_wikidata("""
+    SELECT DISTINCT ?item ?itemLabel ?local ?localLabel ?imagem ?endereço
+        WITH {
+            SELECT DISTINCT ?item ?local WHERE {
+                ?item wdt:P131* wd:""" + qid + """; wdt:P1435 [].
+                MINUS { ?item wdt:P31/wdt:P279* wd:Q22698. }
+                MINUS { ?item wdt:P31/wdt:P279* wd:Q271669. }
+                MINUS { ?item wdt:P625 ?coord. }
+            }
+        } AS %items
+        WITH {
+            SELECT DISTINCT ?item ?local (SAMPLE(?imagem) AS ?imagem) (SAMPLE(?endereço) AS ?endereço) WHERE {
+                INCLUDE %items.
+                { ?item p:P131/ps:P131 ?local. ?local wdt:P31 wd:Q3184121. } UNION { ?item p:P131/ps:P131 [wdt:P131 ?local]. ?local wdt:P31 wd:Q3184121. }
+                OPTIONAL {?item wdt:p18|wdt:p5775|wdt:p9721|wdt:p9906|wdt:p1801|wdt:p1766|wdt:p8592|wdt:p3451|wdt:p4291|wdt:p8517|wdt:p3311 ?imagem }
+                OPTIONAL {?item wdt:P6375 ?endereço}
+            } GROUP BY ?item ?local
+        } AS %filtered
+        WHERE { INCLUDE %filtered. SERVICE wikibase:label { bd:serviceParam wikibase:language '""" + lang + """,pt-br,pt,en,es,fr,de,ja,[AUTO_LANGUAGE]'. } }""")
     items = []
     locais = []
     if "bindings" in result["results"] and result["results"]["bindings"]:
