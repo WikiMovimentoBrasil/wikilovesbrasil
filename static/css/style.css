@@ -56,8 +56,8 @@ p {
 
 .leaflet-top.leaflet-left {
     width: 100%;
-    /*display: flex;*/
-    /*flex-wrap: wrap;*/
+    display: flex;
+    flex-direction: column;
 }
 
 .easyPrintHolder .a4PCssClass, .easyPrintHolder .a4LCssClass {
@@ -504,3 +504,24 @@ form button {
     width:100%;
     background-color:rgba(255,255,255,0.4);
 }
+
+.search-container {
+    width: min(100vw, 500px);
+    max-width: calc(100% - 2.5em - 30px);
+    margin-right: 10px;
+}
+.search-input {
+    padding-left: 2.5em !important;
+    padding-right: 1em !important;
+    background-size: 1.25em !important;
+    background: url("/static/images/favicon.ico") no-repeat 0.75em center;
+}
+.leaflet-touch .leaflet-bar, .leaflet-control-layers { border:none !important; }
+.leaflet-touch .leaflet-bar button { border-radius: 50% !important; width: 2.5em !important; height: 2.5em !important; line-height: 2.5em; }
+.leaflet-touch .leaflet-control-layers-toggle { width: 30px !important; height: 30px !important; background-size: 20px; }
+.leaflet-container { font-size: 1em !important; }
+.form-control { border-radius: 4px !important; }
+
+.leaflet-right { width: 100%; calc(100% - 2.5em - 30px); }
+
+.list-group-item { width: 100% !important; padding: 0 0.5em !important; text-align: left !important; border-radius: 4px !important; }
