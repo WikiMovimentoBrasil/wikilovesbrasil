@@ -34,19 +34,65 @@ const wm_map = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png'
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // BUTTONS
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Title
-L.Control.Textbox = L.Control.extend({
-		onAdd: function(map) {
-		let text = L.DomUtil.create('div', 'map-instructions');
-		text.id = "info_text";
-		text.innerHTML = "<strong style='font-size: 150%'>" + instruction + "</strong>"
-		return text;
-		},
+// Search
+let search_button = L.Control.extend({
+    options: { position: 'topright' },
+    onAdd: function(map) {
+        let container = L.DomUtil.create('div', 'leaflet-bar leaflet-control search-container');
+        let inputField = L.DomUtil.create('input', 'form-control search-input', container);
+        let resultsList = L.DomUtil.create('div', 'list-group', container);
 
-		onRemove: function(map) {}
-	});
-L.control.textbox = function(opts) { return new L.Control.Textbox(opts);}
-L.control.textbox({ position: 'topleft' }).addTo(map);
+        inputField.type = 'search';
+        inputField.placeholder = instruction;
+        inputField.ariaLabel = searchString;
+
+        L.DomEvent.disableClickPropagation(container);
+
+        L.DomEvent.addListener(inputField, 'keyup', function (e) {
+            switch (e.keyCode) {
+                case 27:
+                // case 38:
+                // case 40:
+                case 45:
+                case 46:
+                case 37:
+                case 39:
+                case 16:
+                case 17:
+                case 35:
+                case 36:
+                    break;
+                default:
+                    if (this.value.length >= 3) {
+                        resultsList.innerHTML = "";
+                        let searchString = this.value.toLowerCase();
+                        statesData.features.forEach(function(state, state_index) {
+                            if (state.properties && (state.properties.name.toLowerCase().includes(searchString) || state.properties.qid.toLowerCase().includes(searchString))) {
+                                var a = L.DomUtil.create('a', 'list-group-item');
+                                a.href = '';
+                                a.setAttribute('data-result-name', state.properties.name.toLowerCase());
+                                a.setAttribute('data-result-qid', state.properties.qid.toLowerCase());
+                                a.innerHTML = state.properties.name + " (" + state.properties.qid + ")";
+                                a.onclick = function (e) {
+                                    e.preventDefault();
+                                    // map.fitBounds(L.geoJson(state).getBounds())
+                                    resultsList.innerHTML = "";
+                                    window.open("/mapa/"+state.properties.uf.toLowerCase(), "_self");
+                                }
+                                resultsList.appendChild(a);
+                                return a;
+                            }
+                        });
+                    } else {
+                        resultsList.innerHTML = "";
+                    }
+            }
+        });
+
+        return container;
+        },
+});
+map.addControl(new search_button());
 
 // Zoom
 L.control.zoom({
@@ -68,20 +114,20 @@ let locate = L.control.locate({
 // Layers
 L.control.layers({"OpenStreetMap": osm_map, "Wikimedia": wm_map}, null, {position: 'bottomright'}).addTo(map);
 
-// Logo
-L.Control.Watermark = L.Control.extend({
-    onAdd: function (map) {
-        var img = L.DomUtil.create('img');
-        img.src = logo_path;
-        img.style.width = '108px';
-        img.style.marginBottom = '26px';
-        return img;
-    }
-});
-L.control.watermark = function (opts) {
-    return new L.Control.Watermark(opts);
-}
-L.control.watermark({position: 'bottomleft'}).addTo(map);
+// // Logo
+// L.Control.Watermark = L.Control.extend({
+//     onAdd: function (map) {
+//         var img = L.DomUtil.create('img');
+//         img.src = logo_path;
+//         img.style.width = '108px';
+//         img.style.marginBottom = '26px';
+//         return img;
+//     }
+// });
+// L.control.watermark = function (opts) {
+//     return new L.Control.Watermark(opts);
+// }
+// L.control.watermark({position: 'bottomleft'}).addTo(map);
 
 // Menu
 L.easyButton({
