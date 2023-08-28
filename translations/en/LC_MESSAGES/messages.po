@@ -6,7 +6,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.0\n"
+"Project-Id-Version:  1.0\n"
 "Report-Msgid-Bugs-To: eder.porto@wmnobrasil.org\n"
 "POT-Creation-Date: 2022-08-30 04:38-0300\n"
 "PO-Revision-Date: 2022-05-26 04:58-0300\n"
@@ -17,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.11.0\n"
 
 #: templates/aboutmodal.html:5 templates/sobre.html:9
 #: templates/topnavbar.html:3
@@ -231,11 +231,12 @@ msgstr "Add coordinates"
 
 #: templates/geolocate.html:104
 msgid ""
-"Adicione coordenadas clicando em <i class=\"fa-solid fa-map-pin\"></i> e posicionando o marcador no "
+"Adicione coordenadas clicando em <i class=\"fa-solid\n"
+"                        fa-map-pin\"></i> e posicionando o marcador no "
 "mapa ou manualmente no campo abaixo."
 msgstr ""
-"Add coordinates by clicking <i class=\"fa-solid fa-map-pin\"></i> and placing the marker on the "
-"map or manually in the field below."
+"Add coordinates by clicking <i class=\"fa-solid fa-map-pin\"></i> and "
+"placing the marker on the map or manually in the field below."
 
 #: templates/geolocate.html:109
 msgid "Coordenadas"
@@ -590,22 +591,23 @@ msgid ""
 " Monuments</i></b>!"
 msgstr ""
 "The <b>Wiki Loves Brasil</b> is an application for uploading images to "
-"the national phase of the biggest photo contest in the world, the <b><i>Wiki Loves"
-"Monuments</i></b>!"
+"the national phase of the biggest photo contest in the world, the "
+"<b><i>Wiki Loves Monuments</i></b>!"
 
 #: templates/map.html:59 templates/map_uf.html:41
 msgid ""
 "Envie suas fotografias do patrimônio histórico brasileiro durante o mês "
 "de setembro para participar e concorrer a prêmios."
 msgstr ""
-"Submit your photographs of the Brazilian historical heritage during the month "
-"of September to participate and compete for prizes."
+"Submit your photographs of the Brazilian historical heritage during the "
+"month of September to participate and compete for prizes."
 
 #: templates/map.html:61 templates/map_uf.html:43
 msgid ""
 "Comece selecionando uma subdivisão no mapa para ver os monumentos da "
 "região."
-msgstr "Start by selecting a subdivision on the map to see the monuments of the "
+msgstr ""
+"Start by selecting a subdivision on the map to see the monuments of the "
 "region."
 
 #: templates/map.html:63 templates/map_uf.html:45
@@ -725,10 +727,13 @@ msgid "Sugira monumentos"
 msgstr "Suggest monuments"
 
 #: templates/suggest.html:43
-msgid "Utilize o formulário abaixo para sugerir monumentos que não "
-"estejam nos mapas ou nas listas do Wiki Loves Monuments Brasil."
-msgstr "Use the form below to suggest monuments that "
-"are not on the Loves Monuments Brasil Wiki maps or lists."
+msgid ""
+"Utilize o formulário abaixo para sugerir monumentos que não estejam nos "
+"mapas ou nas\n"
+"                listas do Wiki Loves Monuments Brasil."
+msgstr ""
+"Use the form below to suggest monuments that are not on the Loves "
+"Monuments Brasil Wiki maps or lists."
 
 #: templates/suggest.html:48
 msgid "Qual o nome do monumento? <sup style=\"color:#990000\">*</sup>"
