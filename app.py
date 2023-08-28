@@ -201,10 +201,10 @@ def mapa_uf(uf):
         popup_style = "{closeButton: false}"
         if "imagem" in item and item["imagem"] != "No-image.png":
             if "types" in item and item["types"]:
-                comandos += item["item"] + " = L.marker({lon: " + item["coord"][0] + ", lat: " + item["coord"][1] + "}, {icon: greenIcon})" + ".bindTooltip(\"" + tooltip + "\", " + tooltip_style + ").bindPopup(\"" + popup + "\", " + popup_style + ").on('click', markerOnClick)" + "".join(item["types"]) + ",\n"
+                comandos += item["item"] + " = L.marker({lon: " + item["coord"][0] + ", lat: " + item["coord"][1] + "}, {icon: greenIcon, item: \"" + item["item"] + "\", label: \"" + item["label"] + "\"})" + ".bindTooltip(\"" + tooltip + "\", " + tooltip_style + ").bindPopup(\"" + popup + "\", " + popup_style + ").on('click', markerOnClick)" + "".join(item["types"]) + ",\n"
             qids_with_image.append(item["item"])
         else:
-            comandos += item["item"] + " = L.marker({lon: " + item["coord"][0] + ", lat: " + item["coord"][1] + "}, {icon: redIcon})" + ".bindTooltip(\"" + tooltip + "\", " + tooltip_style + ").bindPopup(\"" + popup + "\", " + popup_style + ").on('click', markerOnClick).addTo(markers_without_image),\n"
+            comandos += item["item"] + " = L.marker({lon: " + item["coord"][0] + ", lat: " + item["coord"][1] + "}, {icon: redIcon, item: \"" + item["item"] + "\", label: \"" + item["label"] + "\"})" + ".bindTooltip(\"" + tooltip + "\", " + tooltip_style + ").bindPopup(\"" + popup + "\", " + popup_style + ").on('click', markerOnClick).addTo(markers_without_image),\n"
             qids_without_image.append(item["item"])
 
         comandos = comandos[:-2] + ";\n"
