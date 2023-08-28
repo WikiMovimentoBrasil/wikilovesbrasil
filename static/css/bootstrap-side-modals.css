@@ -17,7 +17,7 @@
   position: fixed;
   margin: auto;
   width: 500px;
-  max-width: 90%;
+  max-width: calc(100% - 20px);
   height: 100%;
 }
 
