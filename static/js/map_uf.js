@@ -185,8 +185,8 @@ let search_button = L.Control.extend({
         L.DomEvent.addListener(inputField, 'keyup', function (e) {
             switch (e.keyCode) {
                 case 27:
-                case 38:
-                case 40:
+                // case 38:
+                // case 40:
                 case 45:
                 case 46:
                 case 37:
