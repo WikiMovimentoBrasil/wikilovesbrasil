@@ -82,63 +82,80 @@ def read_chunks(file_object, chunk_size=5000):
 
 
 def upload_file(uploaded_file, form, text):
+    # token = get_token("https://commons.wikimedia.org/w/api.php?")
+    #
+    # size = uploaded_file.tell()
+    # uploaded_file.seek(0, 0)
+    #
+    # chunks = read_chunks(uploaded_file)
+    # chunk = next(chunks)
+    #
+    # filename = form["filename"]
+    #
+    # file_ext = get_file_ext(filename)
+    # params = {
+    #     "action": "upload",
+    #     "stash": 1,
+    #     "filename": form["name"]+file_ext,
+    #     "offset": 0,
+    #     "filesize": size,
+    #     "format": "json",
+    #     "token": token,
+    #     "ignorewarnings": 1
+    # }
+    #
+    # index = 0
+    # file = {'chunk': (('{}' + file_ext).format(index), chunk, 'multipart/form-data')}
+    # index += 1
+    # res = raw_post_request(file, params, "https://commons.wikimedia.org/w/api.php")
+    # data = res.json()
+    #
+    # for chunk in chunks:
+    #     params = {
+    #         "action": "upload",
+    #         "stash": 1,
+    #         "filename": form["name"]+file_ext,
+    #         "filekey": data["upload"]["filekey"],
+    #         "offset": data["upload"]["offset"],
+    #         "filesize": size,
+    #         "format": "json",
+    #         "token": token,
+    #         "ignorewarnings": 1
+    #     }
+    #     file = {'chunk': (('{}' + file_ext).format(index), chunk, 'multipart/form-data')}
+    #     index += 1
+    #     res = raw_post_request(file, params, "https://commons.wikimedia.org/w/api.php?")
+    #     data = res.json()
+    #
+    # params = {
+    #     "action": "upload",
+    #     "filename": form["name"] + file_ext,
+    #     "filekey": data["upload"]["filekey"],
+    #     "format": "json",
+    #     "token": token,
+    #     "comment": "Uploaded using Wiki Loves Brasil",
+    #     "text": text
+    # }
+    #
+    # res = raw_post_request(None, params, "https://commons.wikimedia.org/w/api.php?")
+    # data = res.json()
+    #
+    # return data
     token = get_token("https://commons.wikimedia.org/w/api.php?")
 
-    size = uploaded_file.tell()
-    uploaded_file.seek(0, 0)
-
-    chunks = read_chunks(uploaded_file)
-    chunk = next(chunks)
-
-    filename = form["filename"]
-
-    file_ext = get_file_ext(filename)
     params = {
         "action": "upload",
-        "stash": 1,
-        "filename": form["name"]+file_ext,
-        "offset": 0,
-        "filesize": size,
+        "filename": form["name"] + get_file_ext(form["filename"]),
         "format": "json",
         "token": token,
-        "ignorewarnings": 1
+        "text": text,
+        "comment": "Uploaded with Wiki Loves Brasil"
     }
 
-    index = 0
-    file = {'chunk': (('{}' + file_ext).format(index), chunk, 'multipart/form-data')}
-    index += 1
-    res = raw_post_request(file, params, "https://commons.wikimedia.org/w/api.php")
-    data = res.json()
+    media_file = {'file': (form["filename"], uploaded_file.read(), 'multipart/form-data')}
 
-    for chunk in chunks:
-        params = {
-            "action": "upload",
-            "stash": 1,
-            "filename": form["name"]+file_ext,
-            "filekey": data["upload"]["filekey"],
-            "offset": data["upload"]["offset"],
-            "filesize": size,
-            "format": "json",
-            "token": token,
-            "ignorewarnings": 1
-        }
-        file = {'chunk': (('{}' + file_ext).format(index), chunk, 'multipart/form-data')}
-        index += 1
-        res = raw_post_request(file, params, "https://commons.wikimedia.org/w/api.php?")
-        data = res.json()
-
-    params = {
-        "action": "upload",
-        "filename": form["name"] + file_ext,
-        "filekey": data["upload"]["filekey"],
-        "format": "json",
-        "token": token,
-        "comment": "Uploaded using Wiki Loves Brasil",
-        "text": text
-    }
-
-    res = raw_post_request(None, params, "https://commons.wikimedia.org/w/api.php?")
-    data = res.json()
+    req = raw_post_request(media_file, params, "https:/commons.wikimedia.org/w/api.php?")
+    data = req.json()
 
     return data
 
