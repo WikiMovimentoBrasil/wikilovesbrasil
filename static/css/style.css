@@ -55,7 +55,7 @@ p {
 }
 
 .leaflet-top.leaflet-left {
-    width: 100%;
+    width: calc(2.5em + 20px);
     display: flex;
     flex-direction: column;
 }
@@ -522,6 +522,6 @@ form button {
 .leaflet-container { font-size: 1em !important; }
 .form-control { border-radius: 4px !important; }
 
-.leaflet-right { width: 100%; calc(100% - 2.5em - 30px); }
+/*.leaflet-right { width: 100%; calc(100% - 2.5em - 30px); }*/
 
 .list-group-item { width: 100% !important; padding: 0 0.5em !important; text-align: left !important; border-radius: 4px !important; }
