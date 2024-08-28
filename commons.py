@@ -1,147 +1,15 @@
-from flask import current_app, session
-from requests_oauthlib import OAuth1Session
-from urllib.parse import urlencode
-from wikidata import query_wikidata
 import os
 import json
+from flask import current_app
+from wikidata import query_wikidata
 from datetime import date
+from oauth_requests import get_token, get_username, raw_post_request
 
-
-project = "https://www.wikidata.org/w/api.php?"
-
-
-def raw_request(params, url_project=project):
-    app = current_app
-    url = url_project + urlencode(params)
-    client_key = app.config['CONSUMER_KEY']
-    client_secret = app.config['CONSUMER_SECRET']
-    oauth = OAuth1Session(client_key,
-                          client_secret=client_secret,
-                          resource_owner_key=session['owner_key'],
-                          resource_owner_secret=session['owner_secret'])
-    return oauth.get(url, timeout=4)
-
-
-def raw_post_request(files, params, url_project=project):
-    app = current_app
-    url = url_project
-    client_key = app.config['CONSUMER_KEY']
-    client_secret = app.config['CONSUMER_SECRET']
-    oauth = OAuth1Session(client_key,
-                          client_secret=client_secret,
-                          resource_owner_key=session['owner_key'],
-                          resource_owner_secret=session['owner_secret'])
-    if files:
-        return oauth.post(url, files=files, data=params, timeout=4)
-    else:
-        return oauth.post(url, data=params, timeout=4)
-
-
-def api_request(params, url_project=project):
-    return raw_request(params, url_project).json()
-
-
-def userinfo_call(url_project=project):
-    params = {'action': 'query', 'meta': 'userinfo', 'format': 'json'}
-    return api_request(params, url_project)
-
-
-def get_username(url_project=project):
-    if 'owner_key' not in session:
-        return  # not authorized
-
-    if 'username' in session:
-        return session['username']
-
-    reply = userinfo_call(url_project)
-    if 'query' not in reply:
-        return
-    session['username'] = reply['query']['userinfo']['name']
-
-    return session['username']
-
-
-def get_token(url_project=project):
-    params = {
-        'action': 'query',
-        'meta': 'tokens',
-        'format': 'json',
-        'formatversion': 2,
-    }
-    reply = api_request(params, url_project)
-    token = reply['query']['tokens']['csrftoken']
-    return token
-
-
-def read_chunks(file_object, chunk_size=5000):
-    while True:
-        data = file_object.read(chunk_size)
-        if not data:
-            break
-        yield data
+url_project = "https://commons.wikimedia.org/w/api.php"
 
 
 def upload_file(uploaded_file, form, text):
-    # token = get_token("https://commons.wikimedia.org/w/api.php?")
-    #
-    # size = uploaded_file.tell()
-    # uploaded_file.seek(0, 0)
-    #
-    # chunks = read_chunks(uploaded_file)
-    # chunk = next(chunks)
-    #
-    # filename = form["filename"]
-    #
-    # file_ext = get_file_ext(filename)
-    # params = {
-    #     "action": "upload",
-    #     "stash": 1,
-    #     "filename": form["name"]+file_ext,
-    #     "offset": 0,
-    #     "filesize": size,
-    #     "format": "json",
-    #     "token": token,
-    #     "ignorewarnings": 1
-    # }
-    #
-    # index = 0
-    # file = {'chunk': (('{}' + file_ext).format(index), chunk, 'multipart/form-data')}
-    # index += 1
-    # res = raw_post_request(file, params, "https://commons.wikimedia.org/w/api.php")
-    # data = res.json()
-    #
-    # for chunk in chunks:
-    #     params = {
-    #         "action": "upload",
-    #         "stash": 1,
-    #         "filename": form["name"]+file_ext,
-    #         "filekey": data["upload"]["filekey"],
-    #         "offset": data["upload"]["offset"],
-    #         "filesize": size,
-    #         "format": "json",
-    #         "token": token,
-    #         "ignorewarnings": 1
-    #     }
-    #     file = {'chunk': (('{}' + file_ext).format(index), chunk, 'multipart/form-data')}
-    #     index += 1
-    #     res = raw_post_request(file, params, "https://commons.wikimedia.org/w/api.php?")
-    #     data = res.json()
-    #
-    # params = {
-    #     "action": "upload",
-    #     "filename": form["name"] + file_ext,
-    #     "filekey": data["upload"]["filekey"],
-    #     "format": "json",
-    #     "token": token,
-    #     "comment": "Uploaded using Wiki Loves Brasil",
-    #     "text": text
-    # }
-    #
-    # res = raw_post_request(None, params, "https://commons.wikimedia.org/w/api.php?")
-    # data = res.json()
-    #
-    # return data
-    token = get_token("https://commons.wikimedia.org/w/api.php?")
+    token = get_token(url_project)
 
     params = {
         "action": "upload",
@@ -154,12 +22,15 @@ def upload_file(uploaded_file, form, text):
 
     media_file = {'file': (form["filename"], uploaded_file.read(), 'multipart/form-data')}
 
-    req = raw_post_request(media_file, params, "https://commons.wikimedia.org/w/api.php?")
+    req = raw_post_request(media_file, params, url_project)
     data = req.json()
 
     return data
 
 
+# ==================================================================================================================== #
+# FUNÇÕES
+# ==================================================================================================================== #
 def build_text(form):
     qid = form["qid"]
     timestamp = form["filedate"]
@@ -181,7 +52,7 @@ def build_text(form):
     lang = ""
     descr = ""
     year = str(date.today().year)
-    username = get_username()
+    username = get_username(url_project)
 
     category_local = ""
     category_monument = ""
@@ -217,6 +88,7 @@ def build_text(form):
     coordinates = "{{Location|" + form["coordinates"] + "}}\n" if form["coordinates"] else ""
 
     text = ("=={{int:filedesc}}==\n" +
+            "{{Test upload}}\n" +
             "{{Information\n" +
             "|description={{" + lang + "|1=" + descr + "}}\n{{MonumentID|" + qid + "}}\n" +
             "|date=" + timestamp + "\n" +
@@ -250,3 +122,11 @@ def get_file_ext(filename):
     if file_ext != filename:
         return "." + file_ext
     return ""
+
+
+def read_chunks(file_object, chunk_size=5000):
+    while True:
+        data = file_object.read(chunk_size)
+        if not data:
+            break
+        yield data

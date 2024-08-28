@@ -1,8 +1,7 @@
 import requests
 import os
-import io
 import pandas as pd
-from flask import current_app, session, url_for, Response
+from flask import current_app, session, url_for
 from flask_babel import gettext
 from requests_oauthlib import OAuth1Session
 from urllib.parse import unquote
@@ -438,4 +437,4 @@ def api_post_request(params):
                           client_secret=client_secret,
                           resource_owner_key=session['owner_key'],
                           resource_owner_secret=session['owner_secret'])
-    return oauth.post(url, data=params, timeout=4)
+    return oauth.post(url, data=params, timeout=60)

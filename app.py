@@ -1,15 +1,18 @@
-import yaml
 import os
 import json
-import requests
+import yaml
+import gspread
+
 from flask import Flask, render_template, request, redirect, session, url_for, jsonify, g, flash
 from flask_babel import Babel, gettext
-from oauth_wikidata import get_username, upload_file, get_token, build_text
 from requests_oauthlib import OAuth1Session
-from wikidata import query_monuments, query_monuments_without_coords, query_monument, get_category_info, get_article,\
-    get_sitelinks, api_post_request, query_monuments_selected
-import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+
+from oauth_requests import get_username, get_token
+from commons import upload_file, build_text
+from wikidata import query_monuments, query_monuments_without_coords, query_monument, get_category_info, get_article, \
+    get_sitelinks, api_post_request, query_monuments_selected
+
 
 __dir__ = os.path.dirname(__file__)
 app = Flask(__name__)
@@ -17,10 +20,13 @@ app.config.update(yaml.safe_load(open(os.path.join(__dir__, 'config.yaml'))))
 
 BABEL = Babel(app)
 
+commons_project_api = "https://commons.wikimedia.org/w/api.php"
+wikidata_project_api = "https://www.wikidata.org/w/api.php"
 
-##############################################################
+
+# ==================================================================================================================== #
 # LOGIN
-##############################################################
+# ==================================================================================================================== #
 @app.before_request
 def init_profile():
     g.profiling = []
@@ -28,7 +34,7 @@ def init_profile():
 
 @app.before_request
 def global_user():
-    g.user = get_username()
+    g.user = get_username(commons_project_api)
 
 
 @app.route('/login')
@@ -37,9 +43,12 @@ def login():
     if next_page:
         session['after_login'] = next_page
 
+    project = request.args.get('project') or "commons.wikimedia"  # or "www.wikidata"
+    session['project'] = project
+
     client_key = app.config['CONSUMER_KEY']
     client_secret = app.config['CONSUMER_SECRET']
-    base_url = 'https://meta.wikimedia.org/w/index.php'
+    base_url = "https://" + project + '.org/w/index.php'
     request_token_url = base_url + '?title=Special%3aOAuth%2finitiate'
 
     oauth = OAuth1Session(client_key,
@@ -50,7 +59,7 @@ def login():
     session['owner_key'] = fetch_response.get('oauth_token')
     session['owner_secret'] = fetch_response.get('oauth_token_secret')
 
-    base_authorization_url = 'https://meta.wikimedia.org/wiki/Special:OAuth/authorize'
+    base_authorization_url = "https://" + project + '.org/wiki/Special:OAuth/authorize'
     authorization_url = oauth.authorization_url(base_authorization_url,
                                                 oauth_consumer_key=client_key)
     return redirect(authorization_url)
@@ -58,7 +67,8 @@ def login():
 
 @app.route("/oauth-callback", methods=["GET"])
 def oauth_callback():
-    base_url = 'https://meta.wikimedia.org/w/index.php'
+    project = session.get('project') or "commons.wikimedia"
+    base_url = 'https://' + project + '.org/w/index.php'
     client_key = app.config['CONSUMER_KEY']
     client_secret = app.config['CONSUMER_SECRET']
 
@@ -84,9 +94,9 @@ def oauth_callback():
     return redirect(next_page)
 
 
-##############################################################
+# ==================================================================================================================== #
 # LOCALIZAÇÃO
-##############################################################
+# ==================================================================================================================== #
 # Função para pegar a língua de preferência do usuário
 @BABEL.localeselector
 def get_locale():
@@ -113,9 +123,18 @@ def inject_language():
     return dict(AVAILABLE_LANGUAGES=os.listdir(os.path.join(__dir__, "translations")),
                 CURRENT_LANGUAGE=session.get('lang', request.accept_languages.best_match(app.config['LANGUAGES'])))
 
-##############################################################
+
+# ==================================================================================================================== #
 # PÁGINAS
-##############################################################
+# ==================================================================================================================== #
+states_qids = {
+    "ac": "Q40780", "al": "Q40885", "am": "Q40040", "ap": "Q40130", "ba": "Q40430", "ce": "Q40123",
+    "df": "Q119158", "es": "Q43233", "go": "Q41587", "ma": "Q42362", "mg": "Q39109", "ms": "Q43319",
+    "mt": "Q42824", "pa": "Q39517", "pb": "Q38088", "pe": "Q40942", "pi": "Q42722", "pr": "Q15499",
+    "rj": "Q41428", "rn": "Q43255", "ro": "Q43235", "rr": "Q42508", "rs": "Q40030", "sc": "Q41115",
+    "se": "Q43783", "sp": "Q175", "to": "Q43695"}
+
+
 # Página de erro
 @app.errorhandler(400)
 @app.errorhandler(401)
@@ -145,7 +164,7 @@ def inject_language():
 @app.errorhandler(504)
 @app.errorhandler(505)
 def page_not_found(e):
-    username = get_username()
+    username = get_username(commons_project_api)
     lang = get_locale()
     return render_template('error.html',
                            username=username,
@@ -157,7 +176,7 @@ def page_not_found(e):
 @app.route('/about')
 @app.route('/sobre')
 def about():
-    username = get_username()
+    username = get_username(commons_project_api)
     lang = get_locale()
     return render_template('sobre.html',
                            username=username,
@@ -171,24 +190,15 @@ def about():
 @app.route('/mapa')
 @app.route('/map')
 def mapa():
-    username = get_username()
     lang = get_locale()
     return render_template("map.html",
-                           username=username,
                            lang=lang)
 
 
 @app.route('/mapa/<uf>')
 @app.route('/map/<uf>')
 def mapa_uf(uf):
-    username = get_username()
     lang = get_locale()
-    states_qids = {"ac": "Q40780", "al": "Q40885", "am": "Q40040", "ap": "Q40130", "ba": "Q40430", "ce": "Q40123",
-                   "df": "Q119158", "es": "Q43233", "go": "Q41587", "ma": "Q42362", "mg": "Q39109", "ms": "Q43319",
-                   "mt": "Q42824", "pa": "Q39517", "pb": "Q38088", "pe": "Q40942", "pi": "Q42722", "pr": "Q15499",
-                   "rj": "Q41428", "rn": "Q43255", "ro": "Q43235", "rr": "Q42508", "rs": "Q40030", "sc": "Q41115",
-                   "se": "Q43783", "sp": "Q175", "to": "Q43695"}
-
     monuments = query_monuments(states_qids[uf.lower()], lang)
     qids_with_image = []
     qids_without_image = []
@@ -197,7 +207,7 @@ def mapa_uf(uf):
     for item in monuments:
         tooltip = item["label"]
         tooltip_style = "{direction:'top', offset: [0, -37]}"
-        popup = "<span style='text-align:center'><b>" + item["label"] + "</b></span><br><br>" + "<a class='custom-link' target='_self' href='" + url_for("monumento", qid=item['item']) + "'><button class='send_button'><i class='fa-solid fa-arrow-up-from-bracket'></i> " + gettext("Ver mais informações e enviar fotografias") + "</div>"
+        popup = ("<span style='text-align:center'><b>" + item["label"] + "</b></span><br><br>" + "<a class='custom-link' target='_self' href='" + url_for("monumento", qid=item['item']) + "'><button class='send_button'><i class='fa-solid fa-arrow-up-from-bracket'></i> " + gettext("Ver mais informações e enviar fotografias") + "</div>")
         popup_style = "{closeButton: false}"
         if "imagem" in item and item["imagem"] != "No-image.png":
             if "types" in item and item["types"]:
@@ -213,7 +223,6 @@ def mapa_uf(uf):
                            markers=comandos,
                            markers_list="[" + ",".join(list(set(qids_without_image+qids_with_image))) + "]",
                            bounds=uf_bounds(uf),
-                           username=username,
                            lang=lang,
                            uf=uf)
 
@@ -221,13 +230,8 @@ def mapa_uf(uf):
 @app.route('/mapa/<uf>/geolocalizar')
 @app.route('/map/<uf>/geolocate')
 def geolocate(uf):
-    username = get_username()
+    username = get_username(wikidata_project_api)
     lang = get_locale()
-    states_qids = {"ac": "Q40780", "al": "Q40885", "am": "Q40040", "ap": "Q40130", "ba": "Q40430", "ce": "Q40123",
-                   "df": "Q119158", "es": "Q43233", "go": "Q41587", "ma": "Q42362", "mg": "Q39109", "ms": "Q43319",
-                   "mt": "Q42824", "pa": "Q39517", "pb": "Q38088", "pe": "Q40942", "pi": "Q42722", "pr": "Q15499",
-                   "rj": "Q41428", "rn": "Q43255", "ro": "Q43235", "rr": "Q42508", "rs": "Q40030", "sc": "Q41115",
-                   "se": "Q43783", "sp": "Q175", "to": "Q43695"}
 
     monuments, locais = query_monuments_without_coords(states_qids[uf.lower()], lang)
 
@@ -243,7 +247,7 @@ def geolocate(uf):
 @app.route('/mapa/sugerir', methods=['GET', 'POST'])
 @app.route('/map/suggest', methods=['GET', 'POST'])
 def suggest():
-    username = get_username()
+    username = get_username(wikidata_project_api)
     lang = get_locale()
 
     if request.method == "POST":
@@ -274,7 +278,7 @@ def suggest():
 @app.route('/monumento/<qid>', methods=['GET', 'POST'])
 @app.route('/monument/<qid>', methods=['GET', 'POST'])
 def monumento(qid):
-    username = get_username()
+    username = get_username(commons_project_api)
     lang = get_locale()
 
     if request.method == "POST":
@@ -308,8 +312,7 @@ def post_coordinates():
         item = jsondata['item']
         lat = jsondata['lat']
         lon = jsondata['lon']
-        username = get_username()
-        token = get_token()
+        token = get_token(wikidata_project_api)
 
         params = {
             "action": "wbcreateclaim",
@@ -363,7 +366,7 @@ def uf_bounds(uf):
 
 @app.route('/send_file', methods=["POST"])
 def send_file():
-    username = get_username()
+    username = get_username(commons_project_api)
 
     status_code = "ERROR"
     if request.method == "POST":
@@ -377,15 +380,14 @@ def send_file():
             if "error" in data and data["error"]["code"] == "fileexists-shared-forbidden":
                 message = gettext(u"Uma imagem com este exato título já existe. Por favor, reformule o título.")
             elif "upload" in data and "warnings" in data["upload"] and "duplicate" in data["upload"]["warnings"]:
-                message = gettext(u"Esta imagem é uma duplicata exata da imagem https://commons.wikimedia.org/wiki/File:%(file_)s",
-                    file_=data["upload"]["warnings"]["duplicate"][0])
+                message = gettext(u"Esta imagem é uma duplicata exata da imagem https://commons.wikimedia.org/wiki/File:%(file_)s", file_=data["upload"]["warnings"]["duplicate"][0])
             elif "upload" in data and "warnings" in data["upload"] and "duplicate-archive" in data["upload"]["warnings"]:
                 message = gettext(u"Esta imagem é uma duplicata exata de uma outra imagem que foi deletada da base.")
             elif "upload" in data and "warnings" in data["upload"] and "was-deleted" in data["upload"]["warnings"]:
                 message = gettext(u"Uma outra imagem costumava utilizar este mesmo título. Por favor, reformule o título.")
             elif "upload" in data and "warnings" in data["upload"] and "exists" in data["upload"]["warnings"]:
                 message = gettext(u"Uma imagem com este exato título já existe. Por favor, reformule o título.")
-            #TODO:lockmanager-fail-conflict is an error that does not impact in sending the files. For now, treat as success
+            # TODO:lockmanager-fail-conflict is an error that does not impact in sending the files. For now, treat as success
             elif "error" in data and "code" in data["error"] and data["error"]["code"] == "lockmanager-fail-conflict":
                 message = gettext(u"Imagem enviada com sucesso! Verifique suas contribuições clicando em seu nome de usuário(a).") + " (lockmanager-fail-conflict)"
                 status_code = "SUCCESS"

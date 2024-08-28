@@ -570,8 +570,8 @@
         $("#upload-images").on("submit", function (e) {
             e.preventDefault();
             const error = "{{ _('Ocorreu algum erro! Verifique que fez login e revise o formulário. Caso o erro persista, por favor, reporte em https://github.com/WikiMovimentoBrasil/wikilovesbrasil/issues')}}";
-            var request = new XMLHttpRequest();
-            _Files.forEach(function (_file){
+
+            let promises = _Files.map((_file) => {
                 let formData = new FormData();
                 const file_id = _file.name;
                 formData.append("qid", e.target.elements["qid"].value);
@@ -581,44 +581,54 @@
                 formData.append("coordinates", e.target.elements["coordinates_" + file_id].value);
                 formData.append("filedate", e.target.elements["filedate_" + file_id].value);
                 formData.append('uploaded_file', _file);
-                $.ajax({
-                    type: "POST",
-                    url: "/send_file",
-                    data: formData,
-                    success: function (response) {
-                        console.log("message: " + response.message + "\nstatus: " + response.status + "\nfilename: " + response.filename);
-                        if(response.status === "ERROR") {
-                            var container = document.getElementById("file_upload_container_"+response.filename);
+
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        type: "POST",
+                        url: "/send_file",
+                        data: formData,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                            console.log("message: " + response.message + "\nstatus: " + response.status + "\nfilename: " + response.filename);
+                            let container = document.getElementById("file_upload_container_" + response.filename);
+                            if (response.status === "ERROR") {
+                                container.style.backgroundColor = "#ff6b6b";
+                                container.title = response.message;
+                                reject(response);
+                            } else {
+                                let sent = document.createElement("span");
+                                sent.className = "sent_icon";
+                                sent.id = "sent_" + response.filename;
+                                sent.innerHTML = "<i class=\"fa-solid fa-check\"></i></i> {{ _('Arquivo enviado') }}</button>";
+                                container.style.backgroundColor = "#8aff70";
+                                document.getElementById("remove_" + response.filename).replaceWith(sent);
+                                resolve(response);
+                            }
+                            document.getElementById("loading_" + response.filename).remove();
+                        },
+                        error: function (response) {
+                            console.log(error);
+                            let container = document.getElementById("file_upload_container_" + response.filename);
                             container.style.backgroundColor = "#ff6b6b";
-                            container.title = response.message;
+                            document.getElementById("loading_" + response.filename).remove();
+                            document.getElementById("remove_" + response.filename).remove();
+                            reject(response);
                         }
-                        else {
-                            let sent = document.createElement("span");
-                            sent.className = "sent_icon";
-                            sent.id = "sent_" + response.filename;
-                            sent.innerHTML = "<i class=\"fa-solid fa-check\"></i></i> {{ _('Arquivo enviado') }}</button>";
-                            document.getElementById("file_upload_container_"+response.filename).style.backgroundColor = "#8aff70";
-                            document.getElementById("remove_"+response.filename).replaceWith(sent);
+                    });
+                });
+            });
 
-                        }
-                        document.getElementById("loading_"+response.filename).remove();
-                    },
-                    error: function (response) {
-                        console.log(error);
-                        document.getElementById("file_upload_container_"+response.filename).style.backgroundColor = "#ff6b6b";
-                        document.getElementById("loading_"+response.filename).remove();
-                        document.getElementById("remove_"+response.filename).remove();
-                    },
-                    cache: false,
-                    contentType: false,
-                    processData: false
-                })
-
-                request.open('POST', '/send_file');
-
-                request.send(formData);
-            })
-        })
+            Promise.allSettled(promises).then((results) => {
+                results.forEach((result) => {
+                    if (result.status === "rejected") {
+                        console.log("Some uploads failed:", result.reason);
+                    }
+                });
+                console.log("All files processed.");
+            });
+        });
 
         // Drag and drop
         let dropArea = document.getElementById('file-drop-area')
