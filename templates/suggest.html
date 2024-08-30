@@ -17,7 +17,7 @@
 {% block title %}{{ _("Sugira monumentos") }}{% endblock %}
 
 {% block navbar %}
-    {% with lang=lang, username=username, mapa_geral=True, mapa=True, geolocate=True, uf=uf, suggest=False %}
+    {% with lang=lang, username=username, mapa_geral=True, mapa=True, geolocate=True, uf=uf, suggest=False, project=project %}
         {% include 'topnavbar.html' %}
     {% endwith %}
 {% endblock %}

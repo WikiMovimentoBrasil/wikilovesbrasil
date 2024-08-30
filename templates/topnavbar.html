@@ -1,18 +1,6 @@
 <nav class="topnav" id="topnavbar">
     <a tabindex="0" id="home" href="{{url_for('mapa')}}" class="active custom-link">{{_("Mapa Geral")}}</a>
     <a tabindex="0" id="about" href="{{url_for('about')}}">{{_("Sobre")}}</a>
-{#    {% if mapa_geral %}#}
-{#        <a tabindex="0" id="mapa_geral" href="{{url_for('mapa')}}">{{_("Mapa geral")}}</a>#}
-{#    {% endif %}#}
-{#    {% if mapa %}#}
-{#        <a tabindex="0" id="mapa_nav" href="{{url_for('mapa_uf', uf=uf)}}">{{_("Mapa")}}</a>#}
-{#    {% endif %}#}
-{#    {% if geolocate %}#}
-{#        <a tabindex="0" id="geolocalizar" href="{{url_for('geolocate', uf=uf)}}">{{_("Geolocalizar")}}</a>#}
-{#    {% endif %}#}
-{#    {% if suggest %}#}
-{#        <a tabindex="0" id="sugerir" href="{{url_for('suggest', uf=uf)}}">{{_("Sugerir")}}</a>#}
-{#    {% endif %}#}
     {% if lang != 'en' %}
         <a class="right" tabindex="0" href="{{url_for('set_locale', return_to=request.script_root + request.full_path, lang='en')}}">EN</a>
     {% endif %}
@@ -20,9 +8,9 @@
         <a class="right" tabindex="0" href="{{url_for('set_locale', return_to=request.script_root + request.full_path, lang='pt')}}">PT</a>
     {% endif %}
     {% if username %}
-        <a class="right" tabindex="0" target="_blank" href="https://commons.wikimedia.org/wiki/Special:Contributions/{{username}}">{{username}}</a>
+        <a class="right" tabindex="0" target="_blank" href="https://{{ project or "commons.wikimedia"}}.org/wiki/Special:Contributions/{{username}}">{{username}}</a>
     {% else %}
-        <a class="right" tabindex="0" href="{{ url_for('login', next=request.script_root + request.full_path) }}">{{ _("Autenticar-se")}}</a>
+        <a class="right" tabindex="0" href="{{ url_for('login', next=request.script_root + request.full_path, project=project) }}">{{ _("Autenticar-se")}}</a>
     {% endif %}
     <a tabindex="0" id="menu" href="javascript:void(0);" class="icon" onclick="menuFunction()" aria-label='{{_("Menu")}}'><i class="fa fa-bars"></i></a>
 </nav>

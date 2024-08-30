@@ -27,9 +27,6 @@ def get_username(url_project):
     if 'owner_key' not in session:
         return  # not authorized
 
-    if 'username' in session:
-        return session['username']
-
     params = {'action': 'query', 'meta': 'userinfo', 'format': 'json'}
     reply = api_request(params, url_project)
 

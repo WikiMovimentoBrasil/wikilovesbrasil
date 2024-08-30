@@ -33,7 +33,7 @@
 {% block title %}{{ _("Localize monumentos") }}{% endblock %}
 
 {% block navbar %}
-    {% with lang=lang, username=username, mapa_geral=True, mapa=True, geolocate=False, uf=uf, suggest=True %}
+    {% with lang=lang, username=username, mapa_geral=True, mapa=True, geolocate=False, uf=uf, suggest=True, project="www.wikidata" %}
         {% include 'topnavbar.html' %}
     {% endwith %}
 {% endblock %}

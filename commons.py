@@ -88,7 +88,6 @@ def build_text(form):
     coordinates = "{{Location|" + form["coordinates"] + "}}\n" if form["coordinates"] else ""
 
     text = ("=={{int:filedesc}}==\n" +
-            "{{Test upload}}\n" +
             "{{Information\n" +
             "|description={{" + lang + "|1=" + descr + "}}\n{{MonumentID|" + qid + "}}\n" +
             "|date=" + timestamp + "\n" +
