@@ -2,6 +2,7 @@ import os
 import json
 import yaml
 import gspread
+import configparser
 
 from flask import Flask, render_template, request, redirect, session, url_for, jsonify, g, flash
 from flask_babel import Babel, gettext
@@ -11,14 +12,32 @@ from oauth2client.service_account import ServiceAccountCredentials
 from oauth_requests import get_username, get_token
 from commons import upload_file, build_text
 from wikidata import query_monuments, query_monuments_without_coords, query_monument, get_category_info, get_article, \
-    get_sitelinks, api_post_request, query_monuments_selected
-
+    get_sitelinks, api_post_request, query_monuments_selected, query_wikidata, get_list_of_qids
+from db_requests import get_pins
+from db import db
+from update_database import get_entities_from_wikidata, insert_entries_into_database
 
 __dir__ = os.path.dirname(__file__)
 app = Flask(__name__)
 app.config.update(yaml.safe_load(open(os.path.join(__dir__, 'config.yaml'))))
 
 BABEL = Babel(app)
+
+HOME = os.environ.get('HOME') or ""
+replica_path = os.path.join(HOME, 'replica.my.cnf')
+
+if os.path.exists(replica_path):
+    config = configparser.ConfigParser()
+    config.read(replica_path)
+    db_user = config['client']['user']
+    db_password = config['client']['password']
+    db_url = f"mariadb+pymysql://{db_user}:{db_password}@tools.db.svc.wikimedia.cloud/{db_user}__wlmbr"
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///wlmbrasil.db'
+
+db.init_app(app)
 
 commons_project_api = "https://commons.wikimedia.org/w/api.php"
 wikidata_project_api = "https://www.wikidata.org/w/api.php"
@@ -411,6 +430,26 @@ def print_selection():
         items = jsondata['items']
         results = query_monuments_selected(items, get_locale())
         return jsonify(results), 200
+
+
+@app.route('/mapa_novo/<uf>')
+def get_monuments_from_uf(uf):
+    pins, with_images, without_images = get_pins(states_qids[uf.lower()])
+
+    pins_list = "var " + ";\n".join(pins) + ";\n"
+
+    return render_template("map_uf.html",
+                           markers=pins_list,
+                           markers_list="[" + ",".join(list(set(without_images + with_images))) + "]",
+                           bounds=uf_bounds(uf),
+                           uf=uf)
+
+
+@app.route('/update_db')
+def update_db():
+    monuments, monuments_and_locals_df = get_entities_from_wikidata()
+    insert_entries_into_database(monuments, monuments_and_locals_df)
+    return monuments
 
 
 ##############################################################

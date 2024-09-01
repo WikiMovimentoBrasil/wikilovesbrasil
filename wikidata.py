@@ -353,6 +353,39 @@ def query_monuments_selected(qids, lang):
     return csv
 
 
+def get_monuments():
+    query = ("SELECT DISTINCT ?item ?local WITH { "
+             "SELECT ?item WHERE { ?item wdt:P17 wd:Q155; wdt:P1435 []. } "
+             "} AS %items "
+             "WHERE { INCLUDE %items. "
+             "?item wdt:P131/wdt:P131* ?local. ?local wdt:P31 wd:Q485258. "
+             "MINUS { ?item wdt:P31/wdt:P279* wd:Q22698. } "
+             "MINUS { ?item wdt:P31/wdt:P279* wd:Q271669. } }")
+    result = query_wikidata(query)
+
+    data = []
+
+    if "bindings" in result["results"] and result["results"]["bindings"]:
+        data = [(binding["item"]["value"],
+                 binding["local"]["value"]) for binding in result["results"]["bindings"]]
+
+    df = pd.DataFrame(data, columns=["item", "local"])
+    df["item"] = df["item"].str.replace("http://www.wikidata.org/entity/", "", regex=False)
+    df["local"] = df["local"].str.replace("http://www.wikidata.org/entity/", "", regex=False)
+
+    return df
+
+
+def get_list_of_qids():
+    data = get_monuments()
+    values = []
+
+    if "local" in data.columns:
+        values = data["item"].tolist()
+
+    return values
+
+
 def get_item(qid, lang):
     url = "https://www.wikidata.org/w/api.php"
     params = {
