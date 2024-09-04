@@ -3,6 +3,7 @@ import json
 import yaml
 import gspread
 import configparser
+import datetime
 
 from flask import Flask, render_template, request, redirect, session, url_for, jsonify, g, flash
 from flask_babel import Babel, gettext
@@ -21,8 +22,6 @@ __dir__ = os.path.dirname(__file__)
 app = Flask(__name__)
 app.config.update(yaml.safe_load(open(os.path.join(__dir__, 'config.yaml'))))
 
-BABEL = Babel(app)
-
 HOME = os.environ.get('HOME') or ""
 replica_path = os.path.join(HOME, 'replica.my.cnf')
 
@@ -36,6 +35,11 @@ if os.path.exists(replica_path):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///wlmbrasil.db'
+
+app.config['SQLALCHEMY_POOL_SIZE'] = 10
+app.config['SQLALCHEMY_POOL_TIMEOUT'] = 30
+app.config['SQLALCHEMY_POOL_RECYCLE'] = 280
+app.config['SQLALCHEMY_POOL_PRE_PING'] = True
 
 db.init_app(app)
 
@@ -117,11 +121,13 @@ def oauth_callback():
 # LOCALIZAÇÃO
 # ==================================================================================================================== #
 # Função para pegar a língua de preferência do usuário
-@BABEL.localeselector
 def get_locale():
     if request.args.get('lang'):
         session['lang'] = request.args.get('lang')
     return session.get('lang', 'pt')
+
+
+BABEL = Babel(app, locale_selector=get_locale)
 
 
 # Função para mudar a língua de exibição do conteúdo
@@ -449,7 +455,8 @@ def get_monuments_from_uf(uf):
 def update_db():
     monuments, monuments_and_locals_df = get_entities_from_wikidata()
     insert_entries_into_database(monuments, monuments_and_locals_df)
-    return monuments
+    data = datetime.datetime.now().strftime("%Y-%m-%d, %H:%M:%S")
+    return f"{data}: {len(monuments)} monumentos foram inseridos!"
 
 
 ##############################################################

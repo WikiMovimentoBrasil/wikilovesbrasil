@@ -29,8 +29,8 @@ def extract_claim(claims, prop, type_=None, image_=None):
 
 
 def extract_coord(claims, prop):
-    lat = 0
-    lon = 0
+    lat = 90
+    lon = 180
     if prop in claims:
         coord_value = claims[prop][0].get('mainsnak', {}).get('datavalue', {}).get('value', {})
         lat = coord_value.get("latitude", 90)

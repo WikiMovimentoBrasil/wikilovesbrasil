@@ -2,8 +2,8 @@ import ast
 from db import db
 
 monument_state = db.Table('monument_state',
-                          db.Column('monument_id', db.String, db.ForeignKey('monuments.item'), primary_key=True),
-                          db.Column('state_id', db.String, db.ForeignKey('state.item'), primary_key=True))
+                          db.Column('monument_id', db.String(50), db.ForeignKey('monuments.item'), primary_key=True),
+                          db.Column('state_id', db.String(50), db.ForeignKey('state.item'), primary_key=True))
 
 
 class Monument(db.Model):
