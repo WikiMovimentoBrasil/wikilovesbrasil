@@ -42,7 +42,8 @@ def query_monuments(qid, lang):
         WHERE {
             INCLUDE %items.
             ?item wdt:P625 ?coord.
-            { ?item p:P131/ps:P131 ?local. ?local wdt:P31 wd:Q3184121. } UNION { ?item p:P131/ps:P131 [wdt:P131 ?local]. ?local wdt:P31 wd:Q3184121. }
+            ?item wdt:P131* ?local.
+            ?local wdt:P131 [wdt:P31 wd:Q485258].
             OPTIONAL {?item wdt:P18 ?P18}
             OPTIONAL {?item wdt:P5775 ?P5775}
             OPTIONAL {?item wdt:P9721 ?P9721}
