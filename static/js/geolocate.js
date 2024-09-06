@@ -1,7 +1,7 @@
-const osm_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+const wm_map = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
     maxZoom: 19,
     minZoom: 1,
-    attribution: '&copy; <a href="https://openstreetmap.org/copyright">' + credits + '</a>'
+    attribution: credits_wikimedia
 });
 
 const blueIcon = L.AwesomeMarkers.icon({
@@ -11,7 +11,7 @@ const blueIcon = L.AwesomeMarkers.icon({
     prefix: 'fas'
 });
 
-let map = L.map('map', {layers: [osm_map]}).setMaxBounds(bounds);
+let map = L.map('map', {layers: [wm_map]}).setMaxBounds(bounds);
 
 let marker = L.marker({lat: -90, lon: 0}, {icon: blueIcon, draggable: true});
 

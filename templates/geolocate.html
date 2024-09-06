@@ -19,7 +19,8 @@
     <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
     <script type="text/javascript">
-        const credits = '{{ _("Contribuidores do OpenStreetMap") }}';
+        const credits_osm = '&copy; <a href="https://openstreetmap.org/copyright">{{ _("Contribuidores do OpenStreetMap") }}</a>';
+        const credits_wikimedia = '<a href="https://foundation.wikimedia.org/wiki/Maps_Terms_of_Use">{{ _("Mapas da Wikimedia") }}</a> | ' + credits_osm;
         const bounds = {{ bounds|safe }};
         const whereAmIMsg = '{{ _("Mostre-me onde estou") }}';
         const localizeMsg = '{{ _("Localize no mapa") }}';

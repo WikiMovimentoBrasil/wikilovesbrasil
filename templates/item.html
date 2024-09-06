@@ -292,13 +292,13 @@
             maxZoom: 19,
             minZoom: 4,
             attribution: credits_osm
-        }).addTo(map);
+        });
 
         const wm_map = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
             maxZoom: 19,
             minZoom: 4,
             attribution: credits_wikimedia
-        });
+        }).addTo(map);
 
         const blueIcon = L.AwesomeMarkers.icon({
             icon: 'fa-solid fa-landmark',

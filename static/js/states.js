@@ -22,14 +22,14 @@ let osm_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
     maxZoom: 8,
     minZoom: 3,
     attribution: credits_osm
-}).addTo(map);
+});
 
 // Wikimedia
 const wm_map = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {
     maxZoom: 8,
     minZoom: 3,
     attribution: credits_wikimedia
-});
+}).addTo(map);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // BUTTONS
