@@ -6,3 +6,4 @@ Lib/
 Scripts/
 venv/
 credentials.json
+*/*.db

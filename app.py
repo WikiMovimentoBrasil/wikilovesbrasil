@@ -41,8 +41,6 @@ app.config['SQLALCHEMY_POOL_TIMEOUT'] = 30
 app.config['SQLALCHEMY_POOL_RECYCLE'] = 280
 app.config['SQLALCHEMY_POOL_PRE_PING'] = True
 
-BABEL = Babel(app)
-
 db.init_app(app)
 
 commons_project_api = "https://commons.wikimedia.org/w/api.php"
@@ -123,14 +121,13 @@ def oauth_callback():
 # LOCALIZAÇÃO
 # ==================================================================================================================== #
 # Função para pegar a língua de preferência do usuário
-@BABEL.localeselector
 def get_locale():
     if request.args.get('lang'):
         session['lang'] = request.args.get('lang')
     return session.get('lang', 'pt')
 
 
-
+BABEL = Babel(app, locale_selector=get_locale)
 
 
 # Função para mudar a língua de exibição do conteúdo
